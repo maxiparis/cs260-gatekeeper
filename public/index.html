@@ -1,108 +1,53 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Web Programming 260</title>
-    <style>
-      * {
-        box-sizing: border-box;
-        font-family: Arial, sans-serif;
-        margin: 0;
-      }
-      main {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        height: 100vh;
-        font-size: 3vw;
-        animation: fly-in 1s ease-out;
-      }
+    <head>
+        <meta charset="UTF-8"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <title>GateKeeper 🏰| Index</title>
+    </head>
 
-      .large {
-        display: block;
-      }
+    <body>
 
-      p {
-        font-size: 2em;
-        display: flex;
-        color: #666;
-      }
+    <header>
+        <h1>GateKeeper 🏰</h1>
 
-      .course {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        justify-content: center;
-      }
-
-      .courseName {
-        margin: 0.25em;
-        font-size: 3em;
-        font-weight: bold;
-        color: #111;
-      }
-      .courseNum {
-        margin: 0.25em;
-        font-size: 3em;
-        color: #da9512;
-      }
-
-      .small {
-        display: none;
-        font-size: 30vw;
-        color: #f3cf8c;
-      }
-
-      @keyframes fly-in {
-        0% {
-          transform: translateX(-200%);
-        }
-        80% {
-          transform: translateX(1%);
-        }
-        100% {
-          transform: translateX(0%);
-        }
-      }
-
-      @media (max-width: 500px) {
-        body {
-          background-color: rgb(23, 23, 23);
-        }
-        .large {
-          display: none;
-        }
-        .small {
-          display: block;
-        }
-      }
-    </style>
-  </head>
-
-  <body>
+        <nav>
+            <menu>
+                <li><a href="index.html">Home 🏠</a></li>
+                <li><a href="login.html">Log in 👤</a></li>
+                <li><a href="signup.html">Sign up ⬆️</a></li>
+                <li><a href="logbook.html">LogBook 📖</a></li>
+                <li><a href="addLog.html">Add a new log ➕</a></li>
+            </menu>
+        </nav>
+    </header>
     <main>
-      <div class="large">
-        <p>Welcome Max, to your</p>
-        <div class="course">
-          <div class="courseName">Web<br />Programming</div>
-          <div class="courseNum">260</div>
-        </div>
-        <p id="serviceName">website</p>
-      </div>
-      <div class="small">260</div>
+        <hr>
+        <h1>Welcome to <strong>GateKeeper!</strong></h1>
+        <h2>The ultimate logbook replacement</h2>
+        <!--  TODO: insert some kind of image  -->
+        <p>
+            Designed to make logging easier and more accurate, GateKeeper allows security guards, law and parking
+            enforcement officers, custodians, building and facility managers, and more to quickly record
+            and track events in real-time. No more messy paperwork or hard-to-read entries — this app
+            streamlines the process with powerful search and filtering features, so finding logs by category
+            or keyword is faster than ever. Plus, with live data updates, your entire team stays in sync,
+            receiving the latest information on the go, ensuring that everyone is always up to date.
+        </p>
+        <p>Try it today!👇</p>
+        <a href="signup.html">Create account</a>
+
+        <p>Already a member? ✅</p>
+        <a href="login.html">Log in to your account</a>
+        <br>
     </main>
 
-    <script>
-      fetch('/config').then((r) => {
-        if (r.ok) {
-          r.json().then((config) => {
-            const serviceNameEl = document.querySelector('#serviceName');
-            serviceNameEl.textContent = config.name;
-          });
-        }
-      });
-    </script>
-  </body>
+    <footer>
+        <hr>
+        <br>
+        <span>Maximiliano Paris | BYU CS 260 | <a href="https://github.com/maxiparis/cs260-gatekeeper">GitHub</a></span>
+    </footer>
+
+    </body>
 </html>
