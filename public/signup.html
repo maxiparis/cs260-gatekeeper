@@ -26,22 +26,23 @@
     <main>
         <hr>
         <h1>Create an account!</h1>
-        <form method="get" action="play.html">
+        <!--  action takes me to that page -->
+        <form method="get" action=" ">
             <div>
-                <span>Email 📧</span>
-                <input type="text" placeholder="Enter your email" />
+                <label for="email">Email 📧</label>
+                <input type="text" id="email" placeholder="Enter your email" />
             </div>
             <div>
-                <span>Password 🔑</span>
-                <input type="password" placeholder="Create your password" />
+                <label for="password">Password 🔑</label>
+                <input type="password" id="password" placeholder="Create your password" />
             </div>
             <button type="submit">Create account</button>
-            <br>
-            <section>
-                <h4>Already a member? </h4>
-                <a href="login.html">Log in </a>
-            </section>
         </form>
+
+        <section>
+            <h4>Already a member? <a href="login.html">Log in </a></h4>
+
+        </section>
     </main>
 
     <footer>
