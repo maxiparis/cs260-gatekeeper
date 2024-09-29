@@ -9,87 +9,86 @@
 
 <body>
 
-<header>
-  <h1>GateKeeper 🏰</h1>
+  <header>
+    <h1>GateKeeper 🏰</h1>
 
-  <nav>
-    <menu>
-      <li><a href="index.html">Home 🏠</a></li>
-      <li><a href="login.html">Log in 👤</a></li>
-      <li><a href="signup.html">Sign up ⬆️</a></li>
-      <li><a href="logbook.html">LogBook 📖</a></li>
-      <li><a href="addLog.html">Add a new log ➕</a></li>
-    </menu>
-  </nav>
-</header>
+    <nav>
+      <menu>
+        <li><a href="index.html">Home 🏠</a></li>
+        <li><a href="login.html">Log in 👤</a></li>
+        <li><a href="signup.html">Sign up ⬆️</a></li>
+        <li><a href="logbook.html">LogBook 📖</a></li>
+        <li><a href="addLog.html">Add a new log ➕</a></li>
+      </menu>
+    </nav>
+  </header>
 
-<main>
-  <hr>
-  <h1>Add a new log</h1>
-  <!--  action = "" is where I can put the link or api endpoint to contact-->
-  <form action="">
-    <div>
-      <label for="date">When did this happen? </label>
-      <input type="date" id="date">
-    </div>
+  <main>
+    <hr>
+    <h1>Add a new log</h1>
 
-    <div>
-      <label for="time">At what time? </label>
-      <input type="time" id="time">
-    </div>
+    <!-- placeholder for call to backend -->
+    <form method="post" action="">
+      <div>
+        <label for="date">When did this happen? </label>
+        <input type="date" id="date">
+      </div>
 
-    <div>
-      <label for="location">Where did it happen? </label>
-      <select name="location" id="location">
-        <option value="library">Library</option>
-        <option value="main-door">Main Door</option>
-        <option value="west-offices">West Offices</option>
-        <option value="parking-lot">Parking Lot</option>
-        <option value="cafeteria">Cafeteria</option>
-        <option value="gym">Gym</option>
-        <option value="front-desk">Front Desk</option>
-      </select>
-    </div>
+      <div>
+        <label for="time">At what time? </label>
+        <input type="time" id="time">
+      </div>
 
-    <div>
-      <label for="type">Select a type </label>
-      <select name="type" id="type">
-        <option value="guest">Guest</option>
-        <option value="lost-found">Lost/Found</option>
-        <option value="incident">Incident</option>
-        <option value="damage">Damage</option>
-        <option value="maintenance">Maintenance</option>
-      </select>
-    </div>
+      <div>
+        <label for="location">Where did it happen? </label>
+        <select name="location" id="location">
+          <option value="library">Library</option>
+          <option value="main-door">Main Door</option>
+          <option value="west-offices">West Offices</option>
+          <option value="parking-lot">Parking Lot</option>
+          <option value="cafeteria">Cafeteria</option>
+          <option value="gym">Gym</option>
+          <option value="front-desk">Front Desk</option>
+        </select>
+      </div>
 
-    <div>
-      <label for="description">Describe the event </label>
-      <input type="text" id="description">
-    </div>
+      <div>
+        <label for="type">Select a type </label>
+        <select name="type" id="type">
+          <option value="guest">Guest</option>
+          <option value="lost-found">Lost/Found</option>
+          <option value="incident">Incident</option>
+          <option value="damage">Damage</option>
+          <option value="maintenance">Maintenance</option>
+        </select>
+      </div>
 
-    <div>
-      <label for="author">Enter the author </label>
-      <select name="author" id="author">
-        <option value="allan-b">Allan B.</option>
-        <option value="john-c">John C.</option>
-        <option value="alicia-p">Alicia P.</option>
-        <option value="marco-l">Marco L.</option>
-        <option value="jessica-m">Jessica M.</option>
-        <option value="sarah-k">Sarah K.</option>
-        <option value="tom-g">Tom G.</option>
-      </select>
-    </div>
+      <div>
+        <label for="description">Describe the event </label>
+        <input type="text" id="description">
+      </div>
 
-    <button type="submit">Create new log</button>
-  </form>
+      <div>
+        <label for="author">Enter the author </label>
+        <select name="author" id="author">
+          <option value="allan-b">Allan B.</option>
+          <option value="john-c">John C.</option>
+          <option value="alicia-p">Alicia P.</option>
+          <option value="marco-l">Marco L.</option>
+          <option value="jessica-m">Jessica M.</option>
+          <option value="sarah-k">Sarah K.</option>
+          <option value="tom-g">Tom G.</option>
+        </select>
+      </div>
 
+      <button type="submit">Create new log</button>
+    </form>
+  </main>
 
-</main>
-
-<footer>
-  <hr>
-  <span>Maximiliano Paris | BYU CS 260 | <a href="https://github.com/maxiparis/cs260-gatekeeper">GitHub</a></span>
-</footer>
+  <footer>
+    <hr>
+    <span>Maximiliano Paris | BYU CS 260 | <a href="https://github.com/maxiparis/cs260-gatekeeper">GitHub</a></span>
+  </footer>
 
 </body>
 </html>
