@@ -1,94 +1,104 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"/>
-  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>GateKeeper 🏰| Add a new log </title>
+    <meta charset="UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>GateKeeper 🏰| Add a new log </title>
+
+    <link rel="stylesheet" href="styles/main.css"/>
+
+    <!-- Include bootstrap CSS framework -->
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+        integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi"
+        crossorigin="anonymous"
+    />
 </head>
 
-<body>
+<body class="bg-light">
 
-  <header>
-    <h1>GateKeeper 🏰</h1>
+<header
+    class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 px-5 px-md-10 mb-4 border-bottom bg-light">
+    <h1>GateKeeper</h1>
+    <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0 gap-4">
+        <li><a href="index.html" class="nav-link px-2 link-secondary">Home</a></li>
+        <li><a href="logbook.html" class="nav-link px-2 link-dark">LogBook</a></li>
+        <li><a href="addLog.html" class="nav-link px-2 link-dark">Add a new log</a></li>
+    </ul>
 
-    <nav>
-      <menu>
-        <li><a href="index.html">Home 🏠</a></li>
-        <li><a href="login.html">Log in 👤</a></li>
-        <li><a href="signup.html">Sign up ⬆️</a></li>
-        <li><a href="logbook.html">LogBook 📖</a></li>
-        <li><a href="addLog.html">Add a new log ➕</a></li>
-      </menu>
-    </nav>
-  </header>
+    <div class="row-md-1 text-end">
+        <a href="login.html" class="btn btn-outline-primary me-2">Login</a>
+        <a href="signup.html" class="btn btn-primary">Sign-up</a>
+    </div>
+</header>
 
-  <main>
-    <hr>
+<main>
     <h1>Add a new log</h1>
 
     <!-- placeholder for call to backend -->
     <form method="post" action="">
-      <div>
-        <label for="date">When did this happen? </label>
-        <input type="date" id="date">
-      </div>
+        <div>
+            <label for="date">When did this happen? </label>
+            <input type="date" id="date">
+        </div>
 
-      <div>
-        <label for="time">At what time? </label>
-        <input type="time" id="time">
-      </div>
+        <div>
+            <label for="time">At what time? </label>
+            <input type="time" id="time">
+        </div>
 
-      <div>
-        <label for="location">Where did it happen? </label>
-        <select name="location" id="location">
-          <option value="library">Library</option>
-          <option value="main-door">Main Door</option>
-          <option value="west-offices">West Offices</option>
-          <option value="parking-lot">Parking Lot</option>
-          <option value="cafeteria">Cafeteria</option>
-          <option value="gym">Gym</option>
-          <option value="front-desk">Front Desk</option>
-        </select>
-      </div>
+        <div>
+            <label for="location">Where did it happen? </label>
+            <select name="location" id="location">
+                <option value="library">Library</option>
+                <option value="main-door">Main Door</option>
+                <option value="west-offices">West Offices</option>
+                <option value="parking-lot">Parking Lot</option>
+                <option value="cafeteria">Cafeteria</option>
+                <option value="gym">Gym</option>
+                <option value="front-desk">Front Desk</option>
+            </select>
+        </div>
 
-      <div>
-        <label for="type">Select a type </label>
-        <select name="type" id="type">
-          <option value="guest">Guest</option>
-          <option value="lost-found">Lost/Found</option>
-          <option value="incident">Incident</option>
-          <option value="damage">Damage</option>
-          <option value="maintenance">Maintenance</option>
-        </select>
-      </div>
+        <div>
+            <label for="type">Select a type </label>
+            <select name="type" id="type">
+                <option value="guest">Guest</option>
+                <option value="lost-found">Lost/Found</option>
+                <option value="incident">Incident</option>
+                <option value="damage">Damage</option>
+                <option value="maintenance">Maintenance</option>
+            </select>
+        </div>
 
-      <div>
-        <label for="description">Describe the event </label>
-        <input type="text" id="description">
-      </div>
+        <div>
+            <label for="description">Describe the event </label>
+            <input type="text" id="description">
+        </div>
 
-      <div>
-        <label for="author">Enter the author </label>
-        <select name="author" id="author">
-          <option value="allan-b">Allan B.</option>
-          <option value="john-c">John C.</option>
-          <option value="alicia-p">Alicia P.</option>
-          <option value="marco-l">Marco L.</option>
-          <option value="jessica-m">Jessica M.</option>
-          <option value="sarah-k">Sarah K.</option>
-          <option value="tom-g">Tom G.</option>
-        </select>
-      </div>
+        <div>
+            <label for="author">Enter the author </label>
+            <select name="author" id="author">
+                <option value="allan-b">Allan B.</option>
+                <option value="john-c">John C.</option>
+                <option value="alicia-p">Alicia P.</option>
+                <option value="marco-l">Marco L.</option>
+                <option value="jessica-m">Jessica M.</option>
+                <option value="sarah-k">Sarah K.</option>
+                <option value="tom-g">Tom G.</option>
+            </select>
+        </div>
 
-      <button type="submit">Create new log</button>
+        <button type="submit">Create new log</button>
     </form>
-  </main>
+</main>
 
-  <footer>
+<footer>
     <hr>
     <span>Maximiliano Paris | BYU CS 260 | <a href="https://github.com/maxiparis/cs260-gatekeeper">GitHub</a></span>
-  </footer>
+</footer>
 
 </body>
 </html>
