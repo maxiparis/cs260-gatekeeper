@@ -1,53 +1,80 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8"/>
-        <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-        <title>GateKeeper 🏰| Index</title>
-    </head>
+<head>
+    <meta charset="UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>GateKeeper 🏰| Index</title>
 
-    <body>
+    <link rel="stylesheet" href="styles/main.css" />
 
-    <header>
-        <h1>GateKeeper 🏰</h1>
+    <!-- Include bootstrap CSS framework -->
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+        integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi"
+        crossorigin="anonymous"
+    />
+</head>
 
-        <nav>
-            <menu>
-                <li><a href="index.html">Home 🏠</a></li>
-                <li><a href="login.html">Log in 👤</a></li>
-                <li><a href="signup.html">Sign up ⬆️</a></li>
-                <li><a href="logbook.html">LogBook 📖</a></li>
-                <li><a href="addLog.html">Add a new log ➕</a></li>
-            </menu>
-        </nav>
-    </header>
+<body class="bg-light">
+<header class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 px-5 mb-4 border-bottom bg-light">
+    <h1>GateKeeper</h1>
+    <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
+        <li><a href="index.html" class="nav-link px-2 link-secondary">Home</a></li>
+        <li><a href="logbook.html" class="nav-link px-2 link-dark">LogBook</a></li>
+        <li><a href="addLog.html" class="nav-link px-2 link-dark">Add a new log</a></li>
+    </ul>
 
-    <main>
-        <hr>
-        <h1>Welcome to <strong>GateKeeper!</strong></h1>
-        <h2>The Ultimate Logbook Replacement</h2>
-        <img src="security.jpg" alt="A beautiful sunset">
-        <p>
-            Designed to make logging easier and more accurate, GateKeeper allows security guards, law and parking
-            enforcement officers, custodians, building and facility managers, and more to quickly record
-            and track events in real-time. No more messy paperwork or hard-to-read entries — this app
-            streamlines the process with powerful search and filtering features, so finding logs by category
-            or keyword is faster than ever. Plus, with live data updates, your entire team stays in sync,
-            receiving the latest information on the go, ensuring that everyone is always up to date.
-        </p>
-        <p>Try it today!👇</p>
-        <a href="signup.html">Create account</a>
+    <div class="col-md-3 text-end">
+        <a href="login.html" class="btn btn-outline-primary me-2">Login</a>
+        <a href="signup.html" class="btn btn-primary">Sign-up</a>
+    </div>
+</header>
 
-        <p>Already a member? ✅</p>
-        <a href="login.html">Log in to your account</a>
-        <br>
-    </main>
+<main class="d-flex flex-column flex-wrap align-items-center justify-content-center px-5">
+    <section class="hero d-flex py-5">
+        <div class="d-flex flex-wrap">
+            <div class="d-flex flex-column align-items-center justify-content-center px-4">
+                <h1>Welcome to <strong>GateKeeper!</strong></h1>
+                <h2>The Ultimate Logbook Replacement</h2>
+            </div>
 
-    <footer>
-        <hr>
-        <br>
-        <span>Maximiliano Paris | BYU CS 260 | <a href="https://github.com/maxiparis/cs260-gatekeeper">GitHub</a></span>
-    </footer>
+            <div class="d-flex flex-column">
+                <img src="security.jpg" alt="A security guard" class="img-fluid rounded-4">
+            </div>
+        </div>
+    </section>
 
-    </body>
+    <!--        <section class="hero d-flex align-items-center py-5">-->
+    <!--                <div class="row ">-->
+    <!--                <div class="col-md-6 d-flex flex-column justify-content-center">-->
+    <!--                    <h1>Welcome to <strong>GateKeeper!</strong></h1>-->
+    <!--                    <h2>The Ultimate Logbook Replacement</h2>-->
+    <!--                </div>-->
+    <!--                <div class="col-md-6">-->
+    <!--                    <img src="security.jpg" alt="A security guard" class="img-fluid">-->
+    <!--                    </div>-->
+    <!--            </div>-->
+    <!--        </section>-->
+
+    <p>
+        Designed to make logging easier and more accurate, GateKeeper allows security guards, law and parking
+        enforcement officers, custodians, building and facility managers, and more to quickly record
+        and track events in real-time. No more messy paperwork or hard-to-read entries — this app
+        streamlines the process with powerful search and filtering features, so finding logs by category
+        or keyword is faster than ever. Plus, with live data updates, your entire team stays in sync,
+        receiving the latest information on the go, ensuring that everyone is always up to date.
+    </p>
+    <p>Try it today!👇</p>
+    <a href="signup.html">Create account</a>
+
+    <p>Already a member? ✅</p>
+    <a href="login.html">Log in to your account</a>
+    <br>    </main>
+
+<footer>        <hr>
+    <br>        <span>Maximiliano Paris | BYU CS 260 | <a href="https://github.com/maxiparis/cs260-gatekeeper">GitHub</a></span>
+</footer>
+
+</body>
