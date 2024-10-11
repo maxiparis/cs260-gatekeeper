@@ -7,6 +7,18 @@
     width: 100%; /* Default width for small screens */
 }
 
+@media(max-width:425px) {
+    .custom-header {
+        flex-direction: column;
+    }
+}
+
+@media(min-width:425px) {
+    .custom-header {
+        flex-direction: row;
+    }
+}
+
 @media(max-width: 576px) {
     html {
         font-size: 80%;
