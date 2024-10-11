@@ -7,6 +7,25 @@
     width: 100%; /* Default width for small screens */
 }
 
+@media(orientation: portrait) and (max-width: 768px){     /* Styles for portrait mode */
+    .custom-table {
+        display: none;
+    }
+
+    .rotate-message {
+        display: flex;
+    }
+}
+
+@media(orientation: landscape){     /* Styles for portrait mode */
+    .custom-table {
+        display: flex;
+    }
+    .rotate-message {
+        display: none;
+    }
+}
+
 @media(max-width:425px) {
     .custom-header {
         flex-direction: column;
@@ -58,6 +77,14 @@
 @media (min-width: 768px) { /* md breakpoint */
     html {
         font-size: 80%; /* Reduces the default font size from 16px to ~14.4px */
+    }
+
+    .custom-table {
+        display: flex;
+    }
+
+    .rotate-message {
+        display: none;
     }
 
     .custom-card {
