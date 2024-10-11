@@ -32,26 +32,27 @@
     </div>
 </header>
 
-<main class="container d-flex flex-column flex-wrap align-items-center justify-content-top px-5">
-    <h1>Logbook</h1>
-    <!-- Placeholder for the name that will be populated from the database -->
-    <div class="d-flex flex-1 flex-wrap align-items-center justify-content-between w-100 my-3">
-        <h5>Welcome, {user name}</h5>
+<main class="container-fluid d-flex flex-column flex-wrap align-items-center justify-content-top px-5">
+    <div class="container d-flex flex-column flex-wrap align-items-center justify-content-top px-5">
+        <h1>Logbook</h1>
+        <!-- Placeholder for the name that will be populated from the database -->
+        <div class="d-flex flex-1 flex-wrap align-items-center justify-content-between w-100 my-3">
+            <h5>Welcome, {user name}</h5>
 
-        <!-- The date and the time will be populated from a call to a 3rd party API -->
-        <h5>Thursday, September 12, 2024 - 11:52 am</h5>
+            <!-- The date and the time will be populated from a call to a 3rd party API -->
+            <h5>Thursday, September 12, 2024 - 11:52 am</h5>
 
-        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle"
-                 viewBox="0 0 16 16">
-                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
-                <path
-                    d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4"/>
-            </svg>
-            Add new log
-        </button>
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle"
+                     viewBox="0 0 16 16">
+                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+                    <path
+                        d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4"/>
+                </svg>
+                Add new log
+            </button>
+        </div>
     </div>
-
 
     <!-- MODAL -->
     <!-- TODO: work here in this modal       -->
@@ -128,163 +129,171 @@
         </div>
     </div>
 
-    <div class="d-flex justify-content-left w-100">
-        <button class="btn btn-outline-primary" type="button" data-bs-toggle="collapse" data-bs-target="#filterCollapse"
-                aria-expanded="false" aria-controls="collapseExample">
-            Filter log entries
-        </button>
-    </div>
+<!--    <div class="d-flex justify-content-left w-100">-->
+<!--        <button class="btn btn-outline-primary" type="button" data-bs-toggle="collapse" data-bs-target="#filterCollapse"-->
+<!--                aria-expanded="false" aria-controls="collapseExample">-->
+<!--            Filter log entries-->
+<!--        </button>-->
+<!--    </div>-->
 
     <!-- Placeholder for a call to my backend -->
-    <div class="d-flex justify-content-left w-100">
-        <div class="collapse card my-3" id="filterCollapse">
-            <div class="card-body">
-                <form method="get" action="">
+    <div class="d-flex justify-content-between gap-5 w-100">
+        <div class="d-flex justify-content-left">
 
-                    <div class="form-group">
-                        <label class="form-label" for="filter-notes">Notes</label>
-                        <input class="form-control" type="text" id="filter-notes" placeholder="Search log notes">
-                    </div>
+            <div class="card my-3">
+                <div class="card-body">
+                    <form method="get" action="">
 
-                    <div class="form-group">
-                        <label class="form-label" for="filter-date">Filter by Date: </label>
-                        <select class="form-select" name="date" id="filter-date">
-                            <option selected value="all">All the time</option>
-                            <option value="today">Today</option>
-                            <option value="last7">In the last 7 days</option>
-                            <option value="last30">In the last 30 days</option>
-                            <option value="last90">In the last 90 days</option>
-                            <option value="last6">In the 6 months</option>
-                        </select>
-                    </div>
+                        <div class="form-group">
+                            <label class="form-label" for="filter-notes">Notes</label>
+                            <textarea class="form-control"id="filter-notes" placeholder="Search log notes"></textarea>
+                        </div>
 
-                    <div class="form-group">
-                        <label class="form-label">Filter by Time (in between):</label>
-                        <ul> <!-- TODO: work here making the list an actual bootstrap element -->
-                            <li><label class="form-label" for="filter-startTime">After</label> <input
-                                class="form-control" type="time" id="filter-startTime"></li>
-                            <li><label class="form-label" for="filter-endTime">Before</label> <input
-                                class="form-control" type="time" id="filter-endTime"></li>
-                        </ul>
-                    </div>
+                        <div class="form-group mt-3">
+                            <label class="form-label" for="filter-date">Filter by Date: </label>
+                            <select class="form-select" name="date" id="filter-date">
+                                <option selected value="all">All the time</option>
+                                <option value="today">Today</option>
+                                <option value="last7">In the last 7 days</option>
+                                <option value="last30">In the last 30 days</option>
+                                <option value="last90">In the last 90 days</option>
+                                <option value="last6">In the 6 months</option>
+                            </select>
+                        </div>
 
-                    <div>
-                        <label class="form-label" for="filter-location">Filter by Location: </label>
-                        <select class="form-select" name="location" id="filter-location">
-                            <option selected value="all">All locations</option>
-                            <option value="">Library</option>
-                            <option value="">Main Door</option>
-                            <option value="">West Offices</option>
-                            <option value="">Parking Lot</option>
-                            <option value="">Cafeteria</option>
-                            <option value="">Gym</option>
-                            <option value="">Front Desk</option>
-                        </select>
-                    </div>
+                        <div class="form-group my-4">
+                            <label class="form-label">Filter by Time (in between):</label>
+                            <ul class="list-unstyled">
+                                <li>
+                                    <label class="form-label" for="filter-startTime">After</label>
+                                    <input class="form-control" type="time" id="filter-startTime" value="00:00">
+                                </li>
+                                <li>
+                                    <label class="form-label" for="filter-endTime">Before</label>
+                                    <input class="form-control" type="time" id="filter-endTime" value="23:59">
+                                </li>
+                            </ul>
+                        </div>
 
-                    <div class="form-group">
-                        <label class="form-label" for="filter-type">Filter by Type: </label>
-                        <select class="form-select" name="type" id="filter-type">
-                            <option selected value="all">All</option>
-                            <option value="guest">Guest</option>
-                            <option value="lost">Lost/Found</option>
-                            <option value="incident">Incident</option>
-                            <option value="damage">Damage</option>
-                            <option value="maintenance">Maintenance</option>
-                        </select>
-                    </div>
+                        <div class="form-group mt-3">
+                            <label class="form-label" for="filter-location">Filter by Location: </label>
+                            <select class="form-select" name="location" id="filter-location">
+                                <option selected value="all">All locations</option>
+                                <option value="">Library</option>
+                                <option value="">Main Door</option>
+                                <option value="">West Offices</option>
+                                <option value="">Parking Lot</option>
+                                <option value="">Cafeteria</option>
+                                <option value="">Gym</option>
+                                <option value="">Front Desk</option>
+                            </select>
+                        </div>
 
-                    <div class="form-group">
-                        <label class="form-label" for="filter-author">Created by: </label>
-                        <select class="form-select" name="author" id="filter-author">
-                            <option value="allanb">Allan B.</option>
-                            <option value="johnc">John C.</option>
-                            <option value="aliciap">Alicia P.</option>
-                            <option value="marcol">Marco L.</option>
-                            <option value="jessicam">Jessica M.</option>
-                            <option value="sarahk">Sarah K.</option>
-                            <option value="tomg">Tom G.</option>
-                        </select>
-                    </div>
-                    
-                    <button class="btn btn-success mt-3" type="submit">Filter logs</button>
-                </form>
+                        <div class="form-group mt-3">
+                            <label class="form-label" for="filter-type">Filter by Type: </label>
+                            <select class="form-select" name="type" id="filter-type">
+                                <option selected value="all">All</option>
+                                <option value="guest">Guest</option>
+                                <option value="lost">Lost/Found</option>
+                                <option value="incident">Incident</option>
+                                <option value="damage">Damage</option>
+                                <option value="maintenance">Maintenance</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group mt-3">
+                            <label class="form-label" for="filter-author">Created by: </label>
+                            <select class="form-select" name="author" id="filter-author">
+                                <option value="allanb">Allan B.</option>
+                                <option value="johnc">John C.</option>
+                                <option value="aliciap">Alicia P.</option>
+                                <option value="marcol">Marco L.</option>
+                                <option value="jessicam">Jessica M.</option>
+                                <option value="sarahk">Sarah K.</option>
+                                <option value="tomg">Tom G.</option>
+                            </select>
+                        </div>
+
+                        <button class="btn btn-success mt-3" type="submit">Filter logs</button>
+                    </form>
+                </div>
             </div>
+        </div>
+        <div class="d-flex flex-column justify-content-left w-100 mt-4 flex-grow-1">
+
+            <h2>Log entries</h2>
+
+            <!-- WEBSOCKET: the data from this table will be populated from the connection with the websocket. -->
+            <table>
+                <tr>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Location</th>
+                    <th>Type</th>
+                    <th>Notes</th>
+                    <th>Created by</th>
+                </tr>
+                <tr>
+                    <td>9/11/2024</td>
+                    <td>10:15 AM</td>
+                    <td>Library</td>
+                    <td>Guest</td>
+                    <td>John Doe entered without card id.</td>
+                    <td>Allan B.</td>
+                </tr>
+                <tr>
+                    <td>9/9/2024</td>
+                    <td>3:45 PM</td>
+                    <td>Main Door</td>
+                    <td>Lost/Found</td>
+                    <td>Jenny R. found a black leather wallet in the bathroom</td>
+                    <td>John C.</td>
+                </tr>
+                <tr>
+                    <td>8/2/2024</td>
+                    <td>2:30 PM</td>
+                    <td>West Offices</td>
+                    <td>Incident</td>
+                    <td>Someone was seen through the cameras stealing. Reported to police.</td>
+                    <td>Alicia P.</td>
+                </tr>
+                <tr>
+                    <td>7/19/2024</td>
+                    <td>8:20 AM</td>
+                    <td>Parking Lot</td>
+                    <td>Damage</td>
+                    <td>A car was hit in the lot with no note left behind.</td>
+                    <td>Marco L.</td>
+                </tr>
+                <tr>
+                    <td>6/25/2024</td>
+                    <td>1:00 PM</td>
+                    <td>Cafeteria</td>
+                    <td>Maintenance</td>
+                    <td>A broken chair was reported near table 5.</td>
+                    <td>Jessica M.</td>
+                </tr>
+                <tr>
+                    <td>5/10/2024</td>
+                    <td>4:45 PM</td>
+                    <td>Gym</td>
+                    <td>Incident</td>
+                    <td>A gym member reported a malfunctioning treadmill.</td>
+                    <td>Sarah K.</td>
+                </tr>
+                <tr>
+                    <td>4/1/2024</td>
+                    <td>9:30 AM</td>
+                    <td>Front Desk</td>
+                    <td>Guest</td>
+                    <td>A visitor arrived without prior registration.</td>
+                    <td>Tom G.</td>
+                </tr>
+            </table>
         </div>
     </div>
 
 
-    <div class="d-flex flex-column justify-content-left w-100 mt-4">
-        <h2>Log entries</h2>
-
-        <!-- WEBSOCKET: the data from this table will be populated from the connection with the websocket. -->
-        <table>
-            <tr>
-                <th>Date</th>
-                <th>Time</th>
-                <th>Location</th>
-                <th>Type</th>
-                <th>Notes</th>
-                <th>Created by</th>
-            </tr>
-            <tr>
-                <td>9/11/2024</td>
-                <td>10:15 AM</td>
-                <td>Library</td>
-                <td>Guest</td>
-                <td>John Doe entered without card id.</td>
-                <td>Allan B.</td>
-            </tr>
-            <tr>
-                <td>9/9/2024</td>
-                <td>3:45 PM</td>
-                <td>Main Door</td>
-                <td>Lost/Found</td>
-                <td>Jenny R. found a black leather wallet in the bathroom</td>
-                <td>John C.</td>
-            </tr>
-            <tr>
-                <td>8/2/2024</td>
-                <td>2:30 PM</td>
-                <td>West Offices</td>
-                <td>Incident</td>
-                <td>Someone was seen through the cameras stealing. Reported to police.</td>
-                <td>Alicia P.</td>
-            </tr>
-            <tr>
-                <td>7/19/2024</td>
-                <td>8:20 AM</td>
-                <td>Parking Lot</td>
-                <td>Damage</td>
-                <td>A car was hit in the lot with no note left behind.</td>
-                <td>Marco L.</td>
-            </tr>
-            <tr>
-                <td>6/25/2024</td>
-                <td>1:00 PM</td>
-                <td>Cafeteria</td>
-                <td>Maintenance</td>
-                <td>A broken chair was reported near table 5.</td>
-                <td>Jessica M.</td>
-            </tr>
-            <tr>
-                <td>5/10/2024</td>
-                <td>4:45 PM</td>
-                <td>Gym</td>
-                <td>Incident</td>
-                <td>A gym member reported a malfunctioning treadmill.</td>
-                <td>Sarah K.</td>
-            </tr>
-            <tr>
-                <td>4/1/2024</td>
-                <td>9:30 AM</td>
-                <td>Front Desk</td>
-                <td>Guest</td>
-                <td>A visitor arrived without prior registration.</td>
-                <td>Tom G.</td>
-            </tr>
-        </table>
-    </div>
 </main>
 
 
