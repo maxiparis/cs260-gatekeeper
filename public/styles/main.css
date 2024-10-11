@@ -9,13 +9,25 @@ html {
     width: 100%; /* Default width for small screens */
 }
 
+@media(max-width: 576px) {
+    .custom-card {
+        width: 100%;
+    }
+}
+
 @media (min-width: 576px) { /* sm breakpoint */
     html {
         font-size: 70%; /* Reduces the default font size from 16px to ~14.4px */
     }
+
+    .custom-card {
+        width: 65%;
+    }
+
     .login-form-width {
         width: 80%; /* Width for small screens and up */
     }
+
     .signup-form-width {
         width: 90%;
     }
@@ -25,6 +37,11 @@ html {
     html {
         font-size: 80%; /* Reduces the default font size from 16px to ~14.4px */
     }
+
+    .custom-card {
+        width: 50%;
+    }
+
     .login-form-width {
         width: 50%; /* Width for medium screens and up */
     }
