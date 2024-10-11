@@ -1,27 +1,43 @@
-.form-width {
+.login-form-width {
+    width: 100%; /* Default width for small screens */
+}
+
+.signup-form-width {
     width: 100%; /* Default width for small screens */
 }
 
 @media (min-width: 576px) { /* sm breakpoint */
-    .form-width {
+    .login-form-width {
         width: 80%; /* Width for small screens and up */
+    }
+    .signup-form-width {
+        width: 90%;
     }
 }
 
 @media (min-width: 768px) { /* md breakpoint */
-    .form-width {
+    .login-form-width {
         width: 50%; /* Width for medium screens and up */
+    }
+    .signup-form-width {
+        width: 60%;
     }
 }
 
 @media (min-width: 992px) { /* lg breakpoint */
-    .form-width {
+    .login-form-width {
         width: 35%; /* Width for large screens and up */
+    }
+    .signup-form-width {
+        width: 45%;
     }
 }
 
 @media (min-width: 1200px) { /* xlg breakpoint */
-    .form-width {
+    .login-form-width {
         width: 20%; /* Width for large screens and up */
+    }
+    .signup-form-width {
+        width: 30%;
     }
 }

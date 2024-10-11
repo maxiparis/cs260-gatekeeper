@@ -36,33 +36,34 @@
         </div>
     </header>
 
-    <main class="d-flex flex-grow-1 flex-column flex-wrap align-items-center justify-content-center px-5">
-        <h1>Create an account!</h1>
+    <main class="d-flex flex-column flex-wrap flex-grow-1 align-items-center justify-content-top px-5 pt-5">
+        <h1>Create an account</h1>
         <!-- placeholder for call to my backend to put the data in the database  -->
-        <form method="post" action=" ">
-            <div>
-                <label for="firstName">First Name</label>
-                <input type="text" id="firstName" placeholder="Enter your first name"/>
+
+        <form class="signup-form-width d-flex flex-column align-items-center justify-content-center mt-3">
+            <div class="form-group row w-100 gap-2">
+                <div class="col w-100 p-0">
+                    <label for="firstName">First Name</label>
+                    <input type="text" class="form-control" id="firstName" placeholder="Enter your first name"/>
+                </div>
+
+                <div class="col w-100 p-0">
+                    <label for="lastName">Last Name</label>
+                    <input type="text" class="form-control" id="lastName" placeholder="Enter your last name"/>
+                </div>
             </div>
-            <div>
-                <label for="lastName">Last Name</label>
-                <input type="text" id="lastName" placeholder="Enter your last name"/>
+            <div class="form-group my-3 w-100">
+                <label for="inputEmail1">Email address</label>
+                <input type="email" class="form-control w-100" id="inputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
             </div>
-            <div>
-                <label for="email">Email 📧</label>
-                <input type="text" id="email" placeholder="Enter your email"/>
+
+            <div class="form-group mb-3 w-100">
+                <label for="inputPassword1">Password</label>
+                <input type="password" class="form-control w-100" id="inputPassword1" placeholder="Password">
             </div>
-            <div>
-                <label for="password">Password 🔑</label>
-                <input type="password" id="password" placeholder="Create your password"/>
-            </div>
-            <button type="submit">Create account</button>
+            <button type="submit" class="btn btn-primary">Sign up</button>
         </form>
 
-        <section>
-            <h4>Already a member? <a href="login.html">Log in </a></h4>
-
-        </section>
     </main>
 
 
