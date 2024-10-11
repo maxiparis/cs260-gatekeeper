@@ -17,47 +17,49 @@
     />
 </head>
 
-<body class="bg-light">
+<body class="bg-light container d-flex flex-column min-vh-100">
+    <header
+        class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 px-2 mb-4 border-bottom bg-light">
+        <h1>GateKeeper</h1>
 
-<header
-    class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 px-5 px-md-10 mb-4 border-bottom bg-light">
-    <h1>GateKeeper</h1>
-    <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0 gap-4">
-        <li><a href="index.html" class="nav-link px-2 link-secondary">Home</a></li>
-        <li><a href="logbook.html" class="nav-link px-2 link-dark">LogBook</a></li>
-        <li><a href="addLog.html" class="nav-link px-2 link-dark">Add a new log</a></li>
-    </ul>
-
-    <div class="row-md-1 text-end">
-        <a href="login.html" class="btn btn-outline-primary me-2">Login</a>
-        <a href="signup.html" class="btn btn-primary">Sign-up</a>
-    </div>
-</header>
-
-<main>
-    <h1>Log in to your account</h1>
-    <!-- placeholder to call backend and authenticate the user -->
-    <form method="get" action="">
-        <div>
-            <label for="email">Email 📧</label>
-            <input type="text" id="email" placeholder="Enter your email"/>
+        <div class="d-flex ml-lg-2">
+            <ul class="nav d-flex mb-2 justify-content-center mb-md-0 gap-lg-4 gap-md-3 gap-sm-1">
+                <li><a href="index.html" class="nav-link px-2 link-secondary">Home</a></li>
+                <li><a href="logbook.html" class="nav-link px-2 link-dark">LogBook</a></li>
+                <li><a href="addLog.html" class="nav-link px-2 link-dark">Add a new log</a></li>
+            </ul>
         </div>
-        <div>
-            <label for="password">Password 🔑</label>
-            <input type="password" id="password" placeholder="Enter your password"/>
+
+        <div class="d-flex justify-content-center text-end">
+            <a href="login.html" class="btn btn-outline-primary me-2">Login</a>
+            <a href="signup.html" class="btn btn-primary">Sign-up</a>
         </div>
-        <button type="submit">Login</button>
-    </form>
+    </header>
 
-    <section>
-        <h4>Haven't joined yet? <a href="signup.html">Sign up today</a></h4>
-    </section>
-</main>
+    <main class="d-flex flex-column flex-wrap flex-grow-1 align-items-center justify-content-center px-5">
+        <h1>Log in to your account</h1>
+        <!-- placeholder to call backend and authenticate the user -->
+        <form method="get" action="">
+            <div>
+                <label for="email">Email 📧</label>
+                <input type="text" id="email" placeholder="Enter your email"/>
+            </div>
+            <div>
+                <label for="password">Password 🔑</label>
+                <input type="password" id="password" placeholder="Enter your password"/>
+            </div>
+            <button type="submit">Login</button>
+        </form>
 
-<footer>
-    <hr>
-    <span>Maximiliano Paris | BYU CS 260 | <a href="https://github.com/maxiparis/cs260-gatekeeper">GitHub</a></span>
-</footer>
+        <section>
+            <h4>Haven't joined yet? <a href="signup.html">Sign up today</a></h4>
+        </section>
+    </main>
+
+    <footer>
+        <hr>
+        <span>Maximiliano Paris | BYU CS 260 | <a href="https://github.com/maxiparis/cs260-gatekeeper">GitHub</a></span>
+    </footer>
 
 </body>
 </html>
