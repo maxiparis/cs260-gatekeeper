@@ -1,6 +1,4 @@
-html {
-    font-size: 70%;
-}
+
 .login-form-width {
     width: 100%; /* Default width for small screens */
 }
@@ -10,6 +8,10 @@ html {
 }
 
 @media(max-width: 576px) {
+    html {
+        font-size: 80%;
+    }
+
     .custom-card {
         width: 100%;
     }
@@ -17,7 +19,7 @@ html {
 
 @media (min-width: 576px) { /* sm breakpoint */
     html {
-        font-size: 70%; /* Reduces the default font size from 16px to ~14.4px */
+        font-size: 80%; /* Reduces the default font size from 16px to ~14.4px */
     }
 
     .custom-card {
