@@ -40,6 +40,7 @@
 
             <!-- The date and the time will be populated from a call to a 3rd party API -->
             <h5>Thursday, September 12, 2024 - 11:52 am</h5>
+
             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle" viewBox="0 0 16 16">
                     <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
@@ -56,15 +57,69 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">Add a new log</h1>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        ...
+                        <form class="d-flex flex-column gap-3">
+                            <div class="form-group">
+                                <label for="date">When did this happen? </label>
+                                <input class="form-control" type="date" id="date">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="time">At what time? </label>
+                                <input class="form-control" type="time" id="time">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="location">Where did it happen? </label>
+                                <select class="form-select" name="location" id="location">
+                                    <option selected>Select an option</option>
+                                    <option value="library">Library</option>
+                                    <option value="main-door">Main Door</option>
+                                    <option value="west-offices">West Offices</option>
+                                    <option value="parking-lot">Parking Lot</option>
+                                    <option value="cafeteria">Cafeteria</option>
+                                    <option value="gym">Gym</option>
+                                    <option value="front-desk">Front Desk</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="type">Select a type </label>
+                                <select class="form-select" name="type" id="type">
+                                    <option selected>Select an option</option>
+                                    <option value="guest">Guest</option>
+                                    <option value="lost-found">Lost/Found</option>
+                                    <option value="incident">Incident</option>
+                                    <option value="damage">Damage</option>
+                                    <option value="maintenance">Maintenance</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="description">Describe the event </label>
+                                <textarea class="form-control" id="description"></textarea>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="author">Enter the author </label>
+                                <select class="form-control" name="author" id="author">
+                                    <option value="allan-b">Allan B.</option>
+                                    <option value="john-c">John C.</option>
+                                    <option value="alicia-p">Alicia P.</option>
+                                    <option value="marco-l">Marco L.</option>
+                                    <option value="jessica-m">Jessica M.</option>
+                                    <option value="sarah-k">Sarah K.</option>
+                                    <option value="tom-g">Tom G.</option>
+                                </select>
+                            </div>
+                        </form>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary">Save changes</button>
+                        <button type="button" class="btn btn-primary">Save log</button>
                     </div>
                 </div>
             </div>
