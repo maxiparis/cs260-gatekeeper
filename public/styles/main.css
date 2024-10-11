@@ -1,3 +1,6 @@
+html {
+    font-size: 60%; /* Reduces the default font size from 16px to ~14.4px */
+}
 .login-form-width {
     width: 100%; /* Default width for small screens */
 }
@@ -7,6 +10,9 @@
 }
 
 @media (min-width: 576px) { /* sm breakpoint */
+    html {
+        font-size: 70%; /* Reduces the default font size from 16px to ~14.4px */
+    }
     .login-form-width {
         width: 80%; /* Width for small screens and up */
     }
@@ -16,6 +22,9 @@
 }
 
 @media (min-width: 768px) { /* md breakpoint */
+    html {
+        font-size: 80%; /* Reduces the default font size from 16px to ~14.4px */
+    }
     .login-form-width {
         width: 50%; /* Width for medium screens and up */
     }
@@ -25,6 +34,9 @@
 }
 
 @media (min-width: 992px) { /* lg breakpoint */
+    html {
+        font-size: 100%; /* Reduces the default font size from 16px to ~14.4px */
+    }
     .login-form-width {
         width: 35%; /* Width for large screens and up */
     }
