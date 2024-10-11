@@ -16,7 +16,7 @@
 <body class="bg-light container-fluid d-flex flex-column min-vh-100">
 
 <header
-    class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between justify-content-lg-around py-3 px-sm-1 px-2 mb-4 border-bottom bg-light">
+    class="d-flex flex-wrap align-items-center justify-content-between justify-content-lg-around py-3 px-sm-1 px-2 mb-4 border-bottom bg-light">
     <h1>GateKeeper</h1>
 
     <div class="d-flex ml-lg-2">
@@ -32,11 +32,11 @@
     </div>
 </header>
 
-<main class="container-fluid flex-grow-1 d-flex flex-column flex-wrap align-items-center justify-content-top px-5">
-    <div class="container d-flex flex-column flex-wrap align-items-center justify-content-top px-5">
+<main class="container-fluid flex-grow-1 d-flex flex-column flex-wrap align-items-center justify-content-top">
+    <div class="container d-flex flex-column flex-wrap align-items-center justify-content-top">
         <h1>Logbook</h1>
         <!-- Placeholder for the name that will be populated from the database -->
-        <div class="d-flex flex-1 flex-wrap align-items-center justify-content-between w-100 my-3">
+        <div class="d-flex flex-1 align-items-center justify-content-between w-100 my-3">
             <h5>Welcome, {user name}</h5>
 
             <!-- The date and the time will be populated from a call to a 3rd party API -->
@@ -137,7 +137,7 @@
     </div>
 
     <!-- Placeholder for a call to my backend -->
-    <div class="d-flex justify-content-between gap-5 w-100">
+    <div class="d-flex flex-column flex-sm-row justify-content-between gap-5 w-100">
         <div class="collapse collapse-horizontal justify-content-left" id="filterCollapse">
             <div class="card my-3">
                 <div class="card-body">
