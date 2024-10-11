@@ -24,6 +24,10 @@
         font-size: 80%;
     }
 
+    .custom-footer {
+        flex-direction: column;
+    }
+
     .custom-card {
         width: 100%;
     }
@@ -32,6 +36,10 @@
 @media (min-width: 576px) { /* sm breakpoint */
     html {
         font-size: 80%; /* Reduces the default font size from 16px to ~14.4px */
+    }
+
+    .custom-footer {
+        flex-direction: row;
     }
 
     .custom-card {
