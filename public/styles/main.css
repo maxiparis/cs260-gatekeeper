@@ -37,9 +37,12 @@
         flex-direction: row;
     }
 
-
     .login-form-width {
         width: 200px; /* Width for small screens and up */
+    }
+
+    .signup-form-width {
+        width: 300px;
     }
 }
 
@@ -73,10 +76,6 @@
     .login-form-width {
         width: 225px; /* Width for small screens and up */
     }
-
-    .signup-form-width {
-        width: 90%;
-    }
 }
 
 @media (min-width: 768px) { /* md breakpoint */
@@ -100,7 +99,7 @@
         width: 250px; /* Width for medium screens and up */
     }
     .signup-form-width {
-        width: 60%;
+        width: 330px;
     }
 }
 
@@ -112,15 +111,10 @@
         width: 300px; /* Width for large screens and up */
     }
     .signup-form-width {
-        width: 45%;
+        width: 370px;
     }
 }
 
 @media (min-width: 1200px) { /* xlg breakpoint */
-    .login-form-width {
-        width: 300px; /* Width for large screens and up */
-    }
-    .signup-form-width {
-        width: 35%;
-    }
+
 }
