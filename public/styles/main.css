@@ -36,6 +36,11 @@
     .custom-header {
         flex-direction: row;
     }
+
+
+    .login-form-width {
+        width: 200px; /* Width for small screens and up */
+    }
 }
 
 @media(max-width: 576px) {
@@ -66,7 +71,7 @@
     }
 
     .login-form-width {
-        width: 80%; /* Width for small screens and up */
+        width: 225px; /* Width for small screens and up */
     }
 
     .signup-form-width {
@@ -92,7 +97,7 @@
     }
 
     .login-form-width {
-        width: 50%; /* Width for medium screens and up */
+        width: 250px; /* Width for medium screens and up */
     }
     .signup-form-width {
         width: 60%;
@@ -104,7 +109,7 @@
         font-size: 100%; /* Reduces the default font size from 16px to ~14.4px */
     }
     .login-form-width {
-        width: 35%; /* Width for large screens and up */
+        width: 300px; /* Width for large screens and up */
     }
     .signup-form-width {
         width: 45%;
@@ -113,9 +118,9 @@
 
 @media (min-width: 1200px) { /* xlg breakpoint */
     .login-form-width {
-        width: 20%; /* Width for large screens and up */
+        width: 300px; /* Width for large screens and up */
     }
     .signup-form-width {
-        width: 30%;
+        width: 35%;
     }
 }
