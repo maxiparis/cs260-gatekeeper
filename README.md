@@ -47,4 +47,16 @@ For this deliverable I built out the structure of my application using HTML.
 - [x] **Text** - Each of the logbooks entries is represented in a table. Examples have been included to simulate data.
 - [x] **Images** - Included one image that adds style and context to the index page.
 - [x] **DB** - Input box and submit button for login and signup, as well as a new log will be saved to the database. Logs will be retrieved from the database as well as users. Other things to be retrieved from database are categories and maybe names of authors (each company would have a set of authorized users).  
-- [x] **WebSocket** - The records or rows in the logbook will all be populated directly from the WebSocket connection, allowing users to add, remove or edit logs and allowing everyone else in that company to see those changes without having to reload the page.   
+- [x] **WebSocket** - The records or rows in the logbook will all be populated directly from the WebSocket connection, allowing users to add, remove or edit logs and allowing everyone else in that company to see those changes without having to reload the page.
+
+## CSS Deliverable
+
+For this deliverable I properly styled the application into its final appearance using the Bootstrap framework.
+
+- [x] **Header, footer, and main content body**
+- [x] **Navigation elements** - I dropped the underlines and changed the color for anchor elements.
+- [x] **Responsive to window resizing** - My app looks great on all window sizes and devices. I made sure to let the user know that they need to rotate their phone in order to see the table in the Logbook page. 
+- [x] **Phone optimization** - I made sure every element of the app looks good on a big screen or in a small one. 
+- [x] **Application elements** - Used good contrast and whitespace.
+- [x] **Application text content** - Consistent and responsive fonts. 
+- [x] **Application images** - Styled my image in the home page and added rounded corners.
