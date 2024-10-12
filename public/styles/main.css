@@ -1,3 +1,4 @@
+
 .login-form-width {
     width: 100%; /* Default width for small screens */
 }
@@ -6,38 +7,114 @@
     width: 100%; /* Default width for small screens */
 }
 
-@media (min-width: 576px) { /* sm breakpoint */
-    .login-form-width {
-        width: 80%; /* Width for small screens and up */
+@media(orientation: portrait) and (max-width: 768px){     /* Styles for portrait mode */
+    .custom-table {
+        display: none;
     }
+
+    .rotate-message {
+        display: flex;
+    }
+}
+
+@media(orientation: landscape){     /* Styles for portrait mode */
+    .custom-table {
+        display: flex;
+    }
+    .rotate-message {
+        display: none;
+    }
+}
+
+@media(max-width:425px) {
+    .custom-header {
+        flex-direction: column;
+    }
+}
+
+@media(min-width:425px) {
+    .custom-header {
+        flex-direction: row;
+    }
+
+    .login-form-width {
+        width: 200px; /* Width for small screens and up */
+    }
+
     .signup-form-width {
-        width: 90%;
+        width: 300px;
+    }
+}
+
+@media(max-width: 576px) {
+    html {
+        font-size: 80%;
+    }
+
+    .custom-footer {
+        flex-direction: column;
+    }
+
+    .custom-card {
+        width: 100%;
+    }
+}
+
+@media (min-width: 576px) { /* sm breakpoint */
+    html {
+        font-size: 80%; /* Reduces the default font size from 16px to ~14.4px */
+    }
+
+    .custom-footer {
+        flex-direction: row;
+    }
+
+    .custom-card {
+        width: 65%;
+    }
+
+    .login-form-width {
+        width: 225px; /* Width for small screens and up */
     }
 }
 
 @media (min-width: 768px) { /* md breakpoint */
+    html {
+        font-size: 80%; /* Reduces the default font size from 16px to ~14.4px */
+    }
+
+    .custom-table {
+        display: flex;
+    }
+
+    .rotate-message {
+        display: none;
+    }
+
+    .custom-card {
+        width: 50%;
+    }
+
     .login-form-width {
-        width: 50%; /* Width for medium screens and up */
+        width: 250px; /* Width for medium screens and up */
     }
     .signup-form-width {
-        width: 60%;
+        width: 330px;
     }
 }
 
 @media (min-width: 992px) { /* lg breakpoint */
+    html {
+        font-size: 100%; /* Reduces the default font size from 16px to ~14.4px */
+    }
     .login-form-width {
-        width: 35%; /* Width for large screens and up */
+        width: 300px; /* Width for large screens and up */
     }
     .signup-form-width {
-        width: 45%;
+        width: 370px;
     }
 }
 
 @media (min-width: 1200px) { /* xlg breakpoint */
-    .login-form-width {
-        width: 20%; /* Width for large screens and up */
-    }
-    .signup-form-width {
-        width: 30%;
-    }
+
 }
