@@ -13,6 +13,7 @@ bower_components
 
 *.sublime*
 
+.idea
 psd
 thumb
 sketch
