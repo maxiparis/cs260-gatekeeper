@@ -254,9 +254,9 @@ h2 ~ p {
 }
 ```
 
-# Class selector
+# className selector
 
-The next selector we will use is the class selector. Remember that any element can have zero or more classifications applied to it. For example, our document has a class of `introduction` applied to the first paragraph, and a class of `summary` applied to the final paragraph of each section. If we want to bold the summary paragraphs we would supply the class name summary prefixed with a period (`.summary`).
+The next selector we will use is the className selector. Remember that any element can have zero or more classNameifications applied to it. For example, our document has a className of `introduction` applied to the first paragraph, and a className of `summary` applied to the final paragraph of each section. If we want to bold the summary paragraphs we would supply the className name summary prefixed with a period (`.summary`).
 
 ``` css
 .summary {
@@ -264,7 +264,7 @@ The next selector we will use is the class selector. Remember that any element c
 }
 ```
 
-You can also combine the element name and class selectors to select all paragraphs with a class of summary.
+You can also combine the element name and className selectors to select all paragraphs with a className of summary.
 
 ``` css
 p.summary {
@@ -321,7 +321,7 @@ h2 ~ p {
 }
 
 
-/* paragraph with summary class */
+/* paragraph with summary className */
 p.summary {
   font-weight: bold;
 }
@@ -340,15 +340,15 @@ section:hover {
   <p>welcome message<p>
   <section id="physics">
     <h2>Physics</h2>
-    <p class="introduction">Introduction</p>
+    <p className="introduction">Introduction</p>
     <p>Text</p>
-    <p class="summary">Summary</p>
+    <p className="summary">Summary</p>
   </section>
   <section id="chemistry">
     <h2>Chemistry</h2>
-    <p class="introduction">Introduction</p>
+    <p className="introduction">Introduction</p>
     <p>Text</p>
-    <p class="summary">Summary</p>
+    <p className="summary">Summary</p>
   </section>
 </body>
 
@@ -533,17 +533,17 @@ The CSS display property allows you to change how an HTML element is displayed b
 | `flex`   | Display this element's children in a flexible orientation.                                                                   |
 | `grid`   | Display this element's children in a grid orientation.                                                                       |
 ```html
-<div class="none">None</div>
-<div class="block">Block</div>
-<div class="inline">Inline1</div>
-<div class="inline">Inline2</div>
-<div class="flex">
+<div className="none">None</div>
+<div className="block">Block</div>
+<div className="inline">Inline1</div>
+<div className="inline">Inline2</div>
+<div className="flex">
   <div>FlexA</div>
   <div>FlexB</div>
   <div>FlexC</div>
   <div>FlexD</div>
 </div>
-<div class="grid">
+<div className="grid">
   <div>GridA</div>
   <div>GridB</div>
   <div>GridC</div>
@@ -613,9 +613,9 @@ see [documentation](https://developer.mozilla.org/en-US/docs/Web/CSS/gap)
 Tailwind takes a different approach than traditional CSS frameworks. Instead of using large, rich, CSS rulesets to compartmentalize styling and functionality, it uses smaller definitions that are applied specifically to individual HTML elements. This moves much of the CSS representation out of the CSS file and directly into the HTML.
 
 ```html
-<div class="pt-6 md:p-8 text-center md:text-left space-y-4">
-  <img class="w-24 h-24 md:w-48 md:h-auto md:rounded-none rounded-full mx-auto" src="profile.png" />
-  <p class="text-lg font-medium">“Tailwind CSS”</p>
+<div className="pt-6 md:p-8 text-center md:text-left space-y-4">
+  <img className="w-24 h-24 md:w-48 md:h-auto md:rounded-none rounded-full mx-auto" src="profile.png" />
+  <p className="text-lg font-medium">“Tailwind CSS”</p>
 </div>
 ```
 ## Bootstrap
@@ -695,12 +695,12 @@ If you are going to use Bootstrap components that require JavaScript (carousel, 
 # CSS Bootstrap
 
 # Align-items vs justify-content
-In Bootstrap and Flexbox, `align-items-center` and `justify-content-center` are two utility classes that control the alignment of flex items, but they operate along different axes and serve different purposes. Here's a detailed explanation of each:
+In Bootstrap and Flexbox, `align-items-center` and `justify-content-center` are two utility classNamees that control the alignment of flex items, but they operate along different axes and serve different purposes. Here's a detailed explanation of each:
 
 ## 1. **`align-items`**
 ### Def:
 - **Axis**: It operates along the **cross axis** (perpendicular to the main axis).
-- **Usage**: Use this class when you want to align items vertically within a flex container.
+- **Usage**: Use this className when you want to align items vertically within a flex container.
 
 ### Usage:
 - **`align-items-start`**: Aligns flex items to the start of the cross axis (top for row direction).
@@ -713,7 +713,7 @@ In Bootstrap and Flexbox, `align-items-center` and `justify-content-center` are 
 
 ### Def:
 - **Axis**: It operates along the **main axis** (the direction in which flex items are laid out, either row or column).
-- **Usage**: Use this class when you want to center items horizontally within a flex container.
+- **Usage**: Use this className when you want to center items horizontally within a flex container.
 
 ### Usage
 - **`justify-content-start`**: Aligns flex items to the start of the main axis (left for row direction).
@@ -733,7 +733,7 @@ In Bootstrap and Flexbox, `align-items-center` and `justify-content-center` are 
 
 # Padding
 
-To add padding to the left of a component in Bootstrap, you can use the padding utility classes provided by Bootstrap. The classes follow a specific naming convention: `p{side}-{breakpoint}-{size}`, where:
+To add padding to the left of a component in Bootstrap, you can use the padding utility classNamees provided by Bootstrap. The classNamees follow a specific naming convention: `p{side}-{breakpoint}-{size}`, where:
 
 - **`p`** stands for padding.
 - **`{side}`** can be:
@@ -751,26 +751,26 @@ To add padding to the left of a component in Bootstrap, you can use the padding 
 1. **Basic Left Padding**:
    To add a left padding of `3` to a component:
    ```html
-   <div class="ps-3">This div has padding on the left.</div>
+   <div className="ps-3">This div has padding on the left.</div>
    ```
 
 2. **Responsive Left Padding**:
    To add different left padding based on screen size, you can specify breakpoints:
    ```html
-   <div class="ps-2 ps-md-4">This div has padding on the left: 2 on small screens, 4 on medium screens and up.</div>
+   <div className="ps-2 ps-md-4">This div has padding on the left: 2 on small screens, 4 on medium screens and up.</div>
    ```
 
-### Explanation of Classes Used
+### Explanation of classNamees Used
 
-- **`ps-{size}`**: This class is specifically for padding left (`ps` stands for padding-start in Bootstrap 5, which aligns with left padding for left-to-right languages). It adjusts the left padding based on the specified size.
+- **`ps-{size}`**: This className is specifically for padding left (`ps` stands for padding-start in Bootstrap 5, which aligns with left padding for left-to-right languages). It adjusts the left padding based on the specified size.
 
 
 # Margin
-In Bootstrap, margin utility classes are used to control the space outside of an element. Margins create space between elements, helping to improve layout and spacing in your designs. Like padding, margin utility classes follow a specific naming convention that makes them easy to apply. Here’s a breakdown of how to use margin classes effectively.
+In Bootstrap, margin utility classNamees are used to control the space outside of an element. Margins create space between elements, helping to improve layout and spacing in your designs. Like padding, margin utility classNamees follow a specific naming convention that makes them easy to apply. Here’s a breakdown of how to use margin classNamees effectively.
 
-### 1. **Margin Class Naming Convention**
+### 1. **Margin className Naming Convention**
 
-The margin utility classes in Bootstrap use the following structure: `m{side}-{breakpoint}-{size}`, where:
+The margin utility classNamees in Bootstrap use the following structure: `m{side}-{breakpoint}-{size}`, where:
 
 - **`m`** stands for margin.
 - **`{side}`** can be:
@@ -783,13 +783,13 @@ The margin utility classes in Bootstrap use the following structure: `m{side}-{b
 - **`{breakpoint}`** is optional and specifies the screen size (e.g., `sm`, `md`, `lg`, `xl`, `xxl`). If omitted, the margin applies to all screen sizes.
 - **`{size}`** is a number from `0` to `5`, where `0` means no margin and `5` is the largest amount of margin.
 
-### 2. **Examples of Margin Classes**
+### 2. **Examples of Margin classNamees**
 
 #### **Basic Margin**
 
 To add a uniform margin to all sides of an element, you would use:
 ```html
-<div class="m-3">This div has a margin of 3 units on all sides.</div>
+<div className="m-3">This div has a margin of 3 units on all sides.</div>
 ```
 
 #### **Specific Side Margin**
@@ -797,22 +797,22 @@ To add a uniform margin to all sides of an element, you would use:
 To add margin to a specific side, use the appropriate letter:
 - **Top Margin**:
   ```html
-  <div class="mt-4">This div has a top margin of 4 units.</div>
+  <div className="mt-4">This div has a top margin of 4 units.</div>
   ```
 
 - **Bottom Margin**:
   ```html
-  <div class="mb-2">This div has a bottom margin of 2 units.</div>
+  <div className="mb-2">This div has a bottom margin of 2 units.</div>
   ```
 
 - **Left Margin**:
   ```html
-  <div class="ml-1">This div has a left margin of 1 unit.</div>
+  <div className="ml-1">This div has a left margin of 1 unit.</div>
   ```
 
 - **Right Margin**:
   ```html
-  <div class="mr-5">This div has a right margin of 5 units.</div>
+  <div className="mr-5">This div has a right margin of 5 units.</div>
   ```
 
 #### **Horizontal and Vertical Margin**
@@ -820,19 +820,19 @@ To add margin to a specific side, use the appropriate letter:
 To add margin to both sides or both top and bottom:
 - **Horizontal Margin**:
   ```html
-  <div class="mx-3">This div has a horizontal margin of 3 units.</div>
+  <div className="mx-3">This div has a horizontal margin of 3 units.</div>
   ```
 
 - **Vertical Margin**:
   ```html
-  <div class="my-2">This div has a vertical margin of 2 units.</div>
+  <div className="my-2">This div has a vertical margin of 2 units.</div>
   ```
 
 ### 3. **Responsive Margin**
 
 You can apply different margin sizes for different screen sizes using the breakpoint suffixes:
 ```html
-<div class="mt-2 mt-md-4">This div has a top margin of 2 units on small screens and 4 units on medium screens and up.</div>
+<div className="mt-2 mt-md-4">This div has a top margin of 2 units on small screens and 4 units on medium screens and up.</div>
 ```
 
 ### 5. **Negative Margins**
@@ -840,7 +840,7 @@ You can apply different margin sizes for different screen sizes using the breakp
 Bootstrap also allows you to use negative margins with the same syntax as positive margins. Negative margins can help adjust spacing when needed:
 - **Negative Top Margin**:
   ```html
-  <div class="mt-n2">This div has a negative top margin.</div>
+  <div className="mt-n2">This div has a negative top margin.</div>
   ```
 
 
@@ -852,19 +852,19 @@ Bootstrap also allows you to use negative margins with the same syntax as positi
 Use `.flex-grow-*` utilities to toggle a flex item’s ability to grow to fill available space. In the example below, the `.flex-grow-1` elements uses all available space it can, while allowing the remaining two flex items their necessary space.
 
 ```html
-<div class="d-flex bd-highlight">
-  <div class="p-2 flex-grow-1 bd-highlight">Flex item</div>
-  <div class="p-2 bd-highlight">Flex item</div>
-  <div class="p-2 bd-highlight">Third flex item</div>
+<div className="d-flex bd-highlight">
+  <div className="p-2 flex-grow-1 bd-highlight">Flex item</div>
+  <div className="p-2 bd-highlight">Flex item</div>
+  <div className="p-2 bd-highlight">Third flex item</div>
 </div>
 ```
 
 Use `.flex-shrink-*` utilities to toggle a flex item’s ability to shrink if necessary. In the example below, the second flex item with `.flex-shrink-1` is forced to wrap it’s contents to a new line, “shrinking” to allow more space for the previous flex item with `.w-100`.
 
 ```html
-<div class="d-flex bd-highlight">
-  <div class="p-2 w-100 bd-highlight">Flex item</div>
-  <div class="p-2 flex-shrink-1 bd-highlight">Flex item</div>
+<div className="d-flex bd-highlight">
+  <div className="p-2 w-100 bd-highlight">Flex item</div>
+  <div className="p-2 flex-shrink-1 bd-highlight">Flex item</div>
 </div>
 ```
 
@@ -920,10 +920,10 @@ The `flex-grow` property can take **any non-negative number** (including decimal
 Let's look at an example with different `flex-grow` values:
 
 ```html
-<div class="d-flex">
-  <div class="flex-grow-1 bg-primary text-white">Item 1 (flex-grow: 1)</div>
-  <div class="flex-grow-2 bg-success text-white">Item 2 (flex-grow: 2)</div>
-  <div class="flex-grow-3 bg-danger text-white">Item 3 (flex-grow: 3)</div>
+<div className="d-flex">
+  <div className="flex-grow-1 bg-primary text-white">Item 1 (flex-grow: 1)</div>
+  <div className="flex-grow-2 bg-success text-white">Item 2 (flex-grow: 2)</div>
+  <div className="flex-grow-3 bg-danger text-white">Item 3 (flex-grow: 3)</div>
 </div>
 ```
 
@@ -948,14 +948,14 @@ The total available space will be divided proportionally (1:2:3) among the items
 ## Simple Example
 ```html
 <form>
-	<div class="form-group">
-		<label class="form-label" ...>
-		<input class="form-control" ...>
+	<div className="form-group">
+		<label className="form-label" ...>
+		<input className="form-control" ...>
 	</div>
 
-	<div class="form-group">
-		<label class="form-label" ...>
-		<select class="form-select" ...>
+	<div className="form-group">
+		<label className="form-label" ...>
+		<select className="form-select" ...>
 	</div>
 </form>
 ```
@@ -965,22 +965,22 @@ The total available space will be divided proportionally (1:2:3) among the items
 ```html
 <form>
     <!-- Email Input Field -->
-    <div class="form-group mb-3">
-        <label for="email" class="form-label">Email address</label>
-        <input type="email" class="form-control" id="email" placeholder="Enter email" aria-describedby="emailHelp">
-        <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+    <div className="form-group mb-3">
+        <label for="email" className="form-label">Email address</label>
+        <input type="email" className="form-control" id="email" placeholder="Enter email" aria-describedby="emailHelp">
+        <small id="emailHelp" className="form-text text-muted">We'll never share your email with anyone else.</small>
     </div>
 
     <!-- Password Input Field -->
-    <div class="form-group mb-3">
-        <label for="password" class="form-label">Password</label>
-        <input type="password" class="form-control" id="password" placeholder="Enter password">
+    <div className="form-group mb-3">
+        <label for="password" className="form-label">Password</label>
+        <input type="password" className="form-control" id="password" placeholder="Enter password">
     </div>
 
     <!-- Select Dropdown Field -->
-    <div class="form-group mb-4">
-        <label for="options" class="form-label">Select an Option</label>
-        <select class="form-select" id="options">
+    <div className="form-group mb-4">
+        <label for="options" className="form-label">Select an Option</label>
+        <select className="form-select" id="options">
             <option value="" disabled selected>Select an option</option>
             <option value="1">Option 1</option>
             <option value="2">Option 2</option>
@@ -989,14 +989,14 @@ The total available space will be divided proportionally (1:2:3) among the items
     </div>
 
     <!-- Checkbox -->
-    <div class="form-check mb-3">
-        <input type="checkbox" class="form-check-input" id="termsCheck">
-        <label class="form-check-label" for="termsCheck">Agree to terms and conditions</label>
+    <div className="form-check mb-3">
+        <input type="checkbox" className="form-check-input" id="termsCheck">
+        <label className="form-check-label" for="termsCheck">Agree to terms and conditions</label>
     </div>
 
     <!-- Submit Button -->
-    <div class="d-grid">
-        <button type="submit" class="btn btn-primary">Submit</button>
+    <div className="d-grid">
+        <button type="submit" className="btn btn-primary">Submit</button>
     </div>
 </form>
 
@@ -1008,20 +1008,20 @@ The total available space will be divided proportionally (1:2:3) among the items
 ## How to
 
 ```html
-<div class="flex-column flex-sm-row">
+<div className="flex-column flex-sm-row">
 ```
 
-To create a layout that switches between **`flex-row`** and **`flex-column`** depending on screen size, you can use Bootstrap's responsive flex utilities. Bootstrap provides classes to manage flex-direction based on the screen size, such as `flex-row` for horizontal layout and `flex-column` for vertical layout. You can apply these responsively with breakpoints like `-sm`, `-md`, `-lg`, and `-xl`.
+To create a layout that switches between **`flex-row`** and **`flex-column`** depending on screen size, you can use Bootstrap's responsive flex utilities. Bootstrap provides classNamees to manage flex-direction based on the screen size, such as `flex-row` for horizontal layout and `flex-column` for vertical layout. You can apply these responsively with breakpoints like `-sm`, `-md`, `-lg`, and `-xl`.
 
 ## ChatGPT
 ### Basic Example: Switching Between Row and Column
 Let's say you want the layout to be a row on larger screens and a column on smaller screens. Here's how you can do it:
 
 ```html
-<div class="d-flex flex-column flex-md-row">
-  <div class="p-2">Item 1</div>
-  <div class="p-2">Item 2</div>
-  <div class="p-2">Item 3</div>
+<div className="d-flex flex-column flex-md-row">
+  <div className="p-2">Item 1</div>
+  <div className="p-2">Item 2</div>
+  <div className="p-2">Item 3</div>
 </div>
 ```
 
@@ -1031,7 +1031,7 @@ Let's say you want the layout to be a row on larger screens and a column on smal
 - **`flex-md-row`**: Once the screen reaches the **medium breakpoint** (`768px` and above), the layout will switch to a row (horizontal arrangement).
 
 ### Using Other Breakpoints:
-You can change the flex direction at different breakpoints depending on the size of the screen. Here are the available breakpoints for `flex-*` classes:
+You can change the flex direction at different breakpoints depending on the size of the screen. Here are the available breakpoints for `flex-*` classNamees:
 
 - **`flex-sm-*`**: Applies on small screens (≥576px).
 - **`flex-md-*`**: Applies on medium screens (≥768px).
@@ -1041,10 +1041,10 @@ You can change the flex direction at different breakpoints depending on the size
 ### Example with Different Breakpoints:
 
 ```html
-<div class="d-flex flex-column flex-sm-row flex-lg-column">
-  <div class="p-2">Item 1</div>
-  <div class="p-2">Item 2</div>
-  <div class="p-2">Item 3</div>
+<div className="d-flex flex-column flex-sm-row flex-lg-column">
+  <div className="p-2">Item 1</div>
+  <div className="p-2">Item 2</div>
+  <div className="p-2">Item 3</div>
 </div>
 ```
 
@@ -1065,10 +1065,10 @@ You can change the flex direction at different breakpoints depending on the size
   <title>Responsive Flexbox</title>
 </head>
 <body>
-  <div class="d-flex flex-column flex-md-row flex-lg-column justify-content-center align-items-center">
-    <div class="p-3 bg-primary text-white">Item 1</div>
-    <div class="p-3 bg-success text-white">Item 2</div>
-    <div class="p-3 bg-danger text-white">Item 3</div>
+  <div className="d-flex flex-column flex-md-row flex-lg-column justify-content-center align-items-center">
+    <div className="p-3 bg-primary text-white">Item 1</div>
+    <div className="p-3 bg-success text-white">Item 2</div>
+    <div className="p-3 bg-danger text-white">Item 3</div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
@@ -1207,12 +1207,12 @@ console.log(p);
 // OUTPUT: {name: 'Eich'}
 ```
 
-### Classes
+### classNamees
 
-You can use classes to define objects. Using a class clarifies the intent to create a **reusable** component rather than a one-off object. Class declarations look similar to declaring an object, but classes have an explicit constructor and assumed function declarations. The person object from above would look like the following when converted to a class.
+You can use classNamees to define objects. Using a className clarifies the intent to create a **reusable** component rather than a one-off object. className declarations look similar to declaring an object, but classNamees have an explicit constructor and assumed function declarations. The person object from above would look like the following when converted to a className.
 
 ```js
-class Person {
+className Person {
   constructor(name) {
     this.name = name;
   }
@@ -1227,11 +1227,11 @@ p.log();
 // OUTPUT: My name is Eich
 ```
 
-#### Private class properties
-You can make properties and functions of classes private by prefixing them with a `#`.
+#### Private className properties
+You can make properties and functions of classNamees private by prefixing them with a `#`.
 
 ```js
-class Person {
+className Person {
   #name;
 
   constructor(name) {
@@ -1241,7 +1241,7 @@ class Person {
 
 const p = new Person('Eich');
 p.#name = 'Lie';
-// OUTPUT: Uncaught SyntaxError: Private field '#name' must be declared in an enclosing class
+// OUTPUT: Uncaught SyntaxError: Private field '#name' must be declared in an enclosing className
 ```
 
 
@@ -1264,7 +1264,7 @@ functions are a type in JavaScript
 ```
 
 ### Chat
-In JavaScript, functions are considered **first-class citizens**, meaning they are treated as a **type of object**. This allows functions to be assigned to variables, passed as arguments to other functions, and returned from functions, much like any other data type (e.g., numbers, strings).
+In JavaScript, functions are considered **first-className citizens**, meaning they are treated as a **type of object**. This allows functions to be assigned to variables, passed as arguments to other functions, and returned from functions, much like any other data type (e.g., numbers, strings).
 
 Here's why functions are treated as a type in JavaScript:
 
@@ -1712,7 +1712,7 @@ Selects an element by its ID.
 Selects the first element that matches a CSS selector.
 
    ```javascript
-   const element = document.querySelector('.myClass');
+   const element = document.querySelector('.myclassName');
    ```
 
 Example:
@@ -1724,9 +1724,9 @@ Example:
     <title>Example</title>
 </head>
 <body>
-    <div class="myClass">Hello, World!</div>
+    <div className="myclassName">Hello, World!</div>
     <script>
-        const element = document.querySelector('.myClass');
+        const element = document.querySelector('.myclassName');
         element.textContent = 'Hello, JavaScript!'; // Changes the text inside the div
     </script>
 </body>
@@ -1757,13 +1757,13 @@ Appends a child element to a specified parent element.
 
    ```javascript
    const parent = document.getElementById('parent');
-	//<div class="parent">
+	//<div className="parent">
 	// ...
 	//</div>
 	
 
    parent.appendChild(newDiv);
-	//<div class="parent">
+	//<div className="parent">
 		// <div></div>
 	//</div>
    ```
@@ -1785,16 +1785,16 @@ Sets the value of an attribute on the specified element.
 
 ### Parameters
 
-1. **`name`**: A string that specifies the name of the attribute you want to set. This can be any valid HTML attribute (like `class`, `id`, `src`, `href`, etc.).
+1. **`name`**: A string that specifies the name of the attribute you want to set. This can be any valid HTML attribute (like `className`, `id`, `src`, `href`, etc.).
 
 2. **`value`**: A string that defines the value you want to assign to the specified attribute. If the attribute does not exist, it will be created.
 
 ### Example
    ```javascript
    //before: element = <h1>Title</h1>
-   element.setAttribute('class', 'newClass');
+   element.setAttribute('className', 'newclassName');
 
-	//after: element = <h1 class="newClass">Title</h1>
+	//after: element = <h1 className="newclassName">Title</h1>
    ```
 
 ### Better Example
@@ -1817,7 +1817,7 @@ Sets the value of an attribute on the specified element.
 Gets the value of an attribute from an element.
 
    ```javascript
-   const className = element.getAttribute('class');
+   const classNameName = element.getAttribute('className');
    ```
 
 ### Example:
@@ -1831,78 +1831,78 @@ Gets the value of an attribute from an element.
     </script>
 ```
 
-## **element.classList**
-The `classList` property is a convenient way to access and manipulate the list of classes on an HTML element. It provides a simple interface for adding, removing, and toggling classes without directly manipulating the `class` attribute as a string.
+## **element.classNameList**
+The `classNameList` property is a convenient way to access and manipulate the list of classNamees on an HTML element. It provides a simple interface for adding, removing, and toggling classNamees without directly manipulating the `className` attribute as a string.
 
-The `classList` property is a convenient way to access and manipulate the list of classes on an HTML element. It provides a simple interface for adding, removing, and toggling classes without directly manipulating the `class` attribute as a string.
+The `classNameList` property is a convenient way to access and manipulate the list of classNamees on an HTML element. It provides a simple interface for adding, removing, and toggling classNamees without directly manipulating the `className` attribute as a string.
 
-### How to Access `classList`
+### How to Access `classNameList`
 
-To access the `classList` of an element, you can use the following syntax:
+To access the `classNameList` of an element, you can use the following syntax:
 
 ```javascript
 const element = document.getElementById('myElement');
-const classList = element.classList;
+const classNameList = element.classNameList;
 ```
 
-### Methods Available on `classList`
+### Methods Available on `classNameList`
 
-Here are some commonly used methods of `classList`:
+Here are some commonly used methods of `classNameList`:
 
-1. **`add(className)`**: Adds one or more classes to the element.
+1. **`add(classNameName)`**: Adds one or more classNamees to the element.
 
    ```javascript
-   element.classList.add('newClass');
+   element.classNameList.add('newclassName');
    ```
 
-2. **`remove(className)`**: Removes one or more classes from the element.
+2. **`remove(classNameName)`**: Removes one or more classNamees from the element.
 
    ```javascript
-   element.classList.remove('oldClass');
+   element.classNameList.remove('oldclassName');
    ```
 
-3. **`toggle(className)`**: Toggles a class; if the class exists, it removes it, and if it doesn't, it adds it.
+3. **`toggle(classNameName)`**: Toggles a className; if the className exists, it removes it, and if it doesn't, it adds it.
 
    ```javascript
-   element.classList.toggle('active');
+   element.classNameList.toggle('active');
    ```
 
-4. **`contains(className)`**: Checks if the element has a specific class and returns `true` or `false`.
+4. **`contains(classNameName)`**: Checks if the element has a specific className and returns `true` or `false`.
 
    ```javascript
-   const hasClass = element.classList.contains('myClass');
+   const hasclassName = element.classNameList.contains('myclassName');
    ```
 
-5. **`replace(oldClass, newClass)`**: Replaces an existing class with a new one.
+5. **`replace(oldclassName, newclassName)`**: Replaces an existing className with a new one.
 
    ```javascript
-   element.classList.replace('oldClass', 'newClass');
+   element.classNameList.replace('oldclassName', 'newclassName');
    ```
 
 ### Example
 
-Here’s a simple example demonstrating how to use `classList`:
+Here’s a simple example demonstrating how to use `classNameList`:
 
 ```html
 <!DOCTYPE html>
 <html>
 <head>
-    <title>classList Example</title>
+    <title>classNameList Example</title>
 </head>
 <body>
-    <div id="myElement" class="box active">Hello World!</div>
-    <button id="toggleButton">Toggle Class</button>
+    <div id="myElement" className="box active">Hello World!</div>
+    <button id="toggleButton">Toggle className</button>
     <script>
         const element = document.getElementById('myElement');
         const button = document.getElementById('toggleButton');
 
-        // Log the current classList
-        console.log('Initial classList:', element.classList);
+        // Log the current classNameList
+        console.log('Initial classNameList:', element.classNameList);
 
-        // Toggle the 'active' class on button click
+        // Toggle the 'active' className on button click
         button.addEventListener('click', () => {
-            element.classList.toggle('active');
-            console.log('Updated classList:', element.classList);
+            element.classNameList.toggle('active');
+            console.log('Updated classNameList:', element.classNameList);
         });
     </script>
 </body>
@@ -1911,9 +1911,9 @@ Here’s a simple example demonstrating how to use `classList`:
 
 ### In this example:
 
-1. **Initial Class List**: When the page loads, the initial class list of the `<div>` is logged to the console.
+1. **Initial className List**: When the page loads, the initial className list of the `<div>` is logged to the console.
 
-2. **Toggle Class**: When the button is clicked, the `active` class is toggled on the `<div>`, and the updated class list is logged.
+2. **Toggle className**: When the button is clicked, the `active` className is toggled on the `<div>`, and the updated className list is logged.
 
 ## Manipulating HTML
 
@@ -2132,7 +2132,7 @@ Without `async`/`await`, you'd have to handle promises with `.then()`, which can
 
 In short, `async`/`await` makes working with asynchronous code in JavaScript much easier to read and understand!
 
-### Example from class:
+### Example from className:
 
 **then/catch chain version**
 ```js
