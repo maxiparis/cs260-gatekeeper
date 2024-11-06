@@ -1,12 +1,12 @@
 import React from 'react';
 
-export function Logbook() {
+export function Logbook({ username }) {
     return (
         <main className="container-fluid flex-grow-1 d-flex flex-column flex-wrap align-items-center justify-content-top">
             <div className="container d-flex flex-column flex-wrap align-items-center justify-content-top">
                 <h1>Logbook</h1>
                 <div className="d-flex flex-1 flex-column flex-md-row align-items-center justify-content-between w-100 my-3">
-                    <h5>Welcome, user name</h5>
+                    <h5>Welcome {username}</h5>
 
                     <h5>Thursday, September 12, 2024 - 11:52 am</h5>
 

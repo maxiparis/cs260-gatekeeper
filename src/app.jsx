@@ -11,7 +11,7 @@ import {AuthState} from "./login/authState";
 export default function App() {
 
     // const [username, setUsername] = React.useState(localStorage.getItem("username") || "");
-    const [username, setUsername] = React.useState("Alexander");
+    const [username, setUsername] = React.useState("TESTY");
     const currentAuthState = username ? AuthState.Authenticated : AuthState.Unauthenticated
     const [authState, setAuthState] = React.useState(currentAuthState);
 
@@ -25,22 +25,28 @@ export default function App() {
 
                     <div className="d-flex ml-lg-2">
                         <ul className="nav d-flex mb-2 justify-content-center mb-md-0 gap-lg-4 gap-md-3 gap-sm-1">
-
                             <NavLink className='nav-link px-2 link-dark' to='/'>Home</NavLink>
-                            <NavLink className='nav-link px-2 link-secondary' to='logbook'>Logbook</NavLink>
+                            { authState === AuthState.Authenticated &&
+                                <NavLink className='nav-link px-2 link-secondary' to='logbook'>Logbook</NavLink>
+                            }
                      </ul>
                     </div>
 
                     <div className="d-flex justify-content-center text-end">
-                        <NavLink className='btn btn-outline-primary me-2' to='login'>Login</NavLink>
-                        <NavLink className='btn btn-primary' to='signup'>Sign-up</NavLink>
+                        <NavLink className='btn btn-outline-primary me-2' to='login'>
+                            {authState === AuthState.Authenticated ? "Account" : "Login"}
+                        </NavLink>
+
+                        { authState !== AuthState.Authenticated && (
+                            <NavLink className='btn btn-primary' to='signup'>Sign-up</NavLink>
+                        )}
 
                     </div>
                 </header>
 
                 <Routes>
                     <Route path="/" element={<Home />} />
-                    <Route path="/logbook" element={<Logbook />} />
+                    <Route path="/logbook" element={<Logbook username={username} />} />
                     <Route path="/login" element=
                         {<Login
                             username={username}
