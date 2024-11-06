@@ -11,7 +11,7 @@ import {AuthState} from "./login/authState";
 export default function App() {
 
     // const [username, setUsername] = React.useState(localStorage.getItem("username") || "");
-    const [username, setUsername] = React.useState("TESTY");
+    const [username, setUsername] = React.useState("Alexander");
     const currentAuthState = username ? AuthState.Authenticated : AuthState.Unauthenticated
     const [authState, setAuthState] = React.useState(currentAuthState);
 
@@ -52,10 +52,11 @@ export default function App() {
                             username={username}
                             authState={authState}
                             onAuthStateChange={(username, authState) => {
-                                setUsername(username);
                                 setAuthState(authState);
+                                setUsername(username);
                             }}
-                        />} />
+                        />}
+                    />
                     <Route path="/signup" element={<Signup />} />
                     <Route path="/*" element={<NotFound />} />
                 </Routes>
