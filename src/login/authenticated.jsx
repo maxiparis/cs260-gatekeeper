@@ -13,25 +13,21 @@ export default function Authenticated({ username, onLogout }) {
 
     return (
         <div className="d-flex flex-column gap-5">
-            <Row>
-                <h1>Welcome, {username}</h1>
-            </Row>
-            <Row className="gap-3">
-                <Row>
-                    <Button onClick={() => navigate('/logbook')}>
-                        Go to Logbook
-                    </Button>
-                </Row>
-                <Row>
-                    <Button
-                        variant="outline-danger"
-                        onClick={() => handleLogout()}
-                    >
-                        Logout
-                    </Button>
+            <h1>Welcome, {username}</h1>
 
-                </Row>
-            </Row>
+            <div className="d-flex flex-column gap-4" >
+                <Button onClick={() => navigate('/logbook')}>
+                    Go to Logbook
+                </Button>
+
+                <Button
+                    variant="outline-danger"
+                    onClick={() => handleLogout()}
+                >
+                    Logout
+                </Button>
+            </div>
+
         </div>
     );
 }
