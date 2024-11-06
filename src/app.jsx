@@ -6,8 +6,15 @@ import { Home } from './home/home';
 import { Login } from './login/login';
 import { Logbook } from "./logbook/logbook";
 import { Signup } from "./signup/signup";
+import {AuthState} from "./login/authState";
 
 export default function App() {
+
+    // const [username, setUsername] = React.useState(localStorage.getItem("username") || "");
+    const [username, setUsername] = React.useState("Alexander");
+    const currentAuthState = username ? AuthState.Authenticated : AuthState.Unauthenticated
+    const [authState, setAuthState] = React.useState(currentAuthState);
+
     return (
         <BrowserRouter>
             <div className="body bg-light container-fluid d-flex flex-column min-vh-100">
@@ -34,7 +41,15 @@ export default function App() {
                 <Routes>
                     <Route path="/" element={<Home />} />
                     <Route path="/logbook" element={<Logbook />} />
-                    <Route path="/login" element={<Login />} />
+                    <Route path="/login" element=
+                        {<Login
+                            username={username}
+                            authState={authState}
+                            onAuthStateChange={(username, authState) => {
+                                setUsername(username);
+                                setAuthState(authState);
+                            }}
+                        />} />
                     <Route path="/signup" element={<Signup />} />
                     <Route path="/*" element={<NotFound />} />
                 </Routes>
