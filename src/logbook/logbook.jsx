@@ -1,6 +1,45 @@
 import React from 'react';
+import {useEffect} from "react";
+import {FIRSTNAME_KEY, LOGBOOK_ENTRIES_KEY} from "../constants";
 
 export function Logbook({ username }) {
+    const [entries, setEntries] = React.useState([]);
+    const emptyRow = (
+        <tr>
+            <td
+                colSpan={6}
+                className="text-center"
+            >
+                There are no log entries.
+            </td>
+        </tr>
+    )
+
+    useEffect(() => { loadEntries() }, []) //will run everytime this is rendered when loaded
+
+    //TODO: useEffect to retrieve as soon as we start
+    function loadEntries() {
+        const loadedEntries = getEntries()
+
+        //todo: use localStorage?
+        setEntries(loadedEntries);
+    }
+
+    function getEntries() {
+        //this simulates a call to the backend api and receiving as answer an empty array (there are not entries)
+        //for now I will only use the localStorage
+        const loadedEntries = localStorage.getItem(LOGBOOK_ENTRIES_KEY)
+        if (loadedEntries) {
+            return JSON.parse(loadedEntries)
+        } else {
+            return []
+        }
+    }
+
+    function formattedRows() {
+        //TODO:
+    }
+
     return (
         <main className="container-fluid flex-grow-1 d-flex flex-column flex-wrap align-items-center justify-content-top">
             <div className="container d-flex flex-column flex-wrap align-items-center justify-content-top">
@@ -213,62 +252,13 @@ export function Logbook({ username }) {
                         </thead>
 
                         <tbody>
-                        <tr>
-                            <td>9/11/2024</td>
-                            <td>10:15 AM</td>
-                            <td>Library</td>
-                            <td>Guest</td>
-                            <td>John Doe entered without card id.</td>
-                            <td>Allan B.</td>
-                        </tr>
-                        <tr>
-                            <td>9/9/2024</td>
-                            <td>3:45 PM</td>
-                            <td>Main Door</td>
-                            <td>Lost/Found</td>
-                            <td>Jenny R. found a black leather wallet in the bathroom</td>
-                            <td>John C.</td>
-                        </tr>
-                        <tr>
-                            <td>8/2/2024</td>
-                            <td>2:30 PM</td>
-                            <td>West Offices</td>
-                            <td>Incident</td>
-                            <td>Someone was seen through the cameras stealing. Reported to police.</td>
-                            <td>Alicia P.</td>
-                        </tr>
-                        <tr>
-                            <td>7/19/2024</td>
-                            <td>8:20 AM</td>
-                            <td>Parking Lot</td>
-                            <td>Damage</td>
-                            <td>A car was hit in the lot with no note left behind.</td>
-                            <td>Marco L.</td>
-                        </tr>
-                        <tr>
-                            <td>6/25/2024</td>
-                            <td>1:00 PM</td>
-                            <td>Cafeteria</td>
-                            <td>Maintenance</td>
-                            <td>A broken chair was reported near table 5.</td>
-                            <td>Jessica M.</td>
-                        </tr>
-                        <tr>
-                            <td>5/10/2024</td>
-                            <td>4:45 PM</td>
-                            <td>Gym</td>
-                            <td>Incident</td>
-                            <td>A gym member reported a malfunctioning treadmill.</td>
-                            <td>Sarah K.</td>
-                        </tr>
-                        <tr>
-                            <td>4/1/2024</td>
-                            <td>9:30 AM</td>
-                            <td>Front Desk</td>
-                            <td>Guest</td>
-                            <td>A visitor arrived without prior registration.</td>
-                            <td>Tom G.</td>
-                        </tr>
+                        {entries.length === 0 ? (
+                            emptyRow
+                        ) : (
+                            formattedRows()
+                        )
+                        }
+
                         </tbody>
 
                     </table>

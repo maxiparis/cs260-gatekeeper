@@ -52,8 +52,6 @@ export function Signup({ onSignUp }) {
         }
     }
 
-
-
     return (
         <main
             className="container-fluid d-flex flex-column flex-wrap flex-grow-1 align-items-center justify-content-top px-2 px-sm-5 pt-5">
