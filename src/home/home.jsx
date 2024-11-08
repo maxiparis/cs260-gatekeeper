@@ -13,7 +13,7 @@ export function Home() {
                     </div>
 
                     <div className="d-flex flex-column">
-                        <img src="../../public/security.jpg" alt="A security guard" className="img-fluid rounded-4"/>
+                        <img src="/security.jpg" alt="A security guard" className="img-fluid rounded-4"/>
                     </div>
                 </div>
             </section>

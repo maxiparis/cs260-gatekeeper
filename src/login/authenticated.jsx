@@ -12,10 +12,12 @@ export default function Authenticated({ username, onLogout }) {
     }
 
     return (
-        <div className="d-flex flex-column gap-5">
-            <h1>Welcome, {username}</h1>
+        <>
+            <div className="d-flex flex-column mb-5">
+                <h1>Welcome, {username}</h1>
+            </div>
 
-            <div className="d-flex flex-column gap-4" >
+            <div className="signup-form-width d-flex flex-column gap-4" >
                 <Button onClick={() => navigate('/logbook')}>
                     Go to Logbook
                 </Button>
@@ -27,7 +29,7 @@ export default function Authenticated({ username, onLogout }) {
                     Logout
                 </Button>
             </div>
+        </>
 
-        </div>
     );
 }
