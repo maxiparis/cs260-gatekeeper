@@ -1,6 +1,35 @@
 import React from 'react';
+import {Button} from "react-bootstrap";
 
 export function Signup() {
+    const [firstName, setFirstName] = React.useState('');
+    const [lastName, setLastName] = React.useState('');
+    const [username, setUsername] = React.useState('');
+    const [password, setPassword] = React.useState('');
+    const [error, setError] = React.useState("");
+    const [nameError, setNameError] = React.useState("");
+
+    function handleLogin() {
+
+    }
+
+    function containsNonLetters(str) {
+        if (str === "") {
+            return false
+        }
+        return /[^a-zA-Z]/.test(str);
+    }
+
+    function validateName(name, isFirstName) {
+        isFirstName ? setFirstName(name) : setLastName(name)
+
+        if (containsNonLetters(name) || containsNonLetters(isFirstName ? lastName : firstName)) {
+            setNameError("Names can only contain letters.");
+        } else {
+            setNameError("");
+        }
+    }
+
     return (
         <main
             className="container-fluid d-flex flex-column flex-wrap flex-grow-1 align-items-center justify-content-top px-2 px-sm-5 pt-5">
@@ -10,26 +39,66 @@ export function Signup() {
                 <div className="form-group row w-100 gap-2">
                     <div className="col w-100 p-0">
                         <label htmlFor="firstName">First Name</label>
-                        <input type="text" className="form-control" id="firstName" placeholder="Enter your first name"/>
+                        <input
+                            type="text"
+                            className="form-control"
+                            id="firstName"
+                            placeholder="Enter your first name"
+                            onChange={(e) => validateName(e.target.value, true)}
+                        />
                     </div>
 
                     <div className="col w-100 p-0">
                         <label htmlFor="lastName">Last Name</label>
-                        <input type="text" className="form-control" id="lastName" placeholder="Enter your last name"/>
+                        <input
+                            type="text"
+                            className="form-control"
+                            id="lastName"
+                            placeholder="Enter your last name"
+                            onChange={(e) => validateName(e.target.value, false)}
+                        />
                     </div>
+
+                    { nameError &&
+                        <p className="text-danger">{nameError}</p>
+                    }
+
                 </div>
                 <div className="form-group my-3 w-100">
-                    <label htmlFor="inputEmail1">Email address</label>
-                    <input type="email" className="form-control w-100" id="inputEmail1" aria-describedby="emailHelp"
-                           placeholder="Enter email"/>
+                    <label htmlFor="inputUsername1">Username</label>
+                    <input
+                        type="text"
+                        className="form-control w-100"
+                        id="inputUsername1"
+                        placeholder="Create a username"
+                        onChange={(e) => setUsername(e.target.value)}
+                    />
                 </div>
 
                 <div className="form-group mb-3 w-100">
                     <label htmlFor="inputPassword1">Password</label>
-                    <input type="password" className="form-control w-100" id="inputPassword1" placeholder="Password"/>
+                    <input
+                        type="password"
+                        className="form-control w-100"
+                        id="inputPassword1"
+                        placeholder="Create a password"
+                        onChange={(e) => setPassword(e.target.value)}
+                    />
                 </div>
-                <button type="submit" className="btn btn-primary w-100">Sign up</button>
             </form>
+
+            <Button
+                variant="primary"
+                disabled={ !firstName || !lastName || !username || !password || error || nameError}
+                className="signup-form-width"
+                onClick={() => { handleLogin() }}
+            >
+                Sign up
+            </Button>
+
+            { error &&
+                <h5 className="text-danger m-3 ">{error}</h5>
+            }
 
         </main>
     );

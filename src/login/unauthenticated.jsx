@@ -55,12 +55,10 @@ export default function Unauthenticated({ onAuthenticate }) {
                 </div>
             </form>
 
-
-
             <button
                 type="submit"
                 className="login-form-width btn btn-primary"
-                disabled={ usernameLabel === "" || passwordLabel === "" }
+                disabled={ !usernameLabel || !passwordLabel  }
                 onClick={ () => handleAuthentication() }
             >
                 Login
