@@ -18,7 +18,12 @@ export function Login({username, authState, onAuthStateChange}) {
             }
 
             {authState === AuthState.Unauthenticated && (
-                <Unauthenticated />
+                <Unauthenticated
+                    onAuthenticate={(username, authState) => {
+                        localStorage.setItem("username", username)
+                        onAuthStateChange(username, authState)
+                    }}
+                />
             )}
         </main>
     );

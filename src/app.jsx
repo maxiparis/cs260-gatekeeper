@@ -10,8 +10,8 @@ import {AuthState} from "./login/authState";
 
 export default function App() {
 
-    // const [username, setUsername] = React.useState(localStorage.getItem("username") || "");
-    const [username, setUsername] = React.useState("Alexander Alfdlkajsdf");
+    const [username, setUsername] = React.useState(localStorage.getItem("username") || "");
+    // const [username, setUsername] = React.useState("");
     const currentAuthState = username ? AuthState.Authenticated : AuthState.Unauthenticated
     const [authState, setAuthState] = React.useState(currentAuthState);
 
