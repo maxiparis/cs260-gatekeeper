@@ -17,6 +17,11 @@ export function Logbook({ username }) {
     const [notes, setNotes] = React.useState("");
     const [author, setAuthor] = React.useState("");
 
+    // Will run everytime this is rendered when loaded
+    useEffect(() => {
+        loadEntries()
+    }, [])
+
     // Watch for changes to any of the states
     useEffect(() => {
         console.log("\n Updated values:");
@@ -27,6 +32,11 @@ export function Logbook({ username }) {
         console.log("Notes:", notes);
         console.log("Author:", author);
     }, [date, time, location, type, notes, author]); // Dependency array that listens for updates to any of these states
+
+    //whenever the entries change, we want to update the backend
+    useEffect(() => {
+        localStorage.setItem(LOGBOOK_ENTRIES_KEY, JSON.stringify(entries));
+    }, [entries]);
 
 
     const emptyRow = (
@@ -40,9 +50,6 @@ export function Logbook({ username }) {
         </tr>
     )
 
-    useEffect(() => {
-        loadEntries()
-    }, []) //will run everytime this is rendered when loaded
 
     //TODO: useEffect to retrieve as soon as we start
     function loadEntries() {
@@ -101,6 +108,16 @@ export function Logbook({ username }) {
         return formattedRows
     }
 
+    function clearAddLogFields() {
+        setDate("")
+        setTime("")
+        setLocation("")
+        setType("")
+        setNotes("")
+        setAuthor("")
+
+    }
+
     function addNewLog() {
         const entry = {
             date: date,
@@ -113,9 +130,16 @@ export function Logbook({ username }) {
 
         entries.push(entry)
         setEntries(entries)
-        setShowAddModal(false)
+        localStorage.setItem(LOGBOOK_ENTRIES_KEY, JSON.stringify(entries))
 
-        // localStorage.setItem(LOGBOOK_ENTRIES_KEY, JSON.stringify(entry))
+        clearAddLogFields()
+
+        setShowAddModal(false)
+    }
+
+    function handlingOpeningModal() {
+        clearAddLogFields()
+        setShowAddModal(true)
     }
 
     return (
@@ -127,7 +151,7 @@ export function Logbook({ username }) {
 
                     <h5>Thursday, September 12, 2024 - 11:52 am</h5>
 
-                    <button type="button" className="btn btn-primary" onClick={ () => setShowAddModal(true) }>
+                    <button type="button" className="btn btn-primary" onClick={ () => handlingOpeningModal() }>
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="m-1 bi bi-plus-circle"
                              viewBox="0 0 16 16">
                             <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
@@ -241,7 +265,7 @@ export function Logbook({ username }) {
                     </button>
                 </Modal.Footer>
             </Modal>
-            
+
 
             <div className="rotate-message">
                 <div className="rotate-message card mt-5">
