@@ -1,10 +1,13 @@
 import React from 'react';
 import {useEffect} from "react";
 import {FIRSTNAME_KEY, LOGBOOK_ENTRIES_KEY, testLogbookEntries} from "../constants";
-import {Button, Col, Row} from "react-bootstrap";
+import {Button, Col, Modal, Row} from "react-bootstrap";
+import modal from "bootstrap/js/src/modal";
 
 export function Logbook({ username }) {
     const [entries, setEntries] = React.useState([]);
+    const [showAddModal, setShowAddModal] = React.useState(false);
+
 
     //Fields for new entry modal
     const [date, setDate] = React.useState("");
@@ -13,6 +16,18 @@ export function Logbook({ username }) {
     const [type, setType] = React.useState("");
     const [notes, setNotes] = React.useState("");
     const [author, setAuthor] = React.useState("");
+
+    // Watch for changes to any of the states
+    useEffect(() => {
+        console.log("\n Updated values:");
+        console.log("Date:", date);
+        console.log("Time:", time);
+        console.log("Location:", location);
+        console.log("Type:", type);
+        console.log("Notes:", notes);
+        console.log("Author:", author);
+    }, [date, time, location, type, notes, author]); // Dependency array that listens for updates to any of these states
+
 
     const emptyRow = (
         <tr>
@@ -54,32 +69,53 @@ export function Logbook({ username }) {
 
     function formattedRows() {
         const formattedRows = []
-        entries.forEach(entry => {
-            const hasRequiredFields =
-                "date" in entry &&
-                "time" in entry &&
-                "location" in entry &&
-                "type" in entry &&
-                "notes" in entry &&
-                "createdBy" in entry
+        if (entries.length > 0) {
+            entries.forEach(entry => {
+                const hasRequiredFields =
+                    "date" in entry &&
+                    "time" in entry &&
+                    "location" in entry &&
+                    "type" in entry &&
+                    "notes" in entry &&
+                    "createdBy" in entry
 
-            if (hasRequiredFields) {
-                formattedRows.push(
-                    <tr key={`${entry.date}-${entry.time}`}>
-                        <td>{entry.date}</td>
-                        <td>{entry.time}</td>
-                        <td>{entry.location}</td>
-                        <td>{entry.type}</td>
-                        <td>{entry.notes}</td>
-                        <td>{entry.createdBy}</td>
-                    </tr>
-                );
-            } else {
-                console.warn("Entry is missing required fields:", entry);
-            }
-        })
+                if (hasRequiredFields) {
+                    formattedRows.push(
+                        <tr key={`${entry.date}-${entry.time}`}>
+                            <td>{entry.date}</td>
+                            <td>{entry.time}</td>
+                            <td>{entry.location}</td>
+                            <td>{entry.type}</td>
+                            <td>{entry.notes}</td>
+                            <td>{entry.createdBy}</td>
+                        </tr>
+                    );
+                } else {
+                    console.warn("Entry is missing required fields:", entry);
+                }
+            })
+        }
+
+
 
         return formattedRows
+    }
+
+    function addNewLog() {
+        const entry = {
+            date: date,
+            time: time,
+            location: location,
+            type: type,
+            notes: notes,
+            createdBy: author,
+        }
+
+        entries.push(entry)
+        setEntries(entries)
+        setShowAddModal(false)
+
+        // localStorage.setItem(LOGBOOK_ENTRIES_KEY, JSON.stringify(entry))
     }
 
     return (
@@ -91,7 +127,7 @@ export function Logbook({ username }) {
 
                     <h5>Thursday, September 12, 2024 - 11:52 am</h5>
 
-                    <button type="button" className="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                    <button type="button" className="btn btn-primary" onClick={ () => setShowAddModal(true) }>
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="m-1 bi bi-plus-circle"
                              viewBox="0 0 16 16">
                             <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
@@ -103,78 +139,209 @@ export function Logbook({ username }) {
                 </div>
             </div>
 
-            <div className="modal fade" id="exampleModal" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                <div className="modal-dialog">
-                    <div className="modal-content">
-                        <div className="modal-header">
-                            <h1 className="modal-title fs-5" id="exampleModalLabel">Add a new log</h1>
-                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <Modal
+                className="fade"
+                show={showAddModal}
+            >
+
+                <Modal.Header>
+                    <h1 className="modal-title fs-5" id="exampleModalLabel">Add a new log</h1>
+                    <button type="button" className="btn-close" onClick={() => setShowAddModal(false)}></button>
+                </Modal.Header>
+
+                <Modal.Body>
+                    <form className="d-flex flex-column gap-3">
+                        <div className="form-group">
+                            <label className="form-label" htmlFor="date">When did this happen? </label>
+                            <input
+                                className="form-control"
+                                type="date"
+                                id="date"
+                                onChange={(e) => setDate(e.target.value)}
+                            ></input>
                         </div>
-                        <div className="modal-body">
-                            <form className="d-flex flex-column gap-3">
-                                <div className="form-group">
-                                    <label className="form-label" htmlFor="date">When did this happen? </label>
-                                    <input className="form-control" type="date" id="date"></input>
-                                </div>
 
-                                <div className="form-group">
-                                    <label className="form-label" htmlFor="time">At what time? </label>
-                                    <input className="form-control" type="time" id="time"></input>
-                                </div>
-
-                                <div className="form-group">
-                                    <label className="form-label" htmlFor="location">Where did it happen? </label>
-                                    <select className="form-select" name="location" id="location">
-                                        <option selected>Select an option</option>
-                                        <option value="library">Library</option>
-                                        <option value="main-door">Main Door</option>
-                                        <option value="west-offices">West Offices</option>
-                                        <option value="parking-lot">Parking Lot</option>
-                                        <option value="cafeteria">Cafeteria</option>
-                                        <option value="gym">Gym</option>
-                                        <option value="front-desk">Front Desk</option>
-                                    </select>
-                                </div>
-
-                                <div className="form-group">
-                                    <label className="form-label" htmlFor="type">Select a type </label>
-                                    <select className="form-select" name="type" id="type">
-                                        <option selected>Select an option</option>
-                                        <option value="guest">Guest</option>
-                                        <option value="lost-found">Lost/Found</option>
-                                        <option value="incident">Incident</option>
-                                        <option value="damage">Damage</option>
-                                        <option value="maintenance">Maintenance</option>
-                                    </select>
-                                </div>
-
-                                <div className="form-group">
-                                    <label className="form-label" htmlFor="description">Describe the event </label>
-                                    <textarea className="form-control" id="description"></textarea>
-                                </div>
-
-                                <div className="form-group">
-                                    <label className="form-label" htmlFor="author">Enter the author </label>
-                                    <select className="form-control" name="author" id="author">
-                                        <option selected>Select an option</option>
-                                        <option value="allan-b">Allan B.</option>
-                                        <option value="john-c">John C.</option>
-                                        <option value="alicia-p">Alicia P.</option>
-                                        <option value="marco-l">Marco L.</option>
-                                        <option value="jessica-m">Jessica M.</option>
-                                        <option value="sarah-k">Sarah K.</option>
-                                        <option value="tom-g">Tom G.</option>
-                                    </select>
-                                </div>
-                            </form>
+                        <div className="form-group">
+                            <label className="form-label" htmlFor="time">At what time? </label>
+                            <input
+                                className="form-control"
+                                type="time"
+                                id="time"
+                                onChange={(e) => setTime(e.target.value)}
+                            ></input>
                         </div>
-                        <div className="modal-footer">
-                            <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="button" className="btn btn-primary">Save log</button>
+
+                        <div className="form-group">
+                            <label className="form-label" htmlFor="location">Where did it happen? </label>
+                            <select
+                                className="form-select"
+                                name="location"
+                                id="location"
+                                onChange={(e) => setLocation(e.target.value)}
+                            >
+                                <option selected>Select an option</option>
+                                <option>Library</option>
+                                <option>Main Door</option>
+                                <option>West Offices</option>
+                                <option>Parking Lot</option>
+                                <option>Cafeteria</option>
+                                <option>Gym</option>
+                                <option>Front Desk</option>
+                            </select>
                         </div>
-                    </div>
-                </div>
-            </div>
+
+                        <div className="form-group">
+                            <label className="form-label" htmlFor="type">Select a type </label>
+                            <select
+                                className="form-select"
+                                name="type"
+                                id="type"
+                                onChange={(e) => setType(e.target.value)}
+                            >
+                                <option selected>Select an option</option>
+                                <option>Guest</option>
+                                <option>Lost/Found</option>
+                                <option>Incident</option>
+                                <option>Damage</option>
+                                <option>Maintenance</option>
+                            </select>
+                        </div>
+
+                        <div className="form-group">
+                            <label className="form-label" htmlFor="description">Describe the event </label>
+                            <textarea
+                                className="form-control"
+                                id="description"
+                                onChange={(e) => setNotes(e.target.value)}
+                            ></textarea>
+                        </div>
+
+                        <div className="form-group">
+                            <label className="form-label" htmlFor="author">Enter the author </label>
+                            <input
+                                className="form-control"
+                                type="text"
+                                id="author"
+                                onChange={(e) => setAuthor(e.target.value)}
+                            />
+                        </div>
+                    </form>
+                </Modal.Body>
+
+                <Modal.Footer>
+                    <button type="button" className="btn btn-secondary" onClick={() => setShowAddModal(false)}>
+                        Close
+                    </button>
+                    <button
+                        type="button"
+                        className="btn btn-primary"
+                        onClick={() => addNewLog()}
+                    >
+                        Save log
+                    </button>
+                </Modal.Footer>
+            </Modal>
+
+            {/*<div className="modal fade" id="addEntryModal" tabIndex="-1" aria-labelledby="exampleModalLabel"*/}
+            {/*     aria-hidden="true">*/}
+            {/*    <div className="modal-dialog">*/}
+            {/*        <div className="modal-content">*/}
+            {/*            <div className="modal-header">*/}
+            {/*                <h1 className="modal-title fs-5" id="exampleModalLabel">Add a new log</h1>*/}
+            {/*                <button type="button" className="btn-close" data-bs-dismiss="modal"*/}
+            {/*                        aria-label="Close"></button>*/}
+            {/*            </div>*/}
+            {/*            <div className="modal-body">*/}
+            {/*                <form className="d-flex flex-column gap-3">*/}
+            {/*                    <div className="form-group">*/}
+            {/*                        <label className="form-label" htmlFor="date">When did this happen? </label>*/}
+            {/*                        <input*/}
+            {/*                            className="form-control"*/}
+            {/*                            type="date"*/}
+            {/*                            id="date"*/}
+            {/*                            onChange={(e) => setDate(e.target.value)}*/}
+            {/*                        ></input>*/}
+            {/*                    </div>*/}
+
+            {/*                    <div className="form-group">*/}
+            {/*                        <label className="form-label" htmlFor="time">At what time? </label>*/}
+            {/*                        <input*/}
+            {/*                            className="form-control"*/}
+            {/*                            type="time"*/}
+            {/*                            id="time"*/}
+            {/*                            onChange={(e) => setTime(e.target.value)}*/}
+            {/*                        ></input>*/}
+            {/*                    </div>*/}
+
+            {/*                    <div className="form-group">*/}
+            {/*                        <label className="form-label" htmlFor="location">Where did it happen? </label>*/}
+            {/*                        <select*/}
+            {/*                            className="form-select"*/}
+            {/*                            name="location"*/}
+            {/*                            id="location"*/}
+            {/*                            onChange={(e) => setLocation(e.target.value)}*/}
+            {/*                        >*/}
+            {/*                            <option selected>Select an option</option>*/}
+            {/*                            <option>Library</option>*/}
+            {/*                            <option>Main Door</option>*/}
+            {/*                            <option>West Offices</option>*/}
+            {/*                            <option>Parking Lot</option>*/}
+            {/*                            <option>Cafeteria</option>*/}
+            {/*                            <option>Gym</option>*/}
+            {/*                            <option>Front Desk</option>*/}
+            {/*                        </select>*/}
+            {/*                    </div>*/}
+
+            {/*                    <div className="form-group">*/}
+            {/*                        <label className="form-label" htmlFor="type">Select a type </label>*/}
+            {/*                        <select*/}
+            {/*                            className="form-select"*/}
+            {/*                            name="type"*/}
+            {/*                            id="type"*/}
+            {/*                            onChange={(e) => setType(e.target.value)}*/}
+            {/*                        >*/}
+            {/*                            <option selected>Select an option</option>*/}
+            {/*                            <option>Guest</option>*/}
+            {/*                            <option>Lost/Found</option>*/}
+            {/*                            <option>Incident</option>*/}
+            {/*                            <option>Damage</option>*/}
+            {/*                            <option>Maintenance</option>*/}
+            {/*                        </select>*/}
+            {/*                    </div>*/}
+
+            {/*                    <div className="form-group">*/}
+            {/*                        <label className="form-label" htmlFor="description">Describe the event </label>*/}
+            {/*                        <textarea*/}
+            {/*                            className="form-control"*/}
+            {/*                            id="description"*/}
+            {/*                            onChange={(e) => setNotes(e.target.value)}*/}
+            {/*                        ></textarea>*/}
+            {/*                    </div>*/}
+
+            {/*                    <div className="form-group">*/}
+            {/*                        <label className="form-label" htmlFor="author">Enter the author </label>*/}
+            {/*                        <input*/}
+            {/*                            className="form-control"*/}
+            {/*                            type="text"*/}
+            {/*                            id="author"*/}
+            {/*                            onChange={(e) => setAuthor(e.target.value)}*/}
+            {/*                        />*/}
+            {/*                    </div>*/}
+            {/*                </form>*/}
+            {/*            </div>*/}
+            {/*            <div className="modal-footer">*/}
+            {/*                <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>*/}
+            {/*                <button*/}
+            {/*                    type="button"*/}
+            {/*                    className="btn btn-primary"*/}
+            {/*                    onClick={() => addNewLog()}*/}
+            {/*                >*/}
+            {/*                Save log*/}
+            {/*                </button>*/}
+            {/*            </div>*/}
+            {/*        </div>*/}
+            {/*    </div>*/}
+            {/*</div>*/}
 
             <div className="rotate-message">
                 <div className="rotate-message card mt-5">
@@ -207,6 +374,7 @@ export function Logbook({ username }) {
                     variant="outline-danger"
                     onClick={() => {
                         setEntries([])
+                        localStorage.setItem(LOGBOOK_ENTRIES_KEY, JSON.stringify([]))
                     }}
                 >
                     Clear entries
