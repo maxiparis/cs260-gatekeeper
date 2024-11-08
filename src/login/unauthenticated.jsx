@@ -15,7 +15,7 @@ export default function Unauthenticated() {
                     <label htmlFor="inputPassword1">Password</label>
                     <input type="password" className="form-control w-100" id="inputPassword1" placeholder="Password"/>
                 </div>
-                <button type="submit" className="btn btn-primary">Login</button>
+                <button type="submit" className="w-100 btn btn-primary">Login</button>
             </form>
         </>
     );

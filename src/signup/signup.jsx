@@ -28,7 +28,7 @@ export function Signup() {
                     <label htmlFor="inputPassword1">Password</label>
                     <input type="password" className="form-control w-100" id="inputPassword1" placeholder="Password"/>
                 </div>
-                <button type="submit" className="btn btn-primary">Sign up</button>
+                <button type="submit" className="btn btn-primary w-100">Sign up</button>
             </form>
 
         </main>
