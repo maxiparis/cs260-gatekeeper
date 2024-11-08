@@ -259,6 +259,7 @@ export function Logbook({ username }) {
                     <button
                         type="button"
                         className="btn btn-primary"
+                        disabled={ !date || !time || !location || !type || !notes || !author  }
                         onClick={() => addNewLog()}
                     >
                         Save log
