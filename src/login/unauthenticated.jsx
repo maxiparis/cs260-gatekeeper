@@ -62,9 +62,6 @@ export default function Unauthenticated({ onAuthenticate }) {
                 className="login-form-width btn btn-primary"
                 disabled={ usernameLabel === "" || passwordLabel === "" }
                 onClick={ () => handleAuthentication() }
-                // onClick={ () => setError("The passwordLabel you have entered does not exist") }
-                // onClick={ () => onAuthenticate(usernameLabel, AuthState.Authenticated) }
-
             >
                 Login
             </button>
