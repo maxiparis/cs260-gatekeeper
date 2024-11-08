@@ -1,9 +1,19 @@
 import React from 'react';
 import {useEffect} from "react";
-import {FIRSTNAME_KEY, LOGBOOK_ENTRIES_KEY} from "../constants";
+import {FIRSTNAME_KEY, LOGBOOK_ENTRIES_KEY, testLogbookEntries} from "../constants";
+import {Button, Col, Row} from "react-bootstrap";
 
 export function Logbook({ username }) {
     const [entries, setEntries] = React.useState([]);
+
+    //Fields for new entry modal
+    const [date, setDate] = React.useState("");
+    const [time, setTime] = React.useState("");
+    const [location, setLocation] = React.useState("");
+    const [type, setType] = React.useState("");
+    const [notes, setNotes] = React.useState("");
+    const [author, setAuthor] = React.useState("");
+
     const emptyRow = (
         <tr>
             <td
@@ -15,7 +25,9 @@ export function Logbook({ username }) {
         </tr>
     )
 
-    useEffect(() => { loadEntries() }, []) //will run everytime this is rendered when loaded
+    useEffect(() => {
+        loadEntries()
+    }, []) //will run everytime this is rendered when loaded
 
     //TODO: useEffect to retrieve as soon as we start
     function loadEntries() {
@@ -36,8 +48,38 @@ export function Logbook({ username }) {
         }
     }
 
+    function loadTestEntries() {
+        setEntries(testLogbookEntries)
+    }
+
     function formattedRows() {
-        //TODO:
+        const formattedRows = []
+        entries.forEach(entry => {
+            const hasRequiredFields =
+                "date" in entry &&
+                "time" in entry &&
+                "location" in entry &&
+                "type" in entry &&
+                "notes" in entry &&
+                "createdBy" in entry
+
+            if (hasRequiredFields) {
+                formattedRows.push(
+                    <tr key={`${entry.date}-${entry.time}`}>
+                        <td>{entry.date}</td>
+                        <td>{entry.time}</td>
+                        <td>{entry.location}</td>
+                        <td>{entry.type}</td>
+                        <td>{entry.notes}</td>
+                        <td>{entry.createdBy}</td>
+                    </tr>
+                );
+            } else {
+                console.warn("Entry is missing required fields:", entry);
+            }
+        })
+
+        return formattedRows
     }
 
     return (
@@ -71,17 +113,17 @@ export function Logbook({ username }) {
                         <div className="modal-body">
                             <form className="d-flex flex-column gap-3">
                                 <div className="form-group">
-                                    <label className="form-label" for="date">When did this happen? </label>
+                                    <label className="form-label" htmlFor="date">When did this happen? </label>
                                     <input className="form-control" type="date" id="date"></input>
                                 </div>
 
                                 <div className="form-group">
-                                    <label className="form-label" for="time">At what time? </label>
+                                    <label className="form-label" htmlFor="time">At what time? </label>
                                     <input className="form-control" type="time" id="time"></input>
                                 </div>
 
                                 <div className="form-group">
-                                    <label className="form-label" for="location">Where did it happen? </label>
+                                    <label className="form-label" htmlFor="location">Where did it happen? </label>
                                     <select className="form-select" name="location" id="location">
                                         <option selected>Select an option</option>
                                         <option value="library">Library</option>
@@ -95,7 +137,7 @@ export function Logbook({ username }) {
                                 </div>
 
                                 <div className="form-group">
-                                    <label className="form-label" for="type">Select a type </label>
+                                    <label className="form-label" htmlFor="type">Select a type </label>
                                     <select className="form-select" name="type" id="type">
                                         <option selected>Select an option</option>
                                         <option value="guest">Guest</option>
@@ -107,12 +149,12 @@ export function Logbook({ username }) {
                                 </div>
 
                                 <div className="form-group">
-                                    <label className="form-label" for="description">Describe the event </label>
+                                    <label className="form-label" htmlFor="description">Describe the event </label>
                                     <textarea className="form-control" id="description"></textarea>
                                 </div>
 
                                 <div className="form-group">
-                                    <label className="form-label" for="author">Enter the author </label>
+                                    <label className="form-label" htmlFor="author">Enter the author </label>
                                     <select className="form-control" name="author" id="author">
                                         <option selected>Select an option</option>
                                         <option value="allan-b">Allan B.</option>
@@ -147,11 +189,28 @@ export function Logbook({ username }) {
                 </div>
             </div>
 
-            <div className="custom-table justify-content-left w-100">
+            <div className="custom-table justify-content-left w-100 gap-3">
                 <button className="btn btn-outline-primary" type="button" data-bs-toggle="collapse" data-bs-target="#filterCollapse"
                         aria-expanded="false" aria-controls="collapseExample">
                     Filter log entries
                 </button>
+
+                {/* These two buttons are merely for development and testing purposes. */}
+                <Button
+                    variant="outline-secondary"
+                    onClick={() => { loadTestEntries() }}
+                >
+                    Test entries
+                </Button>
+
+                <Button
+                    variant="outline-danger"
+                    onClick={() => {
+                        setEntries([])
+                    }}
+                >
+                    Clear entries
+                </Button>
             </div>
 
             <div className="custom-table flex-column flex-sm-row justify-content-between gap-5 w-100">
