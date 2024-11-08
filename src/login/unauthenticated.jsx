@@ -1,5 +1,6 @@
 import React, {useState} from "react";
 import {AuthState} from "./authState";
+import {testUser} from "../constants";
 
 export default function Unauthenticated({ onAuthenticate }) {
 
@@ -8,19 +9,12 @@ export default function Unauthenticated({ onAuthenticate }) {
     const [error, setError] = useState("");
     let authenticatedUser = {}
 
-    const testUser = {
-        username: "a",
-        password: "a",
-        firstName: "Jack",
-        lastName: "Harrison",
-    }
-
     function handleAuthentication() {
         if (authenticateUser()) {
             authenticatedUser = testUser;
             onAuthenticate(authenticatedUser.firstName, AuthState.Authenticated)
         } else {
-            setError("The password you have entered does not exist.")
+            setError("The password/username you have entered does not exist.")
         }
     }
 

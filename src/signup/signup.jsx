@@ -1,7 +1,11 @@
 import React from 'react';
 import {Button} from "react-bootstrap";
+import {testUser, FIRSTNAME_KEY} from "../constants";
+import {useNavigate} from 'react-router-dom';
 
-export function Signup() {
+export function Signup({ onSignUp }) {
+    const navigateTo = useNavigate();
+
     const [firstName, setFirstName] = React.useState('');
     const [lastName, setLastName] = React.useState('');
     const [username, setUsername] = React.useState('');
@@ -9,8 +13,26 @@ export function Signup() {
     const [error, setError] = React.useState("");
     const [nameError, setNameError] = React.useState("");
 
-    function handleLogin() {
+    function handleSignup() {
+        if (userNameIsTaken()) {
+            setError("That username is not available.");
+            return
+        }
 
+        //if everything is alright
+        createAccount();
+        localStorage.setItem(FIRSTNAME_KEY, firstName);
+        onSignUp(firstName);
+        navigateTo("/login");
+    }
+
+    function createAccount() {
+        //calls the createAccount api endpoint.
+    }
+
+    function userNameIsTaken() {
+        //calls the backend to check if name was taken, in this case we just check with the testUser
+        return username === testUser.username;
     }
 
     function containsNonLetters(str) {
@@ -29,6 +51,8 @@ export function Signup() {
             setNameError("");
         }
     }
+
+
 
     return (
         <main
@@ -62,8 +86,8 @@ export function Signup() {
                     { nameError &&
                         <p className="text-danger">{nameError}</p>
                     }
-
                 </div>
+
                 <div className="form-group my-3 w-100">
                     <label htmlFor="inputUsername1">Username</label>
                     <input
@@ -89,9 +113,9 @@ export function Signup() {
 
             <Button
                 variant="primary"
-                disabled={ !firstName || !lastName || !username || !password || error || nameError}
+                disabled={ nameError || !firstName || !lastName || !username || !password }
                 className="signup-form-width"
-                onClick={() => { handleLogin() }}
+                onClick={() => { handleSignup() }}
             >
                 Sign up
             </Button>

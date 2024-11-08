@@ -1,2 +1,9 @@
 
-export const USERNAME_KEY = "username"
+export const FIRSTNAME_KEY = "firstName"
+
+export const testUser = {
+    username: "a",
+    password: "a",
+    firstName: "Jack",
+    lastName: "Harrison",
+}

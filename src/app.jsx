@@ -7,11 +7,11 @@ import { Login } from './login/login';
 import { Logbook } from "./logbook/logbook";
 import { Signup } from "./signup/signup";
 import {AuthState} from "./login/authState";
-import {USERNAME_KEY} from "./constants";
+import {FIRSTNAME_KEY} from "./constants";
 
 export default function App() {
 
-    const [username, setUsername] = React.useState(localStorage.getItem(USERNAME_KEY) || "");
+    const [username, setUsername] = React.useState(localStorage.getItem(FIRSTNAME_KEY) || "");
     // const [username, setUsername] = React.useState("");
     const currentAuthState = username ? AuthState.Authenticated : AuthState.Unauthenticated
     const [authState, setAuthState] = React.useState(currentAuthState);
@@ -57,7 +57,14 @@ export default function App() {
                             }}
                         />}
                     />
-                    <Route path="/signup" element={<Signup />} />
+                    <Route path="/signup" element=
+                        {<Signup
+                            onSignUp = { (firstName) => {
+                                setUsername(firstName)
+                                setAuthState(AuthState.Authenticated)
+                            }}
+                        />}
+                    />
                     <Route path="/*" element={<NotFound />} />
                 </Routes>
 
