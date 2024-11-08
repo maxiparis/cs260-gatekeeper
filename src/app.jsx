@@ -18,7 +18,6 @@ export default function App() {
     return (
         <BrowserRouter>
             <div className="body bg-light container-fluid d-flex flex-column min-vh-100">
-
                 <header
                     className="custom-header d-flex flex-wrap align-items-center justify-content-between justify-content-lg-around py-3 px-sm-1 px-2 mb-4 border-bottom bg-light">
                     <h1>GateKeeper</h1>
@@ -45,7 +44,7 @@ export default function App() {
                 </header>
 
                 <Routes>
-                    <Route path="/" element={<Home />} />
+                    <Route path="/" element={<Home authState={ authState } />} />
                     <Route path="/logbook" element={<Logbook username={username} />} />
                     <Route path="/login" element=
                         {<Login

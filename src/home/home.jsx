@@ -1,6 +1,9 @@
 import React from 'react';
+import SignUpInvitationCard from "./signUpInvitationCard";
+import Authenticated from "../login/authenticated";
+import {AuthState} from "../login/authState";
 
-export function Home() {
+export function Home( { authState }) {
     return (
         <main
             className="container d-flex flex-column flex-wrap flex-grow-1 align-items-center justify-content-center px-5">
@@ -27,21 +30,9 @@ export function Home() {
                 receiving the latest information on the go, ensuring that everyone is always up to date.
             </p>
 
-
-            <div className="custom-card card text-center p-4 my-5">
-                <div className="card-body">
-                    <div className="my-3">
-                        <h4>Try it today! 👇</h4>
-                        <a href="../signup/signup.html" className="btn btn-primary btn-lg mb-3">Create account</a>
-                    </div>
-
-                    <div className="my-">
-                        <h4>Already a member? ✅</h4>
-                        <a href="../login/login.html" className="btn btn-outline-primary btn-lg">Log in to your
-                            account</a>
-                    </div>
-                </div>
-            </div>
+            { authState === AuthState.Unauthenticated && (
+                <SignUpInvitationCard />
+            )}
 
         </main>
     );
