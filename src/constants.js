@@ -14,7 +14,7 @@ export const testLogbookEntries = [
         date: "12 November 2024",
         time: "1:05 pm",
         location: "Library",
-        type: "Patrol",
+        type: "Maintenance",
         notes: "Completed routine patrol of the library; no incidents noted.",
         createdBy: "Maximiliano"
     },
@@ -22,7 +22,7 @@ export const testLogbookEntries = [
         date: "13 November 2024",
         time: "10:30 am",
         location: "Main Entrance",
-        type: "Visitor",
+        type: "Guest",
         notes: "Assisted a visitor with building entry; verified ID and provided guest pass.",
         createdBy: "Maximiliano"
     },
@@ -38,7 +38,7 @@ export const testLogbookEntries = [
         date: "15 November 2024",
         time: "9:00 am",
         location: "Conference Room",
-        type: "Security Check",
+        type: "Maintenance",
         notes: "Conducted security check before executive meeting; all clear.",
         createdBy: "Maximiliano"
     }
