@@ -1,3 +1,4 @@
+import { v4 as uuidv4 } from 'uuid';
 
 export const FIRSTNAME_KEY = "firstName"
 export const LOGBOOK_ENTRIES_KEY = "entries"
@@ -11,6 +12,7 @@ export const testUser = {
 
 export const testLogbookEntries = [
     {
+        id: uuidv4(),
         date: "2024-03-01",
         time: "15:34",
         location: "Main Door",
@@ -19,6 +21,7 @@ export const testLogbookEntries = [
         createdBy: "Alex"
     },
     {
+        id: uuidv4(),
         date: "2024-08-01",
         time: "13:05",
         location: "Library",
@@ -27,6 +30,7 @@ export const testLogbookEntries = [
         createdBy: "Maximiliano"
     },
     {
+        id: uuidv4(),
         date: "2024-08-11",
         time: "10:30",
         location: "Main Door",
@@ -35,6 +39,7 @@ export const testLogbookEntries = [
         createdBy: "Carlos"
     },
     {
+        id: uuidv4(),
         date: "2024-08-21",
         time: "15:45",
         location: "Parking Lot",
@@ -43,6 +48,7 @@ export const testLogbookEntries = [
         createdBy: "Patrick"
     },
     {
+        id: uuidv4(),
         date: "2024-08-31",
         time: "9:00",
         location: "West Offices",
@@ -51,6 +57,7 @@ export const testLogbookEntries = [
         createdBy: "Robert"
     },
     {
+        id: uuidv4(),
         date: "2024-09-10",
         time: "14:30",
         location: "Cafeteria",
@@ -59,6 +66,7 @@ export const testLogbookEntries = [
         createdBy: "Sarah"
     },
     {
+        id: uuidv4(),
         date: "2024-09-20",
         time: "16:00",
         location: "Gym",
@@ -67,6 +75,7 @@ export const testLogbookEntries = [
         createdBy: "John"
     },
     {
+        id: uuidv4(),
         date: "2024-09-30",
         time: "11:15",
         location: "Front Desk",
@@ -75,6 +84,7 @@ export const testLogbookEntries = [
         createdBy: "Emily"
     },
     {
+        id: uuidv4(),
         date: "2024-10-10",
         time: "8:45",
         location: "Main Door",
@@ -83,6 +93,7 @@ export const testLogbookEntries = [
         createdBy: "James"
     },
     {
+        id: uuidv4(),
         date: "2024-10-20",
         time: "12:00",
         location: "Parking Lot",
@@ -91,6 +102,7 @@ export const testLogbookEntries = [
         createdBy: "James"
     },
     {
+        id: uuidv4(),
         date: "2024-10-30",
         time: "17:20",
         location: "West Offices",
@@ -99,6 +111,7 @@ export const testLogbookEntries = [
         createdBy: "Olivia"
     },
     {
+        id: uuidv4(),
         date: "2024-11-08",
         time: "17:20",
         location: "Incident",

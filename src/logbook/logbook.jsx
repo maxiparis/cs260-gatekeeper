@@ -4,6 +4,7 @@ import {FIRSTNAME_KEY, LOGBOOK_ENTRIES_KEY, testLogbookEntries} from "../constan
 import {Button, Col, Modal, OverlayTrigger, Row, Tooltip} from "react-bootstrap";
 import modal from "bootstrap/js/src/modal";
 import 'bootstrap-icons/font/bootstrap-icons.css';
+import { v4 as uuidv4 } from 'uuid';
 
 
 export function Logbook({ username }) {
@@ -178,7 +179,7 @@ export function Logbook({ username }) {
     function formattedRows(arrayEntries) {
         const formattedRows = []
         if (arrayEntries.length > 0) {
-            arrayEntries.forEach((entry, index) => {
+            arrayEntries.forEach((entry) => {
                 const hasRequiredFields =
                     "date" in entry &&
                     "time" in entry &&
@@ -197,7 +198,7 @@ export function Logbook({ username }) {
                             <td>{entry.notes}</td>
                             <td>{entry.createdBy}</td>
                             <td className={"text-center"}>
-                                <Button variant={"outline-danger"} size={"sm"} onClick={() => deleteEntryAt(index) }>
+                                <Button variant={"outline-danger"} size={"sm"} onClick={() => deleteEntry(entry) }>
                                 <i className="bi bi-trash"></i>
                                 </Button>
                             </td>
@@ -232,6 +233,7 @@ export function Logbook({ username }) {
 
     function addNewLog() {
         const entry = {
+            id: uuidv4(),
             date: date,
             time: time,
             location: location,
@@ -253,8 +255,8 @@ export function Logbook({ username }) {
         setShowAddModal(true)
     }
 
-    function deleteEntryAt(index) {
-        setEntries(prevEntries => prevEntries.filter((_, i) => i !== index))
+    function deleteEntry(entryToRemove) {
+        setEntries(prevEntries => prevEntries.filter((entry) => entry.id !== entryToRemove.id))
     }
 
     return (
