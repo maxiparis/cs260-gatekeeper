@@ -255,14 +255,19 @@ export function Logbook({ username }) {
         setEntries(prevEntries => prevEntries.filter((entry) => entry.id !== entryToRemove.id))
     }
 
+    function getWeather() {
+        //This will be a call to a third party API
+        return ("48°F - Clear skies")
+    }
+
     return (
         <main className="container-fluid flex-grow-1 d-flex flex-column flex-wrap align-items-center justify-content-top">
             <div className="container d-flex flex-column flex-wrap align-items-center justify-content-top">
                 <h1>Logbook</h1>
-                <div className="d-flex flex-1 flex-column flex-md-row align-items-center justify-content-between w-100 my-3">
+                <div className="d-flex flex-1 flex-column flex-lg-row align-items-center justify-content-between w-100 my-3">
                     <h5>Welcome {username}</h5>
 
-                    <h5>Thursday, September 12, 2024 - 11:52 am</h5>
+                    <h5>Thursday, September 12, 2024 - 11:52 am | { getWeather() }</h5>
 
                     <button type="button" className="btn btn-primary" onClick={ () => handlingOpeningModal() }>
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="m-1 bi bi-plus-circle"
@@ -419,7 +424,7 @@ export function Logbook({ username }) {
                 </Button>
             </div>
 
-            <div className="custom-table flex-column flex-sm-row justify-content-between gap-5 w-100">
+            <div className="custom-table flex-row justify-content-between gap-5 w-100">
                 <div className="collapse collapse-horizontal justify-content-left" id="filterCollapse">
                     <div className="card my-3">
                         <div className="card-body d-flex flex-column gap-3">
