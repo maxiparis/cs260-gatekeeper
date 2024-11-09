@@ -5,6 +5,7 @@ import {Button, Col, Modal, OverlayTrigger, Row, Tooltip} from "react-bootstrap"
 import modal from "bootstrap/js/src/modal";
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import { v4 as uuidv4 } from 'uuid';
+import {logbookNotifier} from "./logbookNotifier";
 
 
 export function Logbook({ username }) {
@@ -28,10 +29,14 @@ export function Logbook({ username }) {
     const [filterType, setFilterType] = React.useState("");
     const [filterAuthor, setFilterAuthor] = React.useState("");
 
-
     // Will run everytime this is rendered when loaded
     useEffect(() => {
         loadEntries()
+        logbookNotifier.addHandler(handleNotification)
+
+        return () => {
+            logbookNotifier.removeHandler(handleNotification);
+        }
     }, [])
 
     // Watch for changes to any of the states
@@ -48,6 +53,7 @@ export function Logbook({ username }) {
         } else {
             setFilterRows(false)
         }
+
 
     }, [filterDate, filterNote, filterLocation, filterType, filterAuthor]); // Dependency array that listens for updates to any of these states
 
@@ -79,6 +85,11 @@ export function Logbook({ username }) {
         </tr>
     )
 
+    // When we get notified of an event we will re load all the entries.
+    function handleNotification(event) {
+        loadEntries()
+        // console.log(`handleGameEvent: ${event.from}, ${event.type}`);
+    }
 
     //TODO: useEffect to retrieve as soon as we start
     function loadEntries() {
