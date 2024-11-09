@@ -1,7 +1,7 @@
 import React from 'react';
 import {useEffect} from "react";
 import {FIRSTNAME_KEY, LOGBOOK_ENTRIES_KEY, testLogbookEntries} from "../constants";
-import {Button, Col, Modal, Row} from "react-bootstrap";
+import {Button, Col, Modal, OverlayTrigger, Row, Tooltip} from "react-bootstrap";
 import modal from "bootstrap/js/src/modal";
 import 'bootstrap-icons/font/bootstrap-icons.css';
 
@@ -106,8 +106,36 @@ export function Logbook({ username }) {
         let filteredEntries = entries.slice()
 
         if (filterNote) {
-            filteredEntries = filteredEntries.filter((entry) => { return entry.notes.toLowerCase().includes(filterNote.toLowerCase()) })
+            filteredEntries = filteredEntries.filter((entry) => {
+                return entry.notes.toLowerCase().includes(filterNote.toLowerCase())
+            })
         }
+
+        //TODO: dates
+        // if (filterDate) {
+        //     filteredEntries = filteredEntries.filter((entry) => {
+        //         return entry.notes.toLowerCase().includes(filterNote.toLowerCase())
+        //     })
+        // }
+
+        if (filterLocation) {
+            filteredEntries = filteredEntries.filter((entry) => {
+                return entry.location.toLowerCase().includes(filterLocation.toLowerCase())
+            })
+        }
+
+        if (filterType) {
+            filteredEntries = filteredEntries.filter((entry) => {
+                return entry.type.toLowerCase().includes(filterType.toLowerCase())
+            })
+        }
+
+        if (filterAuthor) {
+            filteredEntries = filteredEntries.filter((entry) => {
+                return entry.createdBy.toLowerCase().includes(filterAuthor.toLowerCase())
+            })
+        }
+
 
         // TODO; filter more by everything
 
@@ -452,10 +480,28 @@ export function Logbook({ username }) {
 
                             </form>
 
-                            <Button variant={"outline-danger"} onClick={ () => clearFilterLogFields()}>
-                                Clear filters
-                            </Button>
-                        </div>
+                            <OverlayTrigger
+                                placement="bottom"
+                                overlay={
+                                    <Tooltip
+                                        id="tooltip-disabled"
+                                        hidden={filterRows}
+                                    >
+                                        Filters can only be cleared if they have been applied.
+                                    </Tooltip>
+                                }
+                            >
+                                <span className="d-inline-block">
+                                    <Button
+                                        variant="outline-danger"
+                                        disabled={!filterRows}
+                                        onClick={() => clearFilterLogFields()}
+                                    >
+                                        Clear filters
+                                    </Button>
+                                </span>
+                            </OverlayTrigger>
+                            </div>
                     </div>
                 </div>
                 <div className="d-flex flex-column justify-content-left w-100 mt-4 flex-grow-1">
