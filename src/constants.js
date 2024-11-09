@@ -11,7 +11,15 @@ export const testUser = {
 
 export const testLogbookEntries = [
     {
-        date: "2024-11-12",
+        date: "2024-03-01",
+        time: "15:34",
+        location: "Main Door",
+        type: "Lost/Found",
+        notes: "Found a backpack in the main door. Police was informed.",
+        createdBy: "Alex"
+    },
+    {
+        date: "2024-08-01",
         time: "13:05",
         location: "Library",
         type: "Maintenance",
@@ -19,7 +27,7 @@ export const testLogbookEntries = [
         createdBy: "Maximiliano"
     },
     {
-        date: "2024-11-13",
+        date: "2024-08-11",
         time: "10:30",
         location: "Main Door",
         type: "Guest",
@@ -27,7 +35,7 @@ export const testLogbookEntries = [
         createdBy: "Carlos"
     },
     {
-        date: "2024-11-14",
+        date: "2024-08-21",
         time: "15:45",
         location: "Parking Lot",
         type: "Incident",
@@ -35,7 +43,7 @@ export const testLogbookEntries = [
         createdBy: "Patrick"
     },
     {
-        date: "2024-11-15",
+        date: "2024-08-31",
         time: "9:00",
         location: "West Offices",
         type: "Maintenance",
@@ -43,7 +51,7 @@ export const testLogbookEntries = [
         createdBy: "Robert"
     },
     {
-        date: "2024-11-16",
+        date: "2024-09-10",
         time: "14:30",
         location: "Cafeteria",
         type: "Guest",
@@ -51,7 +59,7 @@ export const testLogbookEntries = [
         createdBy: "Sarah"
     },
     {
-        date: "2024-11-17",
+        date: "2024-09-20",
         time: "16:00",
         location: "Gym",
         type: "Maintenance",
@@ -59,7 +67,7 @@ export const testLogbookEntries = [
         createdBy: "John"
     },
     {
-        date: "2024-11-18",
+        date: "2024-09-30",
         time: "11:15",
         location: "Front Desk",
         type: "Lost/Found",
@@ -67,7 +75,7 @@ export const testLogbookEntries = [
         createdBy: "Emily"
     },
     {
-        date: "2024-11-19",
+        date: "2024-10-10",
         time: "8:45",
         location: "Main Door",
         type: "Damage",
@@ -75,7 +83,7 @@ export const testLogbookEntries = [
         createdBy: "James"
     },
     {
-        date: "2024-11-20",
+        date: "2024-10-20",
         time: "12:00",
         location: "Parking Lot",
         type: "Incident",
@@ -83,9 +91,17 @@ export const testLogbookEntries = [
         createdBy: "James"
     },
     {
-        date: "2024-11-21",
+        date: "2024-10-30",
         time: "17:20",
         location: "West Offices",
+        type: "Guest",
+        notes: "Escorted a guest to the executive office area and provided access.",
+        createdBy: "Olivia"
+    },
+    {
+        date: "2024-11-08",
+        time: "17:20",
+        location: "Incident",
         type: "Guest",
         notes: "Escorted a guest to the executive office area and provided access.",
         createdBy: "Olivia"

@@ -102,6 +102,20 @@ export function Logbook({ username }) {
         setEntries(testLogbookEntries)
     }
 
+    function isDateInRange (dateToCheck, startDate, endDate) {
+        const dateTime = dateToCheck.getTime();
+        const startTime = startDate.getTime();
+        const endTime = endDate.getTime();
+
+
+        console.log(`\n Today = ${dateToCheck}`);
+        console.log(`dateToCheck = ${dateTime}`);
+        console.log(`startTime = ${startTime}`);
+        console.log(`endTime = ${endTime}`);
+
+        return dateTime >= startTime && dateTime <= endTime;
+    }
+
     function filteredRows() {
         let filteredEntries = entries.slice()
 
@@ -112,11 +126,24 @@ export function Logbook({ username }) {
         }
 
         //TODO: dates
-        // if (filterDate) {
-        //     filteredEntries = filteredEntries.filter((entry) => {
-        //         return entry.notes.toLowerCase().includes(filterNote.toLowerCase())
-        //     })
-        // }
+        if (filterDate) {
+            const todayAtMidnight = new Date();
+            todayAtMidnight.setHours(23, 59, 59, 0);
+
+            const daysToSubtract = +filterDate
+
+            console.log(`daysToSubtract: ${daysToSubtract}`)
+            let pastDate = new Date(todayAtMidnight)
+            pastDate.setDate(todayAtMidnight.getDate() - daysToSubtract);
+            pastDate.setHours(0, 0, 0);
+
+            filteredEntries = filteredEntries.filter((entry) => {
+                // const entryDate = new Date(entry.date)
+                const entryDate = new Date(entry.date + "T00:00:00"); // Treats the date as local time
+
+                return isDateInRange(entryDate, pastDate, todayAtMidnight)
+            })
+        }
 
         if (filterLocation) {
             filteredEntries = filteredEntries.filter((entry) => {
@@ -420,11 +447,11 @@ export function Logbook({ username }) {
                                         onChange={(e) => setFilterDate(e.target.value)}
                                     >
                                         <option selected value="">All the time</option>
-                                        <option value="today">Today</option>
-                                        <option value="last7">In the last 7 days</option>
-                                        <option value="last30">In the last 30 days</option>
-                                        <option value="last90">In the last 90 days</option>
-                                        <option value="last6">In the 6 months</option>
+                                        <option value="0">Today</option>
+                                        <option value="7">In the last 7 days</option>
+                                        <option value="30">In the last 30 days</option>
+                                        <option value="90">In the last 90 days</option>
+                                        <option value="180">In the last 6 months</option>
                                     </select>
                                 </div>
 
