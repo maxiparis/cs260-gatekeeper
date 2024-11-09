@@ -35,13 +35,12 @@ export function Logbook({ username }) {
     // Watch for changes to any of the states
     useEffect(() => {
         console.log("\n Updated values:");
-        console.log("Date:", date);
-        console.log("Time:", time);
-        console.log("Location:", location);
-        console.log("Type:", type);
-        console.log("Notes:", notes);
-        console.log("Author:", author);
-    }, [date, time, location, type, notes, author]); // Dependency array that listens for updates to any of these states
+        console.log("Date:", filterDate);
+        console.log("Location:", filterLocation);
+        console.log("Type:", filterType);
+        console.log("Notes:", filterNote);
+        console.log("Author:", filterAuthor);
+    }, [filterDate, filterNote, filterLocation, filterType, filterAuthor]); // Dependency array that listens for updates to any of these states
 
     //whenever the entries change, we want to update the backend
     useEffect(() => {
@@ -117,9 +116,6 @@ export function Logbook({ username }) {
                 }
             })
         }
-
-
-
         return formattedRows
     }
 
@@ -130,7 +126,14 @@ export function Logbook({ username }) {
         setType("")
         setNotes("")
         setAuthor("")
+    }
 
+    function clearFilterLogFields() {
+        setFilterDate("")
+        setFilterLocation("")
+        setFilterType("")
+        setFilterNote("")
+        setFilterAuthor("")
     }
 
     function addNewLog() {
@@ -160,6 +163,7 @@ export function Logbook({ username }) {
         setEntries(prevEntries => prevEntries.filter((_, i) => i !== index))
     }
 
+    let filterRows;
     return (
         <main className="container-fluid flex-grow-1 d-flex flex-column flex-wrap align-items-center justify-content-top">
             <div className="container d-flex flex-column flex-wrap align-items-center justify-content-top">
@@ -333,6 +337,7 @@ export function Logbook({ username }) {
                                     <label className="form-label" htmlFor="filter-notes">Notes</label>
                                     <textarea
                                         className="form-control"
+                                        value={filterNote}
                                         id="filter-notes"
                                         placeholder="Search log notes"
                                         onChange={(e) => setFilterNote(e.target.value)}
@@ -345,6 +350,7 @@ export function Logbook({ username }) {
                                         className="form-select"
                                         name="date"
                                         id="filter-date"
+                                        value={filterDate}
                                         onChange={(e) => setFilterDate(e.target.value)}
                                     >
                                         <option selected value="all">All the time</option>
@@ -362,6 +368,7 @@ export function Logbook({ username }) {
                                         className="form-select"
                                         name="location"
                                         id="filter-location"
+                                        value={filterLocation}
                                         onChange={(e) => setFilterLocation(e.target.value)}
                                     >
                                         <option selected value="all">All locations</option>
@@ -381,6 +388,7 @@ export function Logbook({ username }) {
                                         className="form-select"
                                         name="type"
                                         id="filter-type"
+                                        value={filterType}
                                         onChange={(e) => setFilterType(e.target.value)}
                                     >
                                         <option selected value="all">All</option>
@@ -398,6 +406,7 @@ export function Logbook({ username }) {
                                         className="form-control"
                                         name="author"
                                         id="filter-author"
+                                        value={filterAuthor}
                                         onChange={(e) => setFilterAuthor(e.target.value)}
                                     ></input>
                                 </div>
@@ -408,7 +417,7 @@ export function Logbook({ username }) {
                                 Filter logs
                             </Button>
 
-                            <Button variant={"outline-danger"}>
+                            <Button variant={"outline-danger"} onClick={ () => clearFilterLogFields()}>
                                 Clear filter
                             </Button>
                         </div>
@@ -432,13 +441,14 @@ export function Logbook({ username }) {
                         </thead>
 
                         <tbody>
-                        {entries.length === 0 ? (
+                        { entries.length === 0 ? (
                             emptyRow
-                        ) : (
-                            formattedRows()
-                        )
+                        ) : filterRows ? (
+                                filteredRows()
+                            ) : (
+                                formattedRows()
+                            )
                         }
-
                         </tbody>
 
                     </table>
