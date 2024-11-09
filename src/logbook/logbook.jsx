@@ -7,9 +7,10 @@ import 'bootstrap-icons/font/bootstrap-icons.css';
 
 
 export function Logbook({ username }) {
+
     const [entries, setEntries] = React.useState([]);
     const [showAddModal, setShowAddModal] = React.useState(false);
-
+    const [filterRows, setFilterRows] = React.useState(false);
 
     //Fields for new entry modal
     const [date, setDate] = React.useState("");
@@ -34,12 +35,19 @@ export function Logbook({ username }) {
 
     // Watch for changes to any of the states
     useEffect(() => {
-        console.log("\n Updated values:");
-        console.log("Date:", filterDate);
-        console.log("Location:", filterLocation);
-        console.log("Type:", filterType);
-        console.log("Notes:", filterNote);
-        console.log("Author:", filterAuthor);
+        // console.log("\n Updated values:");
+        // console.log("Date:", filterDate);
+        // console.log("Location:", filterLocation);
+        // console.log("Type:", filterType);
+        // console.log("Notes:", filterNote);
+        // console.log("Author:", filterAuthor);
+
+        if (filterDate || filterNote || filterLocation || filterType || filterAuthor) {
+            setFilterRows(true)
+        } else {
+            setFilterRows(false)
+        }
+
     }, [filterDate, filterNote, filterLocation, filterType, filterAuthor]); // Dependency array that listens for updates to any of these states
 
     //whenever the entries change, we want to update the backend
@@ -55,6 +63,17 @@ export function Logbook({ username }) {
                 className="text-center text-secondary"
             >
                 There are no log entries.
+            </td>
+        </tr>
+    )
+
+    const emptyFilteredRow = (
+        <tr>
+            <td
+                colSpan={7}
+                className="text-center text-secondary"
+            >
+                No log matches the filter options.
             </td>
         </tr>
     )
@@ -83,10 +102,28 @@ export function Logbook({ username }) {
         setEntries(testLogbookEntries)
     }
 
-    function formattedRows() {
+    function filteredRows() {
+        let filteredEntries = entries.slice()
+
+        if (filterNote) {
+            filteredEntries = filteredEntries.filter((entry) => { return entry.notes.toLowerCase().includes(filterNote.toLowerCase()) })
+        }
+
+        // TODO; filter more by everything
+
+        return filteredEntries.length > 0 ? formattedRows(filteredEntries) : emptyFilteredRow
+
+    }
+
+    function unfilteredRows() {
+        let rows = formattedRows(entries)
+        return rows.length > 0 ? rows : emptyRow;
+    }
+
+    function formattedRows(arrayEntries) {
         const formattedRows = []
-        if (entries.length > 0) {
-            entries.forEach((entry, index) => {
+        if (arrayEntries.length > 0) {
+            arrayEntries.forEach((entry, index) => {
                 const hasRequiredFields =
                     "date" in entry &&
                     "time" in entry &&
@@ -134,6 +171,8 @@ export function Logbook({ username }) {
         setFilterType("")
         setFilterNote("")
         setFilterAuthor("")
+
+        setFilterRows(false)
     }
 
     function addNewLog() {
@@ -163,7 +202,6 @@ export function Logbook({ username }) {
         setEntries(prevEntries => prevEntries.filter((_, i) => i !== index))
     }
 
-    let filterRows;
     return (
         <main className="container-fluid flex-grow-1 d-flex flex-column flex-wrap align-items-center justify-content-top">
             <div className="container d-flex flex-column flex-wrap align-items-center justify-content-top">
@@ -353,7 +391,7 @@ export function Logbook({ username }) {
                                         value={filterDate}
                                         onChange={(e) => setFilterDate(e.target.value)}
                                     >
-                                        <option selected value="all">All the time</option>
+                                        <option selected value="">All the time</option>
                                         <option value="today">Today</option>
                                         <option value="last7">In the last 7 days</option>
                                         <option value="last30">In the last 30 days</option>
@@ -371,7 +409,7 @@ export function Logbook({ username }) {
                                         value={filterLocation}
                                         onChange={(e) => setFilterLocation(e.target.value)}
                                     >
-                                        <option selected value="all">All locations</option>
+                                        <option selected value="">All locations</option>
                                         <option>Library</option>
                                         <option>Main Door</option>
                                         <option>West Offices</option>
@@ -391,7 +429,7 @@ export function Logbook({ username }) {
                                         value={filterType}
                                         onChange={(e) => setFilterType(e.target.value)}
                                     >
-                                        <option selected value="all">All</option>
+                                        <option selected value="">All</option>
                                         <option>Guest</option>
                                         <option>Lost/Found</option>
                                         <option>Incident</option>
@@ -413,12 +451,9 @@ export function Logbook({ username }) {
 
 
                             </form>
-                            <Button variant={"success"}>
-                                Filter logs
-                            </Button>
 
                             <Button variant={"outline-danger"} onClick={ () => clearFilterLogFields()}>
-                                Clear filter
+                                Clear filters
                             </Button>
                         </div>
                     </div>
@@ -441,14 +476,7 @@ export function Logbook({ username }) {
                         </thead>
 
                         <tbody>
-                        { entries.length === 0 ? (
-                            emptyRow
-                        ) : filterRows ? (
-                                filteredRows()
-                            ) : (
-                                formattedRows()
-                            )
-                        }
+                        { filterRows ? filteredRows() : unfilteredRows() }
                         </tbody>
 
                     </table>
