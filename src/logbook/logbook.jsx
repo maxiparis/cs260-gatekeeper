@@ -164,11 +164,7 @@ export function Logbook({ username }) {
             })
         }
 
-
-        // TODO; filter more by everything
-
         return filteredEntries.length > 0 ? formattedRows(filteredEntries) : emptyFilteredRow
-
     }
 
     function unfilteredRows() {
@@ -522,7 +518,7 @@ export function Logbook({ username }) {
                             >
                                 <span className="d-inline-block">
                                     <Button
-                                        variant="outline-danger"
+                                        variant="danger"
                                         disabled={!filterRows}
                                         onClick={() => clearFilterLogFields()}
                                     >
@@ -533,9 +529,18 @@ export function Logbook({ username }) {
                             </div>
                     </div>
                 </div>
+
                 <div className="d-flex flex-column justify-content-left w-100 mt-4 flex-grow-1">
 
                     <h2>Log entries</h2>
+
+                    <div className={"my-2 text-secondary"}>
+                        <h6>Total entries: { entries.length }</h6>
+                        {   filterRows && (
+                                <h6>Filter results: { filteredRows().length ? filteredRows().length : 0 } </h6>
+                            )
+                        }
+                    </div>
 
                     <table className="table table-hover">
                         <thead>
