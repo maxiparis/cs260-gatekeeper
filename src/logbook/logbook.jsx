@@ -19,6 +19,14 @@ export function Logbook({ username }) {
     const [notes, setNotes] = React.useState("");
     const [author, setAuthor] = React.useState("");
 
+    //Fields for filter
+    const [filterNote, setFilterNote] = React.useState("");
+    const [filterDate, setFilterDate] = React.useState("");
+    const [filterLocation, setFilterLocation] = React.useState("");
+    const [filterType, setFilterType] = React.useState("");
+    const [filterAuthor, setFilterAuthor] = React.useState("");
+
+
     // Will run everytime this is rendered when loaded
     useEffect(() => {
         loadEntries()
@@ -319,17 +327,26 @@ export function Logbook({ username }) {
             <div className="custom-table flex-column flex-sm-row justify-content-between gap-5 w-100">
                 <div className="collapse collapse-horizontal justify-content-left" id="filterCollapse">
                     <div className="card my-3">
-                        <div className="card-body">
-                            <form method="get" action="">
-
+                        <div className="card-body d-flex flex-column gap-3">
+                            <form>
                                 <div className="form-group">
-                                    <label className="form-label" for="filter-notes">Notes</label>
-                                    <textarea className="form-control" id="filter-notes" placeholder="Search log notes"></textarea>
+                                    <label className="form-label" htmlFor="filter-notes">Notes</label>
+                                    <textarea
+                                        className="form-control"
+                                        id="filter-notes"
+                                        placeholder="Search log notes"
+                                        onChange={(e) => setFilterNote(e.target.value)}
+                                    ></textarea>
                                 </div>
 
                                 <div className="form-group mt-3">
-                                    <label className="form-label" for="filter-date">Filter by Date: </label>
-                                    <select className="form-select" name="date" id="filter-date">
+                                    <label className="form-label" htmlFor="filter-date">Filter by Date: </label>
+                                    <select
+                                        className="form-select"
+                                        name="date"
+                                        id="filter-date"
+                                        onChange={(e) => setFilterDate(e.target.value)}
+                                    >
                                         <option selected value="all">All the time</option>
                                         <option value="today">Today</option>
                                         <option value="last7">In the last 7 days</option>
@@ -339,61 +356,61 @@ export function Logbook({ username }) {
                                     </select>
                                 </div>
 
-                                <div className="form-group my-4">
-                                    <label className="form-label">Filter by Time:</label>
-                                    <ul className="list-unstyled">
-                                        <li>
-                                            <label className="form-label" for="filter-startTime">After</label>
-                                            <input className="form-control" type="time" id="filter-startTime" value="00:00"></input>
-                                        </li>
-                                        <li>
-                                            <label className="form-label" for="filter-endTime">Before</label>
-                                            <input className="form-control" type="time" id="filter-endTime" value="23:59"></input>
-                                        </li>
-                                    </ul>
-                                </div>
-
                                 <div className="form-group mt-3">
-                                    <label className="form-label" for="filter-location">Filter by Location: </label>
-                                    <select className="form-select" name="location" id="filter-location">
+                                    <label className="form-label" htmlFor="filter-location">Filter by Location: </label>
+                                    <select
+                                        className="form-select"
+                                        name="location"
+                                        id="filter-location"
+                                        onChange={(e) => setFilterLocation(e.target.value)}
+                                    >
                                         <option selected value="all">All locations</option>
-                                        <option value="">Library</option>
-                                        <option value="">Main Door</option>
-                                        <option value="">West Offices</option>
-                                        <option value="">Parking Lot</option>
-                                        <option value="">Cafeteria</option>
-                                        <option value="">Gym</option>
-                                        <option value="">Front Desk</option>
+                                        <option>Library</option>
+                                        <option>Main Door</option>
+                                        <option>West Offices</option>
+                                        <option>Parking Lot</option>
+                                        <option>Cafeteria</option>
+                                        <option>Gym</option>
+                                        <option>Front Desk</option>
                                     </select>
                                 </div>
 
                                 <div className="form-group mt-3">
-                                    <label className="form-label" for="filter-type">Filter by Type: </label>
-                                    <select className="form-select" name="type" id="filter-type">
+                                    <label className="form-label" htmlFor="filter-type">Filter by Type: </label>
+                                    <select
+                                        className="form-select"
+                                        name="type"
+                                        id="filter-type"
+                                        onChange={(e) => setFilterType(e.target.value)}
+                                    >
                                         <option selected value="all">All</option>
-                                        <option value="guest">Guest</option>
-                                        <option value="lost">Lost/Found</option>
-                                        <option value="incident">Incident</option>
-                                        <option value="damage">Damage</option>
-                                        <option value="maintenance">Maintenance</option>
+                                        <option>Guest</option>
+                                        <option>Lost/Found</option>
+                                        <option>Incident</option>
+                                        <option>Damage</option>
+                                        <option>Maintenance</option>
                                     </select>
                                 </div>
 
                                 <div className="form-group mt-3">
-                                    <label className="form-label" for="filter-author">Created by: </label>
-                                    <select className="form-select" name="author" id="filter-author">
-                                        <option value="allanb">Allan B.</option>
-                                        <option value="johnc">John C.</option>
-                                        <option value="aliciap">Alicia P.</option>
-                                        <option value="marcol">Marco L.</option>
-                                        <option value="jessicam">Jessica M.</option>
-                                        <option value="sarahk">Sarah K.</option>
-                                        <option value="tomg">Tom G.</option>
-                                    </select>
+                                    <label className="form-label" htmlFor="filter-author">Created by: </label>
+                                    <input
+                                        className="form-control"
+                                        name="author"
+                                        id="filter-author"
+                                        onChange={(e) => setFilterAuthor(e.target.value)}
+                                    ></input>
                                 </div>
 
-                                <button className="btn btn-success mt-3" type="submit">Filter logs</button>
+
                             </form>
+                            <Button variant={"success"}>
+                                Filter logs
+                            </Button>
+
+                            <Button variant={"outline-danger"}>
+                                Clear filter
+                            </Button>
                         </div>
                     </div>
                 </div>
