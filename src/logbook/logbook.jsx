@@ -3,6 +3,8 @@ import {useEffect} from "react";
 import {FIRSTNAME_KEY, LOGBOOK_ENTRIES_KEY, testLogbookEntries} from "../constants";
 import {Button, Col, Modal, Row} from "react-bootstrap";
 import modal from "bootstrap/js/src/modal";
+import 'bootstrap-icons/font/bootstrap-icons.css';
+
 
 export function Logbook({ username }) {
     const [entries, setEntries] = React.useState([]);
@@ -42,8 +44,8 @@ export function Logbook({ username }) {
     const emptyRow = (
         <tr>
             <td
-                colSpan={6}
-                className="text-center"
+                colSpan={7}
+                className="text-center text-secondary"
             >
                 There are no log entries.
             </td>
@@ -77,7 +79,7 @@ export function Logbook({ username }) {
     function formattedRows() {
         const formattedRows = []
         if (entries.length > 0) {
-            entries.forEach(entry => {
+            entries.forEach((entry, index) => {
                 const hasRequiredFields =
                     "date" in entry &&
                     "time" in entry &&
@@ -95,6 +97,11 @@ export function Logbook({ username }) {
                             <td>{entry.type}</td>
                             <td>{entry.notes}</td>
                             <td>{entry.createdBy}</td>
+                            <td className={"text-center"}>
+                                <Button variant={"outline-danger"} size={"sm"} onClick={() => deleteEntryAt(index) }>
+                                <i className="bi bi-trash"></i>
+                                </Button>
+                            </td>
                         </tr>
                     );
                 } else {
@@ -130,7 +137,6 @@ export function Logbook({ username }) {
 
         entries.push(entry)
         setEntries(entries)
-        localStorage.setItem(LOGBOOK_ENTRIES_KEY, JSON.stringify(entries))
 
         clearAddLogFields()
 
@@ -140,6 +146,10 @@ export function Logbook({ username }) {
     function handlingOpeningModal() {
         clearAddLogFields()
         setShowAddModal(true)
+    }
+
+    function deleteEntryAt(index) {
+        setEntries(prevEntries => prevEntries.filter((_, i) => i !== index))
     }
 
     return (
@@ -400,6 +410,7 @@ export function Logbook({ username }) {
                             <th scope="col">Type</th>
                             <th scope="col">Notes</th>
                             <th scope="col">Created by</th>
+                            <th scope="col">Remove</th>
                         </tr>
                         </thead>
 
