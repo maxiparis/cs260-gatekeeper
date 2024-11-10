@@ -81,11 +81,24 @@ class LogbookNotifier {
         "2024-07-28"
     ];
 
-    constructor() {
-        // Simulate WebSocket
+    timer = ""
 
-        const timer = setInterval(() => {
+    // constructor() {
+    //     // Simulate WebSocket
+    //     this.startTimer()
+    // }
 
+    getRandomFrom(array) {
+        const randomIndex = Math.floor(Math.random() * array.length);
+        return array[randomIndex];
+    }
+
+    cancelTimer() {
+        clearInterval(this.timer)
+    }
+
+    startTimer() {
+        this.timer = setInterval(() => {
 
             //create a new entry and push it to local storage
             const newEntry = {
@@ -109,11 +122,6 @@ class LogbookNotifier {
         }, 5000);
     }
 
-    getRandomFrom(array) {
-        const randomIndex = Math.floor(Math.random() * array.length);
-        return array[randomIndex];
-    }
-
     broadcastEvent(from, type) {
         //this simulates sending a message
         const event = new EventMessage(from, type);
@@ -129,16 +137,6 @@ class LogbookNotifier {
     }
 
     receiveEvent(event) {
-        //TEST TODO
-
-        // this.events.push(event);
-        //
-        // this.events.forEach((e) => {
-        //     this.handlers.forEach((handler) => {
-        //         handler(e);
-        //     });
-        // });
-
         this.handlers.forEach((handler) => handler(event));
     }
 }

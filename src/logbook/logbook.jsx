@@ -31,6 +31,7 @@ export function Logbook({ username }) {
 
     const [showToast, setShowToast] = React.useState(false);
     const [toastName, setToastName] = React.useState("");
+    const [testingWebsocket, setTestingWebsocket] = React.useState(false);
 
 
     // Will run everytime this is rendered when loaded
@@ -81,6 +82,14 @@ export function Logbook({ username }) {
             </td>
         </tr>
     )
+
+    function stopWebsocketTesting() {
+        logbookNotifier.cancelTimer()
+    }
+
+    function testWebsocket() {
+        logbookNotifier.startTimer()
+    }
 
     // When we get notified of an event we will re load all the entries.
     function handleNotification(event) {
@@ -290,7 +299,7 @@ export function Logbook({ username }) {
                         delay={3000}
                     >
                         <Toast.Header>
-                            <strong className="me-auto">Gatekeeper</strong>
+                            <strong className="me-auto">GateKeeper</strong>
                             <small>Just now</small>
                         </Toast.Header>
 
@@ -443,29 +452,43 @@ export function Logbook({ username }) {
                 </div>
             </div>
 
-            <div className="custom-table justify-content-left w-100 gap-3">
+            <div className="custom-table justify-content-between align-content-between w-100 gap-3">
                 <button className="btn btn-outline-primary" type="button" data-bs-toggle="collapse" data-bs-target="#filterCollapse"
                         aria-expanded="false" aria-controls="collapseExample">
                     Filter log entries
                 </button>
 
-                {/* These two buttons are merely for development and testing purposes. */}
-                <Button
-                    variant="outline-secondary"
-                    onClick={() => { loadTestEntries() }}
-                >
-                    Test entries
-                </Button>
+                {/* These buttons below are merely for development and testing purposes. */}
+                <div className={"d-flex gap-2"}>
+                    <Button
+                        variant="outline-secondary"
+                        onClick={() => { loadTestEntries() }}
+                    >
+                        Test entries
+                    </Button>
 
-                <Button
-                    variant="outline-danger"
-                    onClick={() => {
-                        setEntries([])
-                        localStorage.setItem(LOGBOOK_ENTRIES_KEY, JSON.stringify([]))
-                    }}
-                >
-                    Clear entries
-                </Button>
+                    <Button
+                        variant="outline-danger"
+                        onClick={() => {
+                            setEntries([])
+                            localStorage.setItem(LOGBOOK_ENTRIES_KEY, JSON.stringify([]))
+                        }}
+                    >
+                        Clear entries
+                    </Button>
+
+                    <Button
+                        variant="outline-secondary"
+                        onClick={() => {
+                            testingWebsocket ? stopWebsocketTesting() : testWebsocket()
+                            setTestingWebsocket(!testingWebsocket)
+                        }}
+                    >
+                        { testingWebsocket ? "Pause websocket" : "Test Websocket" }
+                    </Button>
+                </div>
+
+
             </div>
 
             <div className="custom-table flex-row justify-content-between gap-5 w-100">
