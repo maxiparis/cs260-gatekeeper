@@ -97,28 +97,33 @@ class LogbookNotifier {
         clearInterval(this.timer)
     }
 
+    createAndSaveNewEntry() {
+        //create a new entry and push it to local storage
+        const newEntry = {
+            id: uuidv4(),
+            date: this.getRandomFrom(this.dates),
+            time: this.getRandomFrom(this.times),
+            location: this.getRandomFrom(this.locations),
+            type: this.getRandomFrom(this.types),
+            notes: this.getRandomFrom(this.situations),
+            createdBy: this.getRandomFrom(this.names)
+        }
+
+        let entries = localStorage.getItem(LOGBOOK_ENTRIES_KEY)
+        if (entries) {
+            entries = JSON.parse(entries)
+        }
+        entries.push(newEntry)
+        localStorage.setItem(LOGBOOK_ENTRIES_KEY, JSON.stringify(entries))
+
+        this.broadcastEvent(newEntry.createdBy, LogbookEvent.Add);
+    }
+
     startTimer() {
+        this.createAndSaveNewEntry();
+
         this.timer = setInterval(() => {
-
-            //create a new entry and push it to local storage
-            const newEntry = {
-                id: uuidv4(),
-                date: this.getRandomFrom(this.dates),
-                time: this.getRandomFrom(this.times),
-                location: this.getRandomFrom(this.locations),
-                type: this.getRandomFrom(this.types),
-                notes: this.getRandomFrom(this.situations),
-                createdBy: this.getRandomFrom(this.names)
-            }
-
-            let entries = localStorage.getItem(LOGBOOK_ENTRIES_KEY)
-            if (entries) {
-                entries = JSON.parse(entries)
-            }
-            entries.push(newEntry)
-            localStorage.setItem(LOGBOOK_ENTRIES_KEY, JSON.stringify(entries))
-
-            this.broadcastEvent(newEntry.createdBy, LogbookEvent.Add);
+            this.createAndSaveNewEntry();
         }, 5000);
     }
 
