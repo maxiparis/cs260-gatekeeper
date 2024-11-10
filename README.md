@@ -60,3 +60,63 @@ For this deliverable I properly styled the application into its final appearance
 - [x] **Application elements** - Used good contrast and whitespace.
 - [x] **Application text content** - Consistent and responsive fonts. 
 - [x] **Application images** - Styled my image in the home page and added rounded corners.
+
+## React deliverable
+For this deliverable, I used JavaScript and React so that the application completely works for a single user. I also added placeholders for future technology.
+
+- [x] **Bundled and transpiled** - done!
+- [x] **Components** -
+  - [x] **Home**
+    - The card that invites an app visitor to `Create an account` or `Log in` to the account, if a member already, is hidden if the user is authenticated.
+  - [x] **Login**
+    - Username and password are checked. If they don't match any created account, then the user is informed.
+    - `Login` button is disabled if username or password fields are empty.
+    - If the user is authenticated, then we display a button to sign out and a button to see the Logbook.
+    - When the user is logged in, the `Login` button displays `Account` instead. We also display a message `Welcome, {username}`
+  - [x] **Signup**
+    - If a user is authenticated, then the `Sign up` button in the navigation bar will be hidden.
+    - Robust app:
+      - First and last name fields only accept letters.
+      - We check if the username has been taken. Otherwise, we let the user know.
+      - Sign up button is disabled unless all fields are filled.
+      - When the user is signed up, we authenticate them and take them to the login page, where they will be welcomed and given the option to log out or go to the `Logbook`.
+  - [x] **Logbook**
+    - Entries display
+      - Logbook entries are displayed in a table.
+      - Each row in the table can be removed.
+      - Hover over the rows for improved user experience.
+      - Total entries in the table are displayed. If the entries are filtered, we display how many are filtered as well.
+    - Add new log
+      - Can't save the log unless all fields have been filled.
+      - Persistently saves the log to the entries.
+    - Filter log entries
+      - As soon as any field is filled, the table is filtered.
+      - `Clear filter` button removes all filters.
+    - Test buttons
+      - I have included 3 buttons to help testing the app:
+        - Test entries
+          - This button imports 12 entries to help save time when testing different aspects of the app.
+        - Clear entries
+          - Removes all the entries.
+        - Test websocket
+          - This button starts or pauses the "websocket" testing. When the testing is in progress, the app will be notified every 5 seconds of a new entry added by another person.
+          - The user will see a notification in the top right corner when a new entry has been created.
+          - When a new entry has been added (as of now, by the `logBookNotifier`), the Logbook will re-render its table automatically.
+          - Stop the websocket testing by clicking the button again.
+  - [x] **database** - Accounts and logbook entries. Currently, this is stored and retrieved from local storage, but it will be replaced with the database data later.
+  - [x] **WebSocket** - I used the setInterval function to periodically add a new logbook entry and notify the user. This will be replaced with WebSocket messages later.
+  - [x] **application logic** - The highlight and ranking number change based on the user's selections.
+- [x] **Router** - Routing in the main page to all sub-pages, including `Login`, `Signup`, `Logbook`, and `Home`.
+- [x] **Hooks** - I use React hooks throughout my application, especially in the `Logbook` page.
+- [x] **API call** - The logbook displays the local time and weather. The app will display the weather from a 3rd party api call. I created a placeholder function to simulate this.
+
+### Testing steps for React phase.
+1. Log in with the test user (username: `a`, password: `a`) or create a new account. Try to create an account with the username `a`.
+2. Now you are authenticated, the Login button in the navbar becomes `Account`, and the `Signup` button is hidden. Now you can also see the `Logbook` button in the navbar.
+3. Go to Logbook
+4. Add a new log or click `Test entries`.
+5. Play around with the filters to make sure they filter as they should.
+6. Test the websocket by clicking `Test Websocket`. This action will trigger the `logbookNotifier` to start creating entries directly into the localStorage and notifying the Logbook of those additions.
+7. You should see the notifications of a new entry by another user in the top right corner, and the entries should be automatically re-loaded to display the new entry.
+
+
