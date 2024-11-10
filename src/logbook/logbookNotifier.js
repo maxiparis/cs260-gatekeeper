@@ -14,22 +14,88 @@ class EventMessage {
 }
 
 class LogbookNotifier {
-    events = [];
     handlers = [];
+    names = [
+        "Aiden Q.",
+        "Lily S.",
+        "Maximus F.",
+        "Aurora S.",
+        "Zara P.",
+        "Leo N.",
+        "Celeste O.",
+        "Finn E.",
+        "Nova C.",
+        "Ivy L."
+    ];
+
+    situations = [
+        "A lost item is found",
+        "A suspicious person is spotted",
+        "A fire alarm goes off",
+        "A package is delivered",
+        "A noise disturbance occurs",
+        "A medical emergency arises",
+        "A vehicle is parked illegally",
+        "A door is found unlocked",
+        "A power outage happens",
+        "A visitor arrives unexpectedly"
+    ];
+
+    types = [
+        "Guest",
+        "Lost/Found",
+        "Incident",
+        "Damage",
+        "Maintenance"
+    ]
+
+    locations = [
+        "Library",
+        "Main Door",
+        "West Offices",
+        "Parking Lot",
+        "Cafeteria",
+        "Gym",
+        "Front Desk"
+    ]
+
+    times = [
+        "02:00",
+        "03:00",
+        "11:30",
+        "14:35",
+        "15:50",
+        "21:15"
+    ]
+
+    dates = [
+        "2024-11-09",
+        "2024-05-14",
+        "2024-08-22",
+        "2024-02-17",
+        "2024-11-30",
+        "2024-09-11",
+        "2024-06-05",
+        "2024-12-25",
+        "2024-01-19",
+        "2024-07-28"
+    ];
 
     constructor() {
         // Simulate WebSocket
 
-        setInterval(() => {
+        const timer = setInterval(() => {
+
+
             //create a new entry and push it to local storage
             const newEntry = {
                 id: uuidv4(),
-                date: "2024-11-09",
-                time: "16:00",
-                location: "Main Door",
-                type: "Lost/Found",
-                notes: "Found a backpack in the main door. Police was informed.",
-                createdBy: "Jake Websocket"
+                date: this.getRandomFrom(this.dates),
+                time: this.getRandomFrom(this.times),
+                location: this.getRandomFrom(this.locations),
+                type: this.getRandomFrom(this.types),
+                notes: this.getRandomFrom(this.situations),
+                createdBy: this.getRandomFrom(this.names)
             }
 
             let entries = localStorage.getItem(LOGBOOK_ENTRIES_KEY)
@@ -43,8 +109,13 @@ class LogbookNotifier {
         }, 5000);
     }
 
+    getRandomFrom(array) {
+        const randomIndex = Math.floor(Math.random() * array.length);
+        return array[randomIndex];
+    }
+
     broadcastEvent(from, type) {
-        //this simulates sending a messag
+        //this simulates sending a message
         const event = new EventMessage(from, type);
         this.receiveEvent(event);
     }

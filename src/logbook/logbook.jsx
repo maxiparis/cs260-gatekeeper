@@ -1,7 +1,7 @@
 import React from 'react';
 import {useEffect} from "react";
 import {FIRSTNAME_KEY, LOGBOOK_ENTRIES_KEY, testLogbookEntries} from "../constants";
-import {Button, Col, Modal, OverlayTrigger, Row, Tooltip} from "react-bootstrap";
+import {Button, Col, Modal, OverlayTrigger, Toast, ToastContainer, Tooltip} from "react-bootstrap";
 import modal from "bootstrap/js/src/modal";
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import { v4 as uuidv4 } from 'uuid';
@@ -29,6 +29,10 @@ export function Logbook({ username }) {
     const [filterType, setFilterType] = React.useState("");
     const [filterAuthor, setFilterAuthor] = React.useState("");
 
+    const [showToast, setShowToast] = React.useState(false);
+    const [toastName, setToastName] = React.useState("");
+
+
     // Will run everytime this is rendered when loaded
     useEffect(() => {
         loadEntries()
@@ -41,13 +45,6 @@ export function Logbook({ username }) {
 
     // Watch for changes to any of the states
     useEffect(() => {
-        // console.log("\n Updated values:");
-        // console.log("Date:", filterDate);
-        // console.log("Location:", filterLocation);
-        // console.log("Type:", filterType);
-        // console.log("Notes:", filterNote);
-        // console.log("Author:", filterAuthor);
-
         if (filterDate || filterNote || filterLocation || filterType || filterAuthor) {
             setFilterRows(true)
         } else {
@@ -88,7 +85,11 @@ export function Logbook({ username }) {
     // When we get notified of an event we will re load all the entries.
     function handleNotification(event) {
         loadEntries()
-        // console.log(`handleGameEvent: ${event.from}, ${event.type}`);
+        if (event.from) {
+            // if there's no name we won't trigger the notification
+            setToastName(event.from)
+            setShowToast(true)
+        }
     }
 
     //TODO: useEffect to retrieve as soon as we start
@@ -274,6 +275,38 @@ export function Logbook({ username }) {
     return (
         <main className="container-fluid flex-grow-1 d-flex flex-column flex-wrap align-items-center justify-content-top">
             <div className="container d-flex flex-column flex-wrap align-items-center justify-content-top">
+
+                <ToastContainer
+                    position="top-end"
+                    className={"mt-3 mx-3"}
+                    style={{ zIndex: 9999, position: 'fixed' }}
+                >
+                    <Toast
+                        onClose={() => {
+                            setShowToast(false)
+                        }}
+                        show={showToast}
+                        autohide
+                        delay={3000}
+                    >
+                        <Toast.Header>
+                            <strong className="me-auto">Gatekeeper</strong>
+                            <small>Just now</small>
+                        </Toast.Header>
+
+                        { toastName ? (
+                            <Toast.Body>
+                                {toastName} has created a new entry in the Logbook.
+                            </Toast.Body>
+                        ) : (
+                            <Toast.Body>
+                                Someone has created a new entry in the Logbook.
+                            </Toast.Body>
+                        )}
+
+                    </Toast>
+                </ToastContainer>
+
                 <h1>Logbook</h1>
                 <div className="d-flex flex-1 flex-column flex-lg-row align-items-center justify-content-between w-100 my-3">
                     <h5>Welcome {username}</h5>
