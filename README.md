@@ -108,6 +108,7 @@ For this deliverable, I used JavaScript and React so that the application comple
   - [x] **application logic** - The highlight and ranking number change based on the user's selections.
 - [x] **Router** - Routing in the main page to all sub-pages, including `Login`, `Signup`, `Logbook`, and `Home`.
 - [x] **Hooks** - I use React hooks throughout my application, especially in the `Logbook` page.
+- [x] **API call** - The logbook displays the local time and weather. The app will display the weather from a 3rd party api call. I created a placeholder function to simulate this.
 
 ### Testing steps for React phase.
 1. Log in with the test user (username: `a`, password: `a`) or create a new account. Try to create an account with the username `a`.
