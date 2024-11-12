@@ -2,7 +2,7 @@
   "name": "website-express",
   "version": "1.0.0",
   "description": "Basic website using Express",
-  "main": "index.js",
+  "main": "service/index.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/webprogramming260/website-express.git"
@@ -25,6 +25,6 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "start": "node index.js"
+    "start": "node service/index.js"
   }
 }
