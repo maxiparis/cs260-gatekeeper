@@ -18,15 +18,41 @@ app.use(`/api`, apiRouter);
 // Serve up the static content
 app.use(express.static('dist'));
 
-//Login
 
-//Create a user
+
+// Login
+// Expecting object like:
+// {   "password": String,
+//     "username": String
+// }
+apiRouter.post('/auth/login', async (req, res) => {
+
+  const user = users[req.body.username];
+  if (user) {
+    if (req.body.password === user.password) {
+      user.token = uuid.v4();
+      return res.send({ token: user.token, firstName: user.firstName });
+    }
+  }
+  res.status(401).send({ msg: 'Unauthorized' });
+});
+
+
+//Create a user - Signup
+// Expecting object like:
+// {   "password": String,
+//     "username": String,
+//     "firstName": String,
+//     "lastName": String
+// }
 apiRouter.post('/auth/create', async (req, res) => {
 
   const validationChecks = [
     { valid: ('username' in req.body && 'password' in req.body), message: "Username and password are required" },
     { valid: req.body.password, message: "Password cannot be an empty string" },
     { valid: req.body.username, message: "Username cannot be an empty string" },
+    { valid: req.body.firstName, message: "First name cannot be an empty string" },
+    { valid: req.body.lastName, message: "Last name cannot be an empty string" },
     { valid: !users[req.body.username], message: "Username already taken" }
   ]
 
@@ -37,7 +63,13 @@ apiRouter.post('/auth/create', async (req, res) => {
   }
 
   // Check if the username has been registered already
-    const newUser = { username: req.body.username, password: req.body.password, token: uuid.v4() };
+    const newUser = {
+      username: req.body.username,
+      password: req.body.password,
+      firstName: req.body.firstName,
+      lastName: req.body.lastName,
+      token: uuid.v4()
+    };
     users[newUser.username] = newUser;
     console.log(users);
     res.send( { token: newUser.token } );
