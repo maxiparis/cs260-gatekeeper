@@ -7,7 +7,16 @@ const uuid = require('uuid');
 const port = process.argv.length > 2 ? process.argv[2] : 3000;
 
 let users = {}
-let entries = []
+let entries = [
+  {
+    date: "2024-11-12",
+    time: "12:20",
+    location: "Library",
+    type: "Patrol",
+    notes: "Completed routine patrol of the library; no incidents noted.",
+    author: "Maximiliano"
+  }
+]
 
 //make sure to parse the body from json
 app.use(express.json());
@@ -93,6 +102,74 @@ apiRouter.delete('/auth/logout', (req, res) => {
   res.status(204).end();
   console.table(users);
 });
+
+
+/**
+ * GET Entries
+ */
+apiRouter.get('/entries', async (req, res) => {
+  console.log("--- Create Entry")
+  console.table(entries)
+  return res.send( { entries: entries})
+})
+
+
+/**
+ * CREATE Entries
+ */
+apiRouter.post('/entry', async (req, res) => {
+  console.log("--- Create Entry")
+  /**
+   *   {
+   *     date: "2024-11-12",
+   *     time: "12:20",
+   *     location: "Library",
+   *     type: "Patrol",
+   *     notes: "Completed routine patrol of the library; no incidents noted.",
+   *     author: "Maximiliano"
+   *   }
+   */
+
+  const validationChecks = [
+    { valid: req.body.id, message: "ID cannot be an empty string" },
+    { valid: req.body.date, message: "Date cannot be an empty string" },
+    { valid: req.body.time, message: "Time cannot be an empty string" },
+    { valid: req.body.location, message: "Location cannot be an empty string" },
+    { valid: req.body.type, message: "Type cannot be an empty string" },
+    { valid: req.body.notes, message: "Notes cannot be an empty string" },
+    { valid: req.body.author, message: "Author cannot be an empty string" }
+  ]
+
+  for (let check of validationChecks) {
+    if (!check.valid) {
+      return sendResponseWithMessage( { res: res, message: check.message })
+    }
+  }
+
+  const newEntry = {
+    id: req.body.id,
+    date: req.body.date,
+    time: req.body.time,
+    location: req.body.location,
+    type: req.body.type,
+    notes: req.body.notes,
+    author: req.body.author
+  }
+
+  entries.push(newEntry)
+  entries.sort((a, b) =>
+      new Date(`${b.date} ${b.time}`) - new Date(`${a.date} ${a.time}`)
+  );
+  console.table(entries)
+  return res.send({ entries: entries })
+})
+
+/**
+ * DELETE Entries
+ */
+apiRouter.delete('/entry', async (req, res) => {
+  
+})
 
 
 // // Provide the version of the application
