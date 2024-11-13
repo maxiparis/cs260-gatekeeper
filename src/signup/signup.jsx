@@ -1,7 +1,9 @@
 import React from 'react';
 import {Button} from "react-bootstrap";
-import {testUser, FIRSTNAME_KEY} from "../constants";
+import {testUser, FIRSTNAME_KEY, TOKEN_KEY} from "../constants";
 import {useNavigate} from 'react-router-dom';
+import axios from 'axios';
+import {ApiService} from "../ApiService";
 
 export function Signup({ onSignUp }) {
     const navigateTo = useNavigate();
@@ -13,26 +15,26 @@ export function Signup({ onSignUp }) {
     const [error, setError] = React.useState("");
     const [nameError, setNameError] = React.useState("");
 
-    function handleSignup() {
-        if (userNameIsTaken()) {
-            setError("That username is not available.");
-            return
+    const apiService = new ApiService()
+
+    async function handleSignup() {
+
+        try {
+            const body = {
+                username: username,
+                password: password,
+                firstName: firstName,
+                lastName: lastName
+            }
+            const response = await apiService.createAccount(body);
+            localStorage.setItem(TOKEN_KEY, response.data.token); //TODO: test
+            localStorage.setItem(FIRSTNAME_KEY, firstName);
+            onSignUp(firstName);
+            navigateTo("/login");
+        } catch (error) {
+            setError(error);
         }
 
-        //if everything is alright
-        createAccount();
-        localStorage.setItem(FIRSTNAME_KEY, firstName);
-        onSignUp(firstName);
-        navigateTo("/login");
-    }
-
-    function createAccount() {
-        //calls the createAccount api endpoint.
-    }
-
-    function userNameIsTaken() {
-        //calls the backend to check if name was taken, in this case we just check with the testUser
-        return username === testUser.username;
     }
 
     function containsNonLetters(str) {

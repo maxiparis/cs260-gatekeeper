@@ -2,6 +2,8 @@ import { v4 as uuidv4 } from 'uuid';
 
 export const FIRSTNAME_KEY = "firstName"
 export const LOGBOOK_ENTRIES_KEY = "entries"
+export const TOKEN_KEY = "token"
+
 
 export const testUser = {
     username: "a",
