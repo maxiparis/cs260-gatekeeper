@@ -1,6 +1,8 @@
 const express = require('express');
 const app = express();
 const uuid = require('uuid');
+const cors = require('cors'); // Import cors
+
 
 
 // The service port defaults to 3000 or is read from the program arguments
@@ -19,11 +21,13 @@ let entries = [
   }
 ]
 
+app.use(cors());
 //make sure to parse the body from json
 app.use(express.json());
 
 const apiRouter = express.Router();
 app.use(`/api`, apiRouter);
+
 
 // Serve up the static content
 app.use(express.static('dist'));
