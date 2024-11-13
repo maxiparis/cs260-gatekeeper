@@ -108,7 +108,7 @@ apiRouter.delete('/auth/logout', (req, res) => {
 /**
  * GET Entries
  */
-apiRouter.get('/entries', async (req, res) => {
+apiRouter.get('/entries', authenticateToken, (req, res) => {
   console.log("--- Create Entry")
   console.table(entries)
   return res.send( { entries: entries})
@@ -118,7 +118,7 @@ apiRouter.get('/entries', async (req, res) => {
 /**
  * CREATE Entries
  */
-apiRouter.post('/entry', async (req, res) => {
+apiRouter.post('/entry', authenticateToken, (req, res) => {
   console.log("--- Create Entry")
   /**
    *   {
@@ -168,7 +168,7 @@ apiRouter.post('/entry', async (req, res) => {
 /**
  * DELETE Entries
  */
-apiRouter.delete('/entry', async (req, res) => {
+apiRouter.delete('/entry', authenticateToken, (req, res) => {
   console.log("--- Delete Entry")
   if (!req.body.id) {
     return sendResponseWithMessage( { res: res, message: "ID cannot be empty" })
@@ -205,4 +205,23 @@ function sendResponseWithMessage( { res, message, status = 400 } ) {
 
 function deleteEntryById(id) {
   return entries.filter(entry => entry.id !== id);
+}
+
+function authenticateToken(req, res, next) {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1];
+
+  if (!token) {
+    return res.status(401).send({ message: "Access token required" });
+  }
+
+  // Check if the token exists in a user (simple verification in this example)
+  const user = Object.values(users).find(user => user.token === token);
+
+  if (!user) {
+    return res.status(403).send({ message: "Invalid or expired token" });
+  }
+
+  req.user = user;
+  next();
 }
