@@ -9,6 +9,7 @@ const port = process.argv.length > 2 ? process.argv[2] : 3000;
 let users = {}
 let entries = [
   {
+    id: "123",
     date: "2024-11-12",
     time: "12:20",
     location: "Library",
@@ -168,7 +169,19 @@ apiRouter.post('/entry', async (req, res) => {
  * DELETE Entries
  */
 apiRouter.delete('/entry', async (req, res) => {
-  
+  console.log("--- Delete Entry")
+  if (!req.body.id) {
+    return sendResponseWithMessage( { res: res, message: "ID cannot be empty" })
+  }
+  const updatedEntries = deleteEntryById(req.body.id)
+  if (updatedEntries.length+1 !== entries.length) {
+    console.table(entries)
+    return sendResponseWithMessage( { res: res, message: "No element was removed" })
+  }
+
+  entries = updatedEntries
+  res.send( { entries: entries })
+  console.table(entries)
 })
 
 
@@ -188,4 +201,8 @@ app.listen(port, () => {
 
 function sendResponseWithMessage( { res, message, status = 400 } ) {
   res.status(status).send({ message: message });
+}
+
+function deleteEntryById(id) {
+  return entries.filter(entry => entry.id !== id);
 }
