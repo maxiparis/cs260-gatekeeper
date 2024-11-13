@@ -26,27 +26,30 @@ app.use(express.static('dist'));
 //     "username": String
 // }
 apiRouter.post('/auth/login', async (req, res) => {
-
+  console.log("-- Login");
   const user = users[req.body.username];
   if (user) {
     if (req.body.password === user.password) {
       user.token = uuid.v4();
+      console.table(users)
       return res.send({ token: user.token, firstName: user.firstName });
     }
   }
   res.status(401).send({ msg: 'Unauthorized' });
+  console.table(users)
 });
 
 
 //Create a user - Signup
 // Expecting object like:
-// {   "password": String,
+// {
+//     "password": String,
 //     "username": String,
 //     "firstName": String,
 //     "lastName": String
 // }
 apiRouter.post('/auth/create', async (req, res) => {
-
+  console.log("-- Signup");
   const validationChecks = [
     { valid: ('username' in req.body && 'password' in req.body), message: "Username and password are required" },
     { valid: req.body.password, message: "Password cannot be an empty string" },
@@ -71,12 +74,25 @@ apiRouter.post('/auth/create', async (req, res) => {
       token: uuid.v4()
     };
     users[newUser.username] = newUser;
-    console.log(users);
+    console.table(users);
     res.send( { token: newUser.token } );
 })
 
-// Logout
 
+// Logout
+// Expecting object like:
+// {
+//   "token": String
+// }
+apiRouter.delete('/auth/logout', (req, res) => {
+  console.log("-- Logout");
+  const user = Object.values(users).find((u) => u.token === req.body.token);
+  if (user) {
+    delete user.token;
+  }
+  res.status(204).end();
+  console.table(users);
+});
 
 
 // // Provide the version of the application
