@@ -27,12 +27,16 @@ export function Signup({ onSignUp }) {
                 lastName: lastName
             }
             const response = await apiService.createAccount(body);
-            // localStorage.setItem(TOKEN_KEY, response.data.token); //TODO: CAUSING A BUG
+
+            console.log(response)
+
+            localStorage.setItem(TOKEN_KEY, response.data.token); //TODO: CAUSING A BUG
             localStorage.setItem(FIRSTNAME_KEY, firstName);
             onSignUp(firstName);
             navigateTo("/login");
+
         } catch (error) {
-            setError(error);
+            setError(error.response.data.message);
         }
 
     }

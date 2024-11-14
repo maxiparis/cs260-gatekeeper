@@ -31,10 +31,12 @@ export class ApiService {
                 headers: {
                     'Content-Type': 'application/json'
                 }
-            });            console.log('createAccount response:', response.data);
-            return response.data;
+            });
+            console.log('createAccount response:', response);
+            return response;
         } catch (error) {
             // this.handleError(error);
+            console.error(error);
             throw error;  // Optional: Re-throw error if you want the calling code to handle it
         }
     }

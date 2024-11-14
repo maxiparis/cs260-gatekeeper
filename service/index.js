@@ -75,6 +75,7 @@ apiRouter.post('/auth/create', async (req, res) => {
 
   for (let check of validationChecks) {
     if (!check.valid) {
+      console.log(check.message)
       return sendResponseWithMessage( { res: res, message: check.message })
     }
   }
