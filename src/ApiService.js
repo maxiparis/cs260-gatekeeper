@@ -25,7 +25,6 @@ export class ApiService {
     }
 
     async createAccount(userData) {
-
         try {
             const response = await this.client.post('/auth/create', userData, {
                 headers: {
@@ -39,5 +38,18 @@ export class ApiService {
             console.error(error);
             throw error;  // Optional: Re-throw error if you want the calling code to handle it
         }
+    }
+
+    async login(userData) {
+        try {
+            const response = await this.client.post('/auth/login', userData)
+            console.log('login response:', response)
+            return response
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
+
+
     }
 }

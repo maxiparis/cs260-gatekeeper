@@ -51,6 +51,7 @@ apiRouter.post('/auth/login', async (req, res) => {
   }
   res.status(401).send({ msg: 'Unauthorized' });
   console.table(users)
+  console.log("Unauthorized")
 });
 
 

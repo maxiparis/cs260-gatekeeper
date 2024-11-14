@@ -1,25 +1,26 @@
 import React, {useState} from "react";
 import {AuthState} from "./authState";
-import {testUser} from "../constants";
+import {testUser, TOKEN_KEY} from "../constants";
+import {ApiService} from "../ApiService";
 
 export default function Unauthenticated({ onAuthenticate }) {
 
     const [usernameLabel, setUsernameLabel] = useState("");
     const [passwordLabel, setPasswordLabel] = useState("")
     const [error, setError] = useState("");
-    let authenticatedUser = {}
 
-    function handleAuthentication() {
-        if (authenticateUser()) {
-            authenticatedUser = testUser;
-            onAuthenticate(authenticatedUser.firstName, AuthState.Authenticated)
-        } else {
-            setError("The password/username you have entered does not exist.")
+    async function handleAuthentication() {
+        try {
+            const apiCaller = new ApiService()
+            const userData = { username: usernameLabel, password: passwordLabel }
+            const response = await apiCaller.login(userData)
+
+            //set token
+            localStorage.setItem(TOKEN_KEY, response.data.token);
+            onAuthenticate(response.data.firstName, AuthState.Authenticated);
+        } catch (error) {
+            setError("The password/username you have entered does not exist/match.")
         }
-    }
-
-    function authenticateUser() {
-        return usernameLabel === testUser.username && passwordLabel === testUser.password
     }
 
     return (
