@@ -34,9 +34,8 @@ export class ApiService {
             console.log('createAccount response:', response);
             return response;
         } catch (error) {
-            // this.handleError(error);
             console.error(error);
-            throw error;  // Optional: Re-throw error if you want the calling code to handle it
+            throw error
         }
     }
 
@@ -49,7 +48,16 @@ export class ApiService {
             console.error(error);
             throw error;
         }
+    }
 
-
+    async logout(token) {
+        try {
+            const response = await this.client.delete('/auth/logout', { data: token });
+            console.log('logout response:', response);
+            return response;
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
     }
 }

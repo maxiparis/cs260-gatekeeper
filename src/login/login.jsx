@@ -2,7 +2,6 @@ import React from 'react';
 import {AuthState} from "./authState";
 import Authenticated from "./authenticated";
 import Unauthenticated from "./unauthenticated";
-import {FIRSTNAME_KEY} from "../constants";
 
 export function Login({username, authState, onAuthStateChange}) {
     return (
@@ -13,7 +12,6 @@ export function Login({username, authState, onAuthStateChange}) {
                 <Authenticated
                     username={ username }
                     onLogout={() => {
-                        localStorage.removeItem(FIRSTNAME_KEY);
                         onAuthStateChange(username, AuthState.Unauthenticated);
                     }}
                 />
@@ -22,7 +20,6 @@ export function Login({username, authState, onAuthStateChange}) {
             {authState === AuthState.Unauthenticated && (
                 <Unauthenticated
                     onAuthenticate={(username, authState) => {
-                        localStorage.setItem(FIRSTNAME_KEY, username)
                         onAuthStateChange(username, authState)
                     }}
                 />

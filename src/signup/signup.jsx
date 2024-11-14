@@ -1,8 +1,7 @@
 import React from 'react';
 import {Button} from "react-bootstrap";
-import {testUser, FIRSTNAME_KEY, TOKEN_KEY} from "../constants";
+import { FIRSTNAME_KEY, TOKEN_KEY} from "../constants";
 import {useNavigate} from 'react-router-dom';
-import axios from 'axios';
 import {ApiService} from "../ApiService";
 
 export function Signup({ onSignUp }) {

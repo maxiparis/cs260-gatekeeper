@@ -106,7 +106,7 @@ apiRouter.delete('/auth/logout', (req, res) => {
   if (user) {
     delete user.token;
   }
-  res.status(204).end();
+  res.status(204).send();
   console.table(users);
 });
 
