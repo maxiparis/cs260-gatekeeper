@@ -9,7 +9,7 @@ import {AuthState} from "../login/authState";
 import {useNavigate} from "react-router-dom";
 
 
-export function Logbook({ username, authState }) {
+export function Logbook({username, authState}) {
 
     const navigateTo = useNavigate()
 
@@ -36,6 +36,8 @@ export function Logbook({ username, authState }) {
     const [toastName, setToastName] = React.useState("");
     const [testingWebsocket, setTestingWebsocket] = React.useState(false);
 
+    const [weatherMessage, setWeatherMessge] = React.useState("");
+
     const apiService = new ApiService()
 
     // Will run everytime this is rendered when loaded
@@ -43,6 +45,7 @@ export function Logbook({ username, authState }) {
         if (authState === AuthState.Authenticated) {
             loadEntries()
             getTime()
+            getWeather()
             logbookNotifier.addHandler(handleNotification)
             return () => {
                 logbookNotifier.removeHandler(handleNotification);
@@ -117,7 +120,7 @@ export function Logbook({ username, authState }) {
             } else {
                 alert("The Entries could not be loaded.")
             }
-        } catch(error) {
+        } catch (error) {
             console.error(error)
         }
     }
@@ -127,7 +130,7 @@ export function Logbook({ username, authState }) {
         try {
             await clearEntries()
             for (const entry of testLogbookEntries) {
-                const response = await apiService.createLogbookEntry({ data: entry} )
+                const response = await apiService.createLogbookEntry({data: entry})
                 setEntries(response.data.entries)
             }
         } catch (e) {
@@ -135,7 +138,7 @@ export function Logbook({ username, authState }) {
         }
     }
 
-    function isDateInRange (dateToCheck, startDate, endDate) {
+    function isDateInRange(dateToCheck, startDate, endDate) {
         const dateTime = dateToCheck.getTime();
         const startTime = startDate.getTime();
         const endTime = endDate.getTime();
@@ -226,8 +229,8 @@ export function Logbook({ username, authState }) {
                             <td>{entry.notes}</td>
                             <td>{entry.author}</td>
                             <td className={"text-center"}>
-                                <Button variant={"outline-danger"} size={"sm"} onClick={() => deleteEntry(entry) }>
-                                <i className="bi bi-trash"></i>
+                                <Button variant={"outline-danger"} size={"sm"} onClick={() => deleteEntry(entry)}>
+                                    <i className="bi bi-trash"></i>
                                 </Button>
                             </td>
                         </tr>
@@ -270,10 +273,10 @@ export function Logbook({ username, authState }) {
         }
 
         try {
-            const response = await apiService.createLogbookEntry({ data: entry })
+            const response = await apiService.createLogbookEntry({data: entry})
             setEntries(response.data.entries)
             clearAddLogFields()
-        } catch(error) {
+        } catch (error) {
             alert("There was an error adding the new log.")
         } finally {
             setShowAddModal(false)
@@ -286,19 +289,40 @@ export function Logbook({ username, authState }) {
         setShowAddModal(true)
     }
 
+
     async function deleteEntry(entryToRemove) {
         // setEntries(prevEntries => prevEntries.filter((entry) => entry.id !== entryToRemove.id))
         try {
-            const response = await apiService.removeLogbookEntry({ id: entryToRemove.id })
+            const response = await apiService.removeLogbookEntry({id: entryToRemove.id})
             setEntries(response.data.entries)
-        } catch(error) {
+        } catch (error) {
             alert("There was an error deleting the log.")
         }
     }
 
-    function getWeather() {
-        //This will be a call to a third party API
-        return ("48°F - Clear skies")
+    function capitalizeString(str) {
+        return str
+            .split(' ')
+            .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+            .join(' ');
+    }
+
+    /**
+     * This function calls my backend, which also calls a 3rd party API service called OpenWeather.
+     * I decided to have my backend call the api because in order to get a response I had to include my
+     * api id or key in the url, which I thought it was not very safe (anyone could have copied by api key.)
+     * So now my backend contains the api key on a .env file and it is in charge of calling and return a response from
+     * OpenWeather API.
+     */
+    async function getWeather() {
+        try {
+            const response = await apiService.getWeatherFromBackend()
+            const weatherDescription = response.data.weather[0].description
+            const feelsLike = response.data.main.feels_like
+            setWeatherMessge(`${feelsLike}°F - ${capitalizeString(weatherDescription)}`)
+        } catch (error) {
+            alert("Weather could not be loaded.")
+        }
     }
 
     function getTime() {
@@ -325,19 +349,19 @@ export function Logbook({ username, authState }) {
     async function clearEntries() {
         try {
             for (const entry of entries) {
-                const response = await apiService.removeLogbookEntry( { id: entry.id })
+                const response = await apiService.removeLogbookEntry({id: entry.id})
                 setEntries(response.data.entries)
             }
-        } catch(error) {
+        } catch (error) {
             alert("There was an error deleting the log.")
         }
     }
 
     return (
         <>
-            { authState === AuthState.Authenticated ?  (
-                    <main
-                        className="container-fluid flex-grow-1 d-flex flex-column flex-wrap align-items-center justify-content-top">
+            {authState === AuthState.Authenticated ? (
+                <main
+                    className="container-fluid flex-grow-1 d-flex flex-column flex-wrap align-items-center justify-content-top">
                     <div className="container d-flex flex-column flex-wrap align-items-center justify-content-top">
 
                         <ToastContainer
@@ -376,7 +400,7 @@ export function Logbook({ username, authState }) {
                             className="d-flex flex-1 flex-column flex-lg-row align-items-center justify-content-between w-100 my-3">
                             <h5>Welcome {username}</h5>
 
-                            <h5>{getTime()} | {getWeather()}</h5>
+                            <h5>{getTime()} | { weatherMessage }</h5>
 
                             <button type="button" className="btn btn-primary" onClick={() => handlingOpeningModal()}>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
@@ -588,7 +612,8 @@ export function Logbook({ username, authState }) {
                                         </div>
 
                                         <div className="form-group mt-3">
-                                            <label className="form-label" htmlFor="filter-location">Filter by Location: </label>
+                                            <label className="form-label" htmlFor="filter-location">Filter by
+                                                Location: </label>
                                             <select
                                                 className="form-select"
                                                 name="location"
@@ -697,14 +722,14 @@ export function Logbook({ username, authState }) {
                         </div>
                     </div>
                 </main>
-                ) : (
-                    <main
-                        className="container-fluid flex-grow-1 d-flex flex-column flex-wrap align-items-center justify-content-top">
-                        <h2 className={"mt-5"}>You are not authorized to see this page</h2>
-                    </main>
-                )
+            ) : (
+                <main
+                    className="container-fluid flex-grow-1 d-flex flex-column flex-wrap align-items-center justify-content-top">
+                    <h2 className={"mt-5"}>You are not authorized to see this page</h2>
+                </main>
+            )
             }
         </>
     )
-            ;
-        }
+        ;
+}

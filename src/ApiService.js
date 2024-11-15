@@ -15,8 +15,8 @@ export class ApiService {
         if (token) {
             this.client.defaults.headers.common['Authorization'] = `Bearer ${token}`;
         } else {
-            //TODO:
             console.warn("setAuthToken: no token found")
+            throw new Error("setAuthToken: no token found");
         }
     }
 
@@ -54,6 +54,7 @@ export class ApiService {
         try {
             const response = await this.client.delete('/auth/logout', { data: token });
             console.log('logout response:', response);
+            this.removeAuthToken()
             return response;
         } catch (error) {
             console.error(error);
@@ -96,6 +97,18 @@ export class ApiService {
         } catch (error) {
             console.error(error)
             throw error
+        }
+    }
+
+    async getWeatherFromBackend() {
+        try {
+            this.setAuthToken()
+            const response = await this.client.get('/weather')
+            console.log('getWeatherFromBackend:', response)
+            return response
+        } catch(error) {
+            console.error(error)
+            alert("There was an error getting the weather from the backend.")
         }
     }
 }
