@@ -1,10 +1,11 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {Button} from "react-bootstrap";
 import {FIRSTNAME_KEY, LASTNAME_KEY, TOKEN_KEY} from "../constants";
 import {useNavigate} from 'react-router-dom';
 import {ApiService} from "../ApiService";
+import {AuthState} from "../login/authState";
 
-export function Signup({ onSignUp }) {
+export function Signup({ onSignUp, authState }) {
     const navigateTo = useNavigate();
 
     const [firstName, setFirstName] = React.useState('');
@@ -15,6 +16,12 @@ export function Signup({ onSignUp }) {
     const [nameError, setNameError] = React.useState("");
 
     const apiService = new ApiService()
+
+    React.useEffect(() => {
+        if (authState === AuthState.Authenticated) {
+            navigateTo("/logbook");
+        }
+    }, []);
 
     async function handleSignup() {
 
@@ -34,7 +41,7 @@ export function Signup({ onSignUp }) {
             localStorage.setItem(LASTNAME_KEY, lastName);
 
             onSignUp(firstName);
-            navigateTo("/login");
+            navigateTo("/logbook");
         } catch (error) {
             setError(error.response.data.message);
         }

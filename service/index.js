@@ -196,10 +196,10 @@ apiRouter.delete('/entry', authenticateToken, (req, res) => {
 //   res.send({ version: '20221228.075705.1', name: serviceName });
 // });
 //
-// // Return the homepage if the path is unknown
-// app.use((_req, res) => {
-//   res.sendFile('index.html', { root: 'dist' });
-// });
+// Return the homepage if the path is unknown
+app.use((_req, res) => {
+  res.sendFile('index.html', { root: 'dist' });
+});
 
 app.listen(port, () => {
   console.log(`Listening on port ${port} - http://localhost:${port}`);
