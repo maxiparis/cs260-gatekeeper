@@ -60,4 +60,19 @@ export class ApiService {
             throw error;
         }
     }
+
+    async getLogbookEntries(token) {
+        try {
+            const response = await this.client.get('/entries', {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            })
+            console.log('getLogbookEntries response:', response)
+            return response
+        } catch (error) {
+            console.error(error)
+            throw error
+        }
+    }
 }

@@ -1,11 +1,12 @@
 import React from 'react';
 import {useEffect} from "react";
-import {FIRSTNAME_KEY, LOGBOOK_ENTRIES_KEY, testLogbookEntries} from "../constants";
+import {FIRSTNAME_KEY, LOGBOOK_ENTRIES_KEY, testLogbookEntries, TOKEN_KEY} from "../constants";
 import {Button, Col, Modal, OverlayTrigger, Toast, ToastContainer, Tooltip} from "react-bootstrap";
 import modal from "bootstrap/js/src/modal";
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import { v4 as uuidv4 } from 'uuid';
 import {logbookNotifier} from "./logbookNotifier";
+import {ApiService} from "../ApiService";
 
 
 export function Logbook({ username }) {
@@ -33,6 +34,7 @@ export function Logbook({ username }) {
     const [toastName, setToastName] = React.useState("");
     const [testingWebsocket, setTestingWebsocket] = React.useState(false);
 
+    const apiService = new ApiService()
 
     // Will run everytime this is rendered when loaded
     useEffect(() => {
@@ -54,11 +56,6 @@ export function Logbook({ username }) {
 
 
     }, [filterDate, filterNote, filterLocation, filterType, filterAuthor]); // Dependency array that listens for updates to any of these states
-
-    //whenever the entries change, we want to update the backend
-    useEffect(() => {
-        localStorage.setItem(LOGBOOK_ENTRIES_KEY, JSON.stringify(entries));
-    }, [entries]);
 
 
     const emptyRow = (
@@ -102,23 +99,24 @@ export function Logbook({ username }) {
     }
 
     //TODO: useEffect to retrieve as soon as we start
-    function loadEntries() {
-        const loadedEntries = getEntries()
-
-        //todo: use localStorage?
-        setEntries(loadedEntries);
-    }
-
-    function getEntries() {
-        //this simulates a call to the backend api and receiving as answer an empty array (there are not entries)
-        //for now I will only use the localStorage
-        const loadedEntries = localStorage.getItem(LOGBOOK_ENTRIES_KEY)
-        if (loadedEntries) {
-            return JSON.parse(loadedEntries)
-        } else {
-            return []
+    async function loadEntries() {
+        try {
+            const token = localStorage.getItem(TOKEN_KEY)
+            if (token) {
+                const response = await apiService.getLogbookEntries(token);
+                setEntries(response.data.entries)
+            } else {
+                alert("The Entries could not be loaded.")
+            }
+        } catch(error) {
+            console.error(error)
         }
+        // const loadedEntries = getEntries()
+        //
+        // //todo: use localStorage?
+        // setEntries(loadedEntries);
     }
+
 
     function loadTestEntries() {
         setEntries(testLogbookEntries)
@@ -181,7 +179,7 @@ export function Logbook({ username }) {
 
         if (filterAuthor) {
             filteredEntries = filteredEntries.filter((entry) => {
-                return entry.createdBy.toLowerCase().includes(filterAuthor.toLowerCase())
+                return entry.author.toLowerCase().includes(filterAuthor.toLowerCase())
             })
         }
 
@@ -203,7 +201,7 @@ export function Logbook({ username }) {
                     "location" in entry &&
                     "type" in entry &&
                     "notes" in entry &&
-                    "createdBy" in entry
+                    "author" in entry
 
                 if (hasRequiredFields) {
                     formattedRows.push(
@@ -213,7 +211,7 @@ export function Logbook({ username }) {
                             <td>{entry.location}</td>
                             <td>{entry.type}</td>
                             <td>{entry.notes}</td>
-                            <td>{entry.createdBy}</td>
+                            <td>{entry.author}</td>
                             <td className={"text-center"}>
                                 <Button variant={"outline-danger"} size={"sm"} onClick={() => deleteEntry(entry) }>
                                 <i className="bi bi-trash"></i>
@@ -256,7 +254,7 @@ export function Logbook({ username }) {
             location: location,
             type: type,
             notes: notes,
-            createdBy: author,
+            author: author,
         }
 
         entries.push(entry)
@@ -471,7 +469,6 @@ export function Logbook({ username }) {
                         variant="outline-danger"
                         onClick={() => {
                             setEntries([])
-                            localStorage.setItem(LOGBOOK_ENTRIES_KEY, JSON.stringify([]))
                         }}
                     >
                         Clear entries

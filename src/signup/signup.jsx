@@ -29,11 +29,10 @@ export function Signup({ onSignUp }) {
 
             console.log(response)
 
-            localStorage.setItem(TOKEN_KEY, response.data.token); //TODO: CAUSING A BUG
+            localStorage.setItem(TOKEN_KEY, response.data.token);
             localStorage.setItem(FIRSTNAME_KEY, firstName);
             onSignUp(firstName);
             navigateTo("/login");
-
         } catch (error) {
             setError(error.response.data.message);
         }
