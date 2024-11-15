@@ -1,9 +1,12 @@
+require('dotenv').config({ path: './service/.env' });
 const express = require('express');
 const app = express();
 const uuid = require('uuid');
 const cors = require('cors'); // Import cors
+const axios = require('axios');
 
-
+const apiKey = process.env.OPENWEATHER_API_KEY;
+// console.log(`apiKey = ${apiKey}`)
 
 // The service port defaults to 3000 or is read from the program arguments
 const port = process.argv.length > 2 ? process.argv[2] : 3000;
@@ -171,6 +174,10 @@ apiRouter.post('/entry', authenticateToken, (req, res) => {
   return res.send({ entries: entries })
 })
 
+apiRouter.post('/weather', authenticateToken, (req, res) => {
+
+})
+
 /**
  * DELETE Entries
  */
@@ -188,6 +195,23 @@ apiRouter.delete('/entry', authenticateToken, (req, res) => {
   entries = updatedEntries
   res.send( { entries: entries })
   console.table(entries)
+})
+
+/**
+ * Get Weather
+ * /api/weather
+ * Required: auth token
+ */
+apiRouter.get('/weather', authenticateToken, async (req, res) => {
+  console.log("--- Get Weather")
+  try {
+    const weatherApiURL = `https://api.openweathermap.org/data/2.5/weather?lat=40.233845&lon=-111.658531&appid=${apiKey}&units=imperial`
+    const response = await axios.get(weatherApiURL)
+    return res.send(response.data)
+  } catch(error) {
+    console.error(error)
+    return res.status(500).send({ error: "The server had an unexpected error." })
+  }
 })
 
 
