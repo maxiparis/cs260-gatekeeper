@@ -61,13 +61,10 @@ export class ApiService {
         }
     }
 
-    async getLogbookEntries(token) {
+    async getLogbookEntries() {
         try {
-            const response = await this.client.get('/entries', {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            })
+            this.setAuthToken()
+            const response = await this.client.get('/entries' )
             console.log('getLogbookEntries response:', response)
             return response
         } catch (error) {
@@ -76,14 +73,25 @@ export class ApiService {
         }
     }
 
-    async createLogbookEntry({ data, token }) {
+    async createLogbookEntry({ data }) {
         try {
-            const response = await this.client.post('/entry', data, {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            })
+            this.setAuthToken()
+            const response = await this.client.post('/entry', data )
             console.log('createLogbookEntryEntry:', response)
+            return response
+        } catch (error) {
+            console.error(error)
+            throw error
+        }
+    }
+
+    async removeLogbookEntry({ id }) {
+        try {
+            this.setAuthToken();
+            const response = await this.client.delete(`/entry`, {
+                data: { id: id }
+            })
+            console.log('deleteLogbookEntryEntry:', response)
             return response
         } catch (error) {
             console.error(error)

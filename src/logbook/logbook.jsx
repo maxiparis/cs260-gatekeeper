@@ -102,7 +102,7 @@ export function Logbook({ username }) {
         try {
             const token = localStorage.getItem(TOKEN_KEY)
             if (token) {
-                const response = await apiService.getLogbookEntries(token);
+                const response = await apiService.getLogbookEntries();
                 setEntries(response.data.entries)
             } else {
                 alert("The Entries could not be loaded.")
@@ -257,10 +257,7 @@ export function Logbook({ username }) {
         }
 
         try {
-            const response = await apiService.createLogbookEntry({
-                data: entry,
-                token: localStorage.getItem(TOKEN_KEY)
-            })
+            const response = await apiService.createLogbookEntry({ data: entry })
             setEntries(response.data.entries)
             clearAddLogFields()
         } catch(error) {
@@ -276,8 +273,14 @@ export function Logbook({ username }) {
         setShowAddModal(true)
     }
 
-    function deleteEntry(entryToRemove) {
-        setEntries(prevEntries => prevEntries.filter((entry) => entry.id !== entryToRemove.id))
+    async function deleteEntry(entryToRemove) {
+        // setEntries(prevEntries => prevEntries.filter((entry) => entry.id !== entryToRemove.id))
+        try {
+            const response = await apiService.removeLogbookEntry({ id: entryToRemove.id })
+            setEntries(response.data.entries)
+        } catch(error) {
+            alert("There was an error deleting the log.")
+        }
     }
 
     function getWeather() {
