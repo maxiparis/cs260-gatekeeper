@@ -115,6 +115,7 @@ export function Logbook({ username }) {
 
     async function loadTestEntries() {
         try {
+            await clearEntries()
             for (const entry of testLogbookEntries) {
                 const response = await apiService.createLogbookEntry({ data: entry} )
                 setEntries(response.data.entries)
@@ -289,6 +290,17 @@ export function Logbook({ username }) {
     function getWeather() {
         //This will be a call to a third party API
         return ("48°F - Clear skies")
+    }
+
+    async function clearEntries() {
+        try {
+            for (const entry of entries) {
+                const response = await apiService.removeLogbookEntry( { id: entry.id })
+                setEntries(response.data.entries)
+            }
+        } catch(error) {
+            alert("There was an error deleting the log.")
+        }
     }
 
     return (
@@ -472,15 +484,15 @@ export function Logbook({ username }) {
                 <div className={"d-flex gap-2"}>
                     <Button
                         variant="outline-secondary"
-                        onClick={() => { loadTestEntries() }}
+                        onClick={async () => { await loadTestEntries() }}
                     >
                         Test entries
                     </Button>
 
                     <Button
                         variant="outline-danger"
-                        onClick={() => {
-                            setEntries([])
+                        onClick={async () => {
+                            await clearEntries()
                         }}
                     >
                         Clear entries
