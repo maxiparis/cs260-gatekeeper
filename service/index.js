@@ -115,7 +115,7 @@ apiRouter.delete('/auth/logout', (req, res) => {
  * GET Entries
  */
 apiRouter.get('/entries', authenticateToken, (req, res) => {
-  console.log("--- Create Entry")
+  console.log("--- Get Entries")
   console.table(entries)
   return res.send( { entries: entries})
 })
@@ -218,6 +218,7 @@ function authenticateToken(req, res, next) {
   const token = authHeader && authHeader.split(' ')[1];
 
   if (!token) {
+    console.log("Access token required")
     return res.status(401).send({ message: "Access token required" });
   }
 
@@ -225,6 +226,7 @@ function authenticateToken(req, res, next) {
   const user = Object.values(users).find(user => user.token === token);
 
   if (!user) {
+    console.log("Invalid or expired token")
     return res.status(403).send({ message: "Invalid or expired token" });
   }
 

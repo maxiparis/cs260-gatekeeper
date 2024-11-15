@@ -2,7 +2,6 @@ import React from 'react';
 import {useEffect} from "react";
 import {FIRSTNAME_KEY, LOGBOOK_ENTRIES_KEY, testLogbookEntries, TOKEN_KEY} from "../constants";
 import {Button, Col, Modal, OverlayTrigger, Toast, ToastContainer, Tooltip} from "react-bootstrap";
-import modal from "bootstrap/js/src/modal";
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import { v4 as uuidv4 } from 'uuid';
 import {logbookNotifier} from "./logbookNotifier";
@@ -246,7 +245,7 @@ export function Logbook({ username }) {
         setFilterRows(false)
     }
 
-    function addNewLog() {
+    async function addNewLog() {
         const entry = {
             id: uuidv4(),
             date: date,
@@ -257,12 +256,19 @@ export function Logbook({ username }) {
             author: author,
         }
 
-        entries.push(entry)
-        setEntries(entries)
+        try {
+            const response = await apiService.createLogbookEntry({
+                data: entry,
+                token: localStorage.getItem(TOKEN_KEY)
+            })
+            setEntries(response.data.entries)
+            clearAddLogFields()
+        } catch(error) {
+            alert("There was an error adding the new log.")
+        } finally {
+            setShowAddModal(false)
+        }
 
-        clearAddLogFields()
-
-        setShowAddModal(false)
     }
 
     function handlingOpeningModal() {

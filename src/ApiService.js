@@ -75,4 +75,19 @@ export class ApiService {
             throw error
         }
     }
+
+    async createLogbookEntry({ data, token }) {
+        try {
+            const response = await this.client.post('/entry', data, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            })
+            console.log('createLogbookEntryEntry:', response)
+            return response
+        } catch (error) {
+            console.error(error)
+            throw error
+        }
+    }
 }
