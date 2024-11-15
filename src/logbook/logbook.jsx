@@ -37,18 +37,25 @@ export function Logbook({username, authState}) {
     const [testingWebsocket, setTestingWebsocket] = React.useState(false);
 
     const [weatherMessage, setWeatherMessge] = React.useState("");
+    const [timeMessage, setTimeMessage] = React.useState(getTime());
 
     const apiService = new ApiService()
 
     // Will run everytime this is rendered when loaded
     useEffect(() => {
         if (authState === AuthState.Authenticated) {
+            const intervalId = setInterval(() => {
+                console.log("🟠Getting the time")
+                setTimeMessage(getTime());
+            }, 60000)
+
             loadEntries()
             getTime()
             getWeather()
             logbookNotifier.addHandler(handleNotification)
             return () => {
                 logbookNotifier.removeHandler(handleNotification);
+                clearInterval(intervalId)
             }
         }
     }, [])
@@ -400,7 +407,7 @@ export function Logbook({username, authState}) {
                             className="d-flex flex-1 flex-column flex-lg-row align-items-center justify-content-between w-100 my-3">
                             <h5>Welcome {username}</h5>
 
-                            <h5>{getTime()} | { weatherMessage }</h5>
+                            <h5>{ timeMessage } | { weatherMessage }</h5>
 
                             <button type="button" className="btn btn-primary" onClick={() => handlingOpeningModal()}>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
