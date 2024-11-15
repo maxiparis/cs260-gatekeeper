@@ -110,15 +110,18 @@ export function Logbook({ username }) {
         } catch(error) {
             console.error(error)
         }
-        // const loadedEntries = getEntries()
-        //
-        // //todo: use localStorage?
-        // setEntries(loadedEntries);
     }
 
 
-    function loadTestEntries() {
-        setEntries(testLogbookEntries)
+    async function loadTestEntries() {
+        try {
+            for (const entry of testLogbookEntries) {
+                const response = await apiService.createLogbookEntry({ data: entry} )
+                setEntries(response.data.entries)
+            }
+        } catch (e) {
+            alert("Error importing test logbook entries")
+        }
     }
 
     function isDateInRange (dateToCheck, startDate, endDate) {
