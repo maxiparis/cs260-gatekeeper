@@ -1,6 +1,6 @@
 import React, {useState} from "react";
 import {AuthState} from "./authState";
-import {FIRSTNAME_KEY, TOKEN_KEY} from "../constants";
+import {FIRSTNAME_KEY, LASTNAME_KEY, TOKEN_KEY} from "../constants";
 import {ApiService} from "../ApiService";
 
 export default function Unauthenticated({ onAuthenticate }) {
@@ -16,8 +16,12 @@ export default function Unauthenticated({ onAuthenticate }) {
             const response = await apiCaller.login(userData)
 
             const firstName = response.data.firstName
+            const lastName = response.data.lastName
+
             localStorage.setItem(FIRSTNAME_KEY, firstName);
+            localStorage.setItem(LASTNAME_KEY, lastName);
             localStorage.setItem(TOKEN_KEY, response.data.token);
+
             onAuthenticate(firstName, AuthState.Authenticated);
         } catch (error) {
             setError("The password/username you have entered does not exist/match.")

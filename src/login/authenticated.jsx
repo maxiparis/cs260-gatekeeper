@@ -1,7 +1,7 @@
 import React from "react";
 import {Button} from "react-bootstrap";
 import { useNavigate } from 'react-router-dom';
-import {FIRSTNAME_KEY, LOGBOOK_ENTRIES_KEY, TOKEN_KEY} from "../constants";
+import {FIRSTNAME_KEY, LASTNAME_KEY, LOGBOOK_ENTRIES_KEY, TOKEN_KEY} from "../constants";
 import {ApiService} from "../ApiService";
 
 
@@ -18,7 +18,7 @@ export default function Authenticated({ username, onLogout }) {
 
             localStorage.removeItem(TOKEN_KEY);
             localStorage.removeItem(FIRSTNAME_KEY);
-            localStorage.removeItem(LOGBOOK_ENTRIES_KEY);
+            localStorage.removeItem(LASTNAME_KEY);
 
             onLogout();
         } catch (error) {

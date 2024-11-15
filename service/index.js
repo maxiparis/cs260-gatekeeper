@@ -46,7 +46,7 @@ apiRouter.post('/auth/login', async (req, res) => {
     if (req.body.password === user.password) {
       user.token = uuid.v4();
       console.table(users)
-      return res.send({ token: user.token, firstName: user.firstName });
+      return res.send({ token: user.token, firstName: user.firstName, lastName: user.lastName });
     }
   }
   res.status(401).send({ msg: 'Unauthorized' });

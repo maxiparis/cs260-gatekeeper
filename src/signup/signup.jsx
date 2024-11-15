@@ -1,6 +1,6 @@
 import React from 'react';
 import {Button} from "react-bootstrap";
-import { FIRSTNAME_KEY, TOKEN_KEY} from "../constants";
+import {FIRSTNAME_KEY, LASTNAME_KEY, TOKEN_KEY} from "../constants";
 import {useNavigate} from 'react-router-dom';
 import {ApiService} from "../ApiService";
 
@@ -31,6 +31,8 @@ export function Signup({ onSignUp }) {
 
             localStorage.setItem(TOKEN_KEY, response.data.token);
             localStorage.setItem(FIRSTNAME_KEY, firstName);
+            localStorage.setItem(LASTNAME_KEY, lastName);
+
             onSignUp(firstName);
             navigateTo("/login");
         } catch (error) {

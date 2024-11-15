@@ -1,6 +1,6 @@
 import React from 'react';
 import {useEffect} from "react";
-import {FIRSTNAME_KEY, LOGBOOK_ENTRIES_KEY, testLogbookEntries, TOKEN_KEY} from "../constants";
+import {FIRSTNAME_KEY, LASTNAME_KEY, testLogbookEntries, TOKEN_KEY} from "../constants";
 import {Button, Col, Modal, OverlayTrigger, Toast, ToastContainer, Tooltip} from "react-bootstrap";
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import { v4 as uuidv4 } from 'uuid';
@@ -20,7 +20,7 @@ export function Logbook({ username }) {
     const [location, setLocation] = React.useState("");
     const [type, setType] = React.useState("");
     const [notes, setNotes] = React.useState("");
-    const [author, setAuthor] = React.useState("");
+    const [author, setAuthor] = React.useState(`${localStorage.getItem(FIRSTNAME_KEY)} ${localStorage.getItem(LASTNAME_KEY)}`)
 
     //Fields for filter
     const [filterNote, setFilterNote] = React.useState("");
@@ -235,7 +235,7 @@ export function Logbook({ username }) {
         setLocation("")
         setType("")
         setNotes("")
-        setAuthor("")
+        // setAuthor("")
     }
 
     function clearFilterLogFields() {
@@ -438,6 +438,7 @@ export function Logbook({ username }) {
                                 className="form-control"
                                 type="text"
                                 id="author"
+                                value={author}
                                 onChange={(e) => setAuthor(e.target.value)}
                             />
                         </div>
