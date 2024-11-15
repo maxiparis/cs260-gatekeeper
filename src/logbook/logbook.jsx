@@ -1,9 +1,8 @@
-import React from 'react';
-import {useEffect} from "react";
+import React, {useEffect} from 'react';
 import {FIRSTNAME_KEY, LASTNAME_KEY, testLogbookEntries, TOKEN_KEY} from "../constants";
 import {Button, Modal, OverlayTrigger, Toast, ToastContainer, Tooltip} from "react-bootstrap";
 import 'bootstrap-icons/font/bootstrap-icons.css';
-import { v4 as uuidv4 } from 'uuid';
+import {v4 as uuidv4} from 'uuid';
 import {logbookNotifier} from "./logbookNotifier";
 import {ApiService} from "../ApiService";
 import {AuthState} from "../login/authState";
@@ -43,6 +42,7 @@ export function Logbook({ username, authState }) {
     useEffect(() => {
         if (authState === AuthState.Authenticated) {
             loadEntries()
+            getTime()
             logbookNotifier.addHandler(handleNotification)
             return () => {
                 logbookNotifier.removeHandler(handleNotification);
@@ -301,6 +301,27 @@ export function Logbook({ username, authState }) {
         return ("48°F - Clear skies")
     }
 
+    function getTime() {
+        const now = new Date();
+        const dateOptions = {
+            weekday: "long",
+            year: "numeric",
+            month: "long",
+            day: "numeric"
+        };
+
+        const timeOptions = {
+            hour: "numeric",
+            minute: "numeric",
+            hour12: true
+        };
+
+        const formattedDate = new Intl.DateTimeFormat("en-US", dateOptions).format(now);
+        const formattedTime = new Intl.DateTimeFormat("en-US", timeOptions).format(now);
+
+        return `${formattedDate} - ${formattedTime}`
+    }
+
     async function clearEntries() {
         try {
             for (const entry of entries) {
@@ -355,7 +376,7 @@ export function Logbook({ username, authState }) {
                             className="d-flex flex-1 flex-column flex-lg-row align-items-center justify-content-between w-100 my-3">
                             <h5>Welcome {username}</h5>
 
-                            <h5>Thursday, September 12, 2024 - 11:52 am | {getWeather()}</h5>
+                            <h5>{getTime()} | {getWeather()}</h5>
 
                             <button type="button" className="btn btn-primary" onClick={() => handlingOpeningModal()}>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
