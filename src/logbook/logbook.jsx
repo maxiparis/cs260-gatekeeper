@@ -83,8 +83,8 @@ export function Logbook({ username }) {
         logbookNotifier.cancelTimer()
     }
 
-    function testWebsocket() {
-        logbookNotifier.startTimer()
+    async function testWebsocket() {
+        await logbookNotifier.startTimer()
     }
 
     // When we get notified of an event we will re load all the entries.
@@ -97,7 +97,6 @@ export function Logbook({ username }) {
         }
     }
 
-    //TODO: useEffect to retrieve as soon as we start
     async function loadEntries() {
         try {
             const token = localStorage.getItem(TOKEN_KEY)
