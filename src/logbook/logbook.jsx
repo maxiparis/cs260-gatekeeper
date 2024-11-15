@@ -1,7 +1,7 @@
 import React from 'react';
 import {useEffect} from "react";
 import {FIRSTNAME_KEY, LASTNAME_KEY, testLogbookEntries, TOKEN_KEY} from "../constants";
-import {Button, Col, Modal, OverlayTrigger, Toast, ToastContainer, Tooltip} from "react-bootstrap";
+import {Button, Modal, OverlayTrigger, Toast, ToastContainer, Tooltip} from "react-bootstrap";
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import { v4 as uuidv4 } from 'uuid';
 import {logbookNotifier} from "./logbookNotifier";
@@ -88,8 +88,8 @@ export function Logbook({ username }) {
     }
 
     // When we get notified of an event we will re load all the entries.
-    function handleNotification(event) {
-        loadEntries()
+    async function handleNotification(event) {
+        await loadEntries()
         if (event.from) {
             // if there's no name we won't trigger the notification
             setToastName(event.from)
@@ -235,7 +235,6 @@ export function Logbook({ username }) {
         setLocation("")
         setType("")
         setNotes("")
-        // setAuthor("")
     }
 
     function clearFilterLogFields() {
