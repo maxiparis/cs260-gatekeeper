@@ -6,7 +6,9 @@ const cors = require('cors'); // Import cors
 const axios = require('axios');
 
 const apiKey = process.env.OPENWEATHER_API_KEY;
-// console.log(`apiKey = ${apiKey}`)
+const baseURL = process.env.BACKEND_API_BASE_URL
+console.log(`apiKey = ${apiKey}`)
+console.log(`baseURL = ${baseURL}`)
 
 // The service port defaults to 3000 or is read from the program arguments
 const port = process.argv.length > 2 ? process.argv[2] : 3000;
