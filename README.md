@@ -119,4 +119,19 @@ For this deliverable, I used JavaScript and React so that the application comple
 6. Test the websocket by clicking `Test Websocket`. This action will trigger the `logbookNotifier` to start creating entries directly into the localStorage and notifying the Logbook of those additions.
 7. You should see the notifications of a new entry by another user in the top right corner, and the entries should be automatically re-loaded to display the new entry.
 
+## Service deliverable
 
+- [x] **Node.js/Express HTTP service** - done!
+- [x] **Static middleware for frontend** - done!
+- [x] **Calls to third party endpoints** - done! calling OpenWeather api, to get current weather for Provo.
+  - My frontend calls my backend, which calls the OpenWeather API route. 
+    - Why did I design it this way?
+    - The OpenWeather API requested me to pass my OpenWeather API key as a query string in the url, which I didn't think it was a good idea to do from the frontend, because anyone would be able to copy and use my key.
+    - Because of that I decided to have my backend load the api key through the `dotenv`, contact the OpenWeather API and then send that response back to the frontend.
+- [x] **Backend service endpoints** - Done! Implemented endpoints for login, signup, logout, get entries, create entries and delete entries.
+  - Security Features:
+    - The endpoints for get, create and delete logbook entries need to be called using a bearer token via headers. 
+    - This token is received by a user when they log in or signup. The frontend stores it via localStorage.
+    - This process allows the logbook entries to be read or modified only by an authenticated user.
+- [x] **Frontend calls service endpoints** - done using axios. 
+- [x] **Websocket simulation** - I modified `LogbookNotifier` (websocket manager) to create entries in the backend, and then notifying the frontend about the new entry. The frontend then proceeds to notify the user via a notification and reloads the entries from the backend.
