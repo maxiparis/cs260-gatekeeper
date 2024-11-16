@@ -2,9 +2,9 @@ import axios from 'axios';
 import {TOKEN_KEY} from "./constants";
 
 export class ApiService {
-    constructor(baseURL) {
+    constructor() {
         this.client = axios.create({
-            baseURL: baseURL || 'http://localhost:3000/api',
+            baseURL: process.env.BACKEND_API_BASE_URL || 'http://localhost:3000/api',
             timeout: 5000
         });
     }
