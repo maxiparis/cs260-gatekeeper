@@ -1,7 +1,10 @@
 import { v4 as uuidv4 } from 'uuid';
 
 export const FIRSTNAME_KEY = "firstName"
+export const LASTNAME_KEY = "lastName"
 export const LOGBOOK_ENTRIES_KEY = "entries"
+export const TOKEN_KEY = "token"
+
 
 export const testUser = {
     username: "a",
@@ -18,7 +21,7 @@ export const testLogbookEntries = [
         location: "Main Door",
         type: "Lost/Found",
         notes: "Found a backpack in the main door. Police was informed.",
-        createdBy: "Alex"
+        author: "Alex"
     },
     {
         id: uuidv4(),
@@ -27,7 +30,7 @@ export const testLogbookEntries = [
         location: "Library",
         type: "Maintenance",
         notes: "Completed routine patrol of the library; no incidents noted.",
-        createdBy: "Maximiliano"
+        author: "Maximiliano"
     },
     {
         id: uuidv4(),
@@ -36,7 +39,7 @@ export const testLogbookEntries = [
         location: "Main Door",
         type: "Guest",
         notes: "Assisted a visitor with building entry; verified ID and provided guest pass.",
-        createdBy: "Carlos"
+        author: "Carlos"
     },
     {
         id: uuidv4(),
@@ -45,7 +48,7 @@ export const testLogbookEntries = [
         location: "Parking Lot",
         type: "Incident",
         notes: "Reported a minor incident involving an unauthorized vehicle in the parking lot.",
-        createdBy: "Patrick"
+        author: "Patrick"
     },
     {
         id: uuidv4(),
@@ -54,7 +57,7 @@ export const testLogbookEntries = [
         location: "West Offices",
         type: "Maintenance",
         notes: "Conducted security check before executive meeting; all clear.",
-        createdBy: "Robert"
+        author: "Robert"
     },
     {
         id: uuidv4(),
@@ -63,7 +66,7 @@ export const testLogbookEntries = [
         location: "Cafeteria",
         type: "Guest",
         notes: "Assisted a visitor with cafeteria entry; confirmed meal voucher.",
-        createdBy: "Sarah"
+        author: "Sarah"
     },
     {
         id: uuidv4(),
@@ -72,7 +75,7 @@ export const testLogbookEntries = [
         location: "Gym",
         type: "Maintenance",
         notes: "Checked gym equipment and ensured everything was in working order.",
-        createdBy: "John"
+        author: "John"
     },
     {
         id: uuidv4(),
@@ -81,7 +84,7 @@ export const testLogbookEntries = [
         location: "Front Desk",
         type: "Lost/Found",
         notes: "Found a lost wallet at the front desk; notified security to secure it.",
-        createdBy: "Emily"
+        author: "Emily"
     },
     {
         id: uuidv4(),
@@ -90,7 +93,7 @@ export const testLogbookEntries = [
         location: "Main Door",
         type: "Damage",
         notes: "Noticed a small crack in the main door; reported it to maintenance.",
-        createdBy: "James"
+        author: "James"
     },
     {
         id: uuidv4(),
@@ -99,7 +102,7 @@ export const testLogbookEntries = [
         location: "Parking Lot",
         type: "Incident",
         notes: "Witnessed a minor collision in the parking lot; informed the authorities.",
-        createdBy: "James"
+        author: "James"
     },
     {
         id: uuidv4(),
@@ -108,7 +111,7 @@ export const testLogbookEntries = [
         location: "West Offices",
         type: "Guest",
         notes: "Escorted a guest to the executive office area and provided access.",
-        createdBy: "Olivia"
+        author: "Olivia"
     },
     {
         id: uuidv4(),
@@ -117,6 +120,6 @@ export const testLogbookEntries = [
         location: "Incident",
         type: "Guest",
         notes: "Escorted a guest to the executive office area and provided access.",
-        createdBy: "Olivia"
+        author: "Olivia"
     }
 ];

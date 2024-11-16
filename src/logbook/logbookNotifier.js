@@ -1,5 +1,6 @@
 import {v4 as uuidv4} from "uuid";
 import {LOGBOOK_ENTRIES_KEY} from "../constants";
+import {ApiService} from "../ApiService";
 
 const LogbookEvent = {
     Add: 'add',
@@ -14,6 +15,7 @@ class EventMessage {
 }
 
 class LogbookNotifier {
+    apiService = new ApiService()
     handlers = [];
     names = [
         "Aiden Q.",
@@ -97,7 +99,7 @@ class LogbookNotifier {
         clearInterval(this.timer)
     }
 
-    createAndSaveNewEntry() {
+    async createAndSaveNewEntry() {
         //create a new entry and push it to local storage
         const newEntry = {
             id: uuidv4(),
@@ -106,21 +108,26 @@ class LogbookNotifier {
             location: this.getRandomFrom(this.locations),
             type: this.getRandomFrom(this.types),
             notes: this.getRandomFrom(this.situations),
-            createdBy: this.getRandomFrom(this.names)
+            author: this.getRandomFrom(this.names)
         }
 
-        let entries = localStorage.getItem(LOGBOOK_ENTRIES_KEY)
-        if (entries) {
-            entries = JSON.parse(entries)
-        }
-        entries.push(newEntry)
-        localStorage.setItem(LOGBOOK_ENTRIES_KEY, JSON.stringify(entries))
+        // let entries = localStorage.getItem(LOGBOOK_ENTRIES_KEY)
+        // if (entries) {
+        //     entries = JSON.parse(entries)
+        // }
+        // entries.push(newEntry)
+        // localStorage.setItem(LOGBOOK_ENTRIES_KEY, JSON.stringify(entries))
 
-        this.broadcastEvent(newEntry.createdBy, LogbookEvent.Add);
+        try {
+            await this.apiService.createLogbookEntry({data: newEntry})
+            this.broadcastEvent(newEntry.author, LogbookEvent.Add);
+        } catch(error) {
+            alert("LogbookNotifier experienced an error.");
+        }
     }
 
-    startTimer() {
-        this.createAndSaveNewEntry();
+    async startTimer() {
+        await this.createAndSaveNewEntry();
 
         this.timer = setInterval(() => {
             this.createAndSaveNewEntry();

@@ -1,14 +1,30 @@
 import React from "react";
-import {Button, Row} from "react-bootstrap";
+import {Button} from "react-bootstrap";
 import { useNavigate } from 'react-router-dom';
+import {FIRSTNAME_KEY, LASTNAME_KEY, LOGBOOK_ENTRIES_KEY, TOKEN_KEY} from "../constants";
+import {ApiService} from "../ApiService";
 
 
 export default function Authenticated({ username, onLogout }) {
     const navigate = useNavigate();
 
-    function handleLogout() {
-        //localstorage
-        onLogout();
+    async function handleLogout() {
+        try {
+            const apiCaller = new ApiService()
+
+            const token = localStorage.getItem(TOKEN_KEY)
+            const tokenData = { token: token }
+            await apiCaller.logout(tokenData);
+
+            localStorage.removeItem(TOKEN_KEY);
+            localStorage.removeItem(FIRSTNAME_KEY);
+            localStorage.removeItem(LASTNAME_KEY);
+
+            onLogout();
+        } catch (error) {
+            console.error(error)
+        }
+
     }
 
     return (

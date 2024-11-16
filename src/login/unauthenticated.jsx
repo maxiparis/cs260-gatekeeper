@@ -1,25 +1,33 @@
 import React, {useState} from "react";
 import {AuthState} from "./authState";
-import {testUser} from "../constants";
+import {FIRSTNAME_KEY, LASTNAME_KEY, TOKEN_KEY} from "../constants";
+import {ApiService} from "../ApiService";
+import { useNavigate } from "react-router-dom";
 
 export default function Unauthenticated({ onAuthenticate }) {
-
+    const navigateTo = useNavigate()
     const [usernameLabel, setUsernameLabel] = useState("");
     const [passwordLabel, setPasswordLabel] = useState("")
     const [error, setError] = useState("");
-    let authenticatedUser = {}
 
-    function handleAuthentication() {
-        if (authenticateUser()) {
-            authenticatedUser = testUser;
-            onAuthenticate(authenticatedUser.firstName, AuthState.Authenticated)
-        } else {
-            setError("The password/username you have entered does not exist.")
+    async function handleAuthentication() {
+        try {
+            const apiCaller = new ApiService()
+            const userData = { username: usernameLabel, password: passwordLabel }
+            const response = await apiCaller.login(userData)
+
+            const firstName = response.data.firstName
+            const lastName = response.data.lastName
+
+            localStorage.setItem(FIRSTNAME_KEY, firstName);
+            localStorage.setItem(LASTNAME_KEY, lastName);
+            localStorage.setItem(TOKEN_KEY, response.data.token);
+
+            onAuthenticate(firstName, AuthState.Authenticated);
+            navigateTo("/logbook")
+        } catch (error) {
+            setError("The password/username you have entered does not exist/match.")
         }
-    }
-
-    function authenticateUser() {
-        return usernameLabel === testUser.username && passwordLabel === testUser.password
     }
 
     return (

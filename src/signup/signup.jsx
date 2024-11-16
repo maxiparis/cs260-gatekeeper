@@ -1,9 +1,11 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {Button} from "react-bootstrap";
-import {testUser, FIRSTNAME_KEY} from "../constants";
+import {FIRSTNAME_KEY, LASTNAME_KEY, TOKEN_KEY} from "../constants";
 import {useNavigate} from 'react-router-dom';
+import {ApiService} from "../ApiService";
+import {AuthState} from "../login/authState";
 
-export function Signup({ onSignUp }) {
+export function Signup({ onSignUp, authState }) {
     const navigateTo = useNavigate();
 
     const [firstName, setFirstName] = React.useState('');
@@ -13,26 +15,37 @@ export function Signup({ onSignUp }) {
     const [error, setError] = React.useState("");
     const [nameError, setNameError] = React.useState("");
 
-    function handleSignup() {
-        if (userNameIsTaken()) {
-            setError("That username is not available.");
-            return
+    const apiService = new ApiService()
+
+    React.useEffect(() => {
+        if (authState === AuthState.Authenticated) {
+            navigateTo("/logbook");
+        }
+    }, []);
+
+    async function handleSignup() {
+
+        try {
+            const body = {
+                username: username,
+                password: password,
+                firstName: firstName,
+                lastName: lastName
+            }
+            const response = await apiService.createAccount(body);
+
+            console.log(response)
+
+            localStorage.setItem(TOKEN_KEY, response.data.token);
+            localStorage.setItem(FIRSTNAME_KEY, firstName);
+            localStorage.setItem(LASTNAME_KEY, lastName);
+
+            onSignUp(firstName);
+            navigateTo("/logbook");
+        } catch (error) {
+            setError(error.response.data.message);
         }
 
-        //if everything is alright
-        createAccount();
-        localStorage.setItem(FIRSTNAME_KEY, firstName);
-        onSignUp(firstName);
-        navigateTo("/login");
-    }
-
-    function createAccount() {
-        //calls the createAccount api endpoint.
-    }
-
-    function userNameIsTaken() {
-        //calls the backend to check if name was taken, in this case we just check with the testUser
-        return username === testUser.username;
     }
 
     function containsNonLetters(str) {
