@@ -1,0 +1,261 @@
+require('dotenv').config();
+const express = require('express');
+const app = express();
+const uuid = require('uuid');
+const cors = require('cors');
+const axios = require('axios');
+
+const apiKey = process.env.OPENWEATHER_API_KEY;
+const baseURL = process.env.VITE_BACKEND_API_BASE_URL
+console.log(`apiKey = ${apiKey}`)
+console.log(`baseURL = ${baseURL}`)
+
+// The service port defaults to 3000 or is read from the program arguments
+const port = process.argv.length > 2 ? process.argv[2] : 3000;
+
+let users = {}
+let entries = [
+  {
+    id: "123",
+    date: "2024-11-12",
+    time: "12:20",
+    location: "Library",
+    type: "Patrol",
+    notes: "Completed routine patrol of the library; no incidents noted.",
+    author: "Maximiliano"
+  }
+]
+
+app.use(cors());
+//make sure to parse the body from json
+app.use(express.json());
+
+const apiRouter = express.Router();
+app.use(`/api`, apiRouter);
+
+
+// Serve up the static content
+app.use(express.static('dist'));
+
+
+
+// Login
+// Expecting object like:
+// {   "password": String,
+//     "username": String
+// }
+apiRouter.post('/auth/login', async (req, res) => {
+  console.log("-- Login");
+  const user = users[req.body.username];
+  if (user) {
+    if (req.body.password === user.password) {
+      user.token = uuid.v4();
+      console.table(users)
+      return res.send({ token: user.token, firstName: user.firstName, lastName: user.lastName });
+    }
+  }
+  res.status(401).send({ msg: 'Unauthorized' });
+  console.table(users)
+  console.log("Unauthorized")
+});
+
+
+//Create a user - Signup
+// Expecting object like:
+// {
+//     "password": String,
+//     "username": String,
+//     "firstName": String,
+//     "lastName": String
+// }
+apiRouter.post('/auth/create', async (req, res) => {
+  console.log("-- Signup");
+  const validationChecks = [
+    { valid: ('username' in req.body && 'password' in req.body), message: "Username and password are required" },
+    { valid: req.body.password, message: "Password cannot be an empty string" },
+    { valid: req.body.username, message: "Username cannot be an empty string" },
+    { valid: req.body.firstName, message: "First name cannot be an empty string" },
+    { valid: req.body.lastName, message: "Last name cannot be an empty string" },
+    { valid: !users[req.body.username], message: "Username already taken" }
+  ]
+
+  for (let check of validationChecks) {
+    if (!check.valid) {
+      console.log(check.message)
+      return sendResponseWithMessage( { res: res, message: check.message })
+    }
+  }
+
+  // Check if the username has been registered already
+    const newUser = {
+      username: req.body.username,
+      password: req.body.password,
+      firstName: req.body.firstName,
+      lastName: req.body.lastName,
+      token: uuid.v4()
+    };
+    users[newUser.username] = newUser;
+    console.table(users);
+    res.send( { token: newUser.token } );
+})
+
+
+// Logout
+// Expecting object like:
+// {
+//   "token": String
+// }
+apiRouter.delete('/auth/logout', (req, res) => {
+  console.log("-- Logout");
+  const user = Object.values(users).find((u) => u.token === req.body.token);
+  if (user) {
+    delete user.token;
+  }
+  res.status(204).send();
+  console.table(users);
+});
+
+
+/**
+ * GET Entries
+ */
+apiRouter.get('/entries', authenticateToken, (req, res) => {
+  console.log("--- Get Entries")
+  console.table(entries)
+  return res.send( { entries: entries})
+})
+
+
+/**
+ * CREATE Entries
+ */
+apiRouter.post('/entry', authenticateToken, (req, res) => {
+  console.log("--- Create Entry")
+  /**
+   *   {
+   *     date: "2024-11-12",
+   *     time: "12:20",
+   *     location: "Library",
+   *     type: "Patrol",
+   *     notes: "Completed routine patrol of the library; no incidents noted.",
+   *     author: "Maximiliano"
+   *   }
+   */
+
+  const validationChecks = [
+    { valid: req.body.id, message: "ID cannot be an empty string" },
+    { valid: req.body.date, message: "Date cannot be an empty string" },
+    { valid: req.body.time, message: "Time cannot be an empty string" },
+    { valid: req.body.location, message: "Location cannot be an empty string" },
+    { valid: req.body.type, message: "Type cannot be an empty string" },
+    { valid: req.body.notes, message: "Notes cannot be an empty string" },
+    { valid: req.body.author, message: "Author cannot be an empty string" }
+  ]
+
+  for (let check of validationChecks) {
+    if (!check.valid) {
+      return sendResponseWithMessage( { res: res, message: check.message })
+    }
+  }
+
+  const newEntry = {
+    id: req.body.id,
+    date: req.body.date,
+    time: req.body.time,
+    location: req.body.location,
+    type: req.body.type,
+    notes: req.body.notes,
+    author: req.body.author
+  }
+
+  entries.push(newEntry)
+  entries.sort((a, b) =>
+      new Date(`${b.date} ${b.time}`) - new Date(`${a.date} ${a.time}`)
+  );
+  console.table(entries)
+  return res.send({ entries: entries })
+})
+
+apiRouter.post('/weather', authenticateToken, (req, res) => {
+
+})
+
+/**
+ * DELETE Entries
+ */
+apiRouter.delete('/entry', authenticateToken, (req, res) => {
+  console.log("--- Delete Entry")
+  if (!req.body.id) {
+    return sendResponseWithMessage( { res: res, message: "ID cannot be empty" })
+  }
+  const updatedEntries = deleteEntryById(req.body.id)
+  if (updatedEntries.length+1 !== entries.length) {
+    console.table(entries)
+    return sendResponseWithMessage( { res: res, message: "No element was removed" })
+  }
+
+  entries = updatedEntries
+  res.send( { entries: entries })
+  console.table(entries)
+})
+
+/**
+ * Get Weather
+ * /api/weather
+ * Required: auth token
+ */
+apiRouter.get('/weather', authenticateToken, async (req, res) => {
+  console.log("--- Get Weather")
+  try {
+    const weatherApiURL = `https://api.openweathermap.org/data/2.5/weather?lat=40.233845&lon=-111.658531&appid=${apiKey}&units=imperial`
+    const response = await axios.get(weatherApiURL)
+    return res.send(response.data)
+  } catch(error) {
+    console.error(error)
+    return res.status(500).send({ error: "The server had an unexpected error." })
+  }
+})
+
+
+// // Provide the version of the application
+// app.get('/config', (_req, res) => {
+//   res.send({ version: '20221228.075705.1', name: serviceName });
+// });
+//
+// Return the homepage if the path is unknown
+app.use((_req, res) => {
+  res.sendFile('index.html', { root: 'dist' });
+});
+
+app.listen(port, () => {
+  console.log(`Listening on port ${port} - http://localhost:${port}`);
+});
+
+function sendResponseWithMessage( { res, message, status = 400 } ) {
+  res.status(status).send({ message: message });
+}
+
+function deleteEntryById(id) {
+  return entries.filter(entry => entry.id !== id);
+}
+
+function authenticateToken(req, res, next) {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1];
+
+  if (!token) {
+    console.log("Access token required")
+    return res.status(401).send({ message: "Access token required" });
+  }
+
+  // Check if the token exists in a user (simple verification in this example)
+  const user = Object.values(users).find(user => user.token === token);
+
+  if (!user) {
+    console.log("Invalid or expired token")
+    return res.status(403).send({ message: "Invalid or expired token" });
+  }
+
+  req.user = user;
+  next();
+}

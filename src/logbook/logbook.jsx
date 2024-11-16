@@ -1,14 +1,17 @@
-import React from 'react';
-import {useEffect} from "react";
-import {FIRSTNAME_KEY, LOGBOOK_ENTRIES_KEY, testLogbookEntries} from "../constants";
-import {Button, Col, Modal, OverlayTrigger, Toast, ToastContainer, Tooltip} from "react-bootstrap";
-import modal from "bootstrap/js/src/modal";
+import React, {useEffect} from 'react';
+import {FIRSTNAME_KEY, LASTNAME_KEY, testLogbookEntries, TOKEN_KEY} from "../constants";
+import {Button, Modal, OverlayTrigger, Toast, ToastContainer, Tooltip} from "react-bootstrap";
 import 'bootstrap-icons/font/bootstrap-icons.css';
-import { v4 as uuidv4 } from 'uuid';
+import {v4 as uuidv4} from 'uuid';
 import {logbookNotifier} from "./logbookNotifier";
+import {ApiService} from "../ApiService";
+import {AuthState} from "../login/authState";
+import {useNavigate} from "react-router-dom";
 
 
-export function Logbook({ username }) {
+export function Logbook({username, authState}) {
+
+    const navigateTo = useNavigate()
 
     const [entries, setEntries] = React.useState([]);
     const [showAddModal, setShowAddModal] = React.useState(false);
@@ -20,7 +23,7 @@ export function Logbook({ username }) {
     const [location, setLocation] = React.useState("");
     const [type, setType] = React.useState("");
     const [notes, setNotes] = React.useState("");
-    const [author, setAuthor] = React.useState("");
+    const [author, setAuthor] = React.useState(`${localStorage.getItem(FIRSTNAME_KEY)} ${localStorage.getItem(LASTNAME_KEY)}`)
 
     //Fields for filter
     const [filterNote, setFilterNote] = React.useState("");
@@ -33,16 +36,35 @@ export function Logbook({ username }) {
     const [toastName, setToastName] = React.useState("");
     const [testingWebsocket, setTestingWebsocket] = React.useState(false);
 
+    const [weatherMessage, setWeatherMessge] = React.useState("");
+    const [timeMessage, setTimeMessage] = React.useState(getTime());
+
+    const apiService = new ApiService()
 
     // Will run everytime this is rendered when loaded
     useEffect(() => {
-        loadEntries()
-        logbookNotifier.addHandler(handleNotification)
+        if (authState === AuthState.Authenticated) {
+            const intervalId = setInterval(() => {
+                console.log("🟠Getting the time")
+                setTimeMessage(getTime());
+            }, 60000)
 
-        return () => {
-            logbookNotifier.removeHandler(handleNotification);
+            loadEntries()
+            getTime()
+            getWeather()
+            logbookNotifier.addHandler(handleNotification)
+            return () => {
+                logbookNotifier.removeHandler(handleNotification);
+                clearInterval(intervalId)
+            }
         }
     }, [])
+
+    useEffect(() => {
+        if (authState !== AuthState.Authenticated) {
+            navigateTo("/")
+        }
+    }, [authState])
 
     // Watch for changes to any of the states
     useEffect(() => {
@@ -54,11 +76,6 @@ export function Logbook({ username }) {
 
 
     }, [filterDate, filterNote, filterLocation, filterType, filterAuthor]); // Dependency array that listens for updates to any of these states
-
-    //whenever the entries change, we want to update the backend
-    useEffect(() => {
-        localStorage.setItem(LOGBOOK_ENTRIES_KEY, JSON.stringify(entries));
-    }, [entries]);
 
 
     const emptyRow = (
@@ -87,13 +104,13 @@ export function Logbook({ username }) {
         logbookNotifier.cancelTimer()
     }
 
-    function testWebsocket() {
-        logbookNotifier.startTimer()
+    async function testWebsocket() {
+        await logbookNotifier.startTimer()
     }
 
     // When we get notified of an event we will re load all the entries.
-    function handleNotification(event) {
-        loadEntries()
+    async function handleNotification(event) {
+        await loadEntries()
         if (event.from) {
             // if there's no name we won't trigger the notification
             setToastName(event.from)
@@ -101,30 +118,34 @@ export function Logbook({ username }) {
         }
     }
 
-    //TODO: useEffect to retrieve as soon as we start
-    function loadEntries() {
-        const loadedEntries = getEntries()
-
-        //todo: use localStorage?
-        setEntries(loadedEntries);
-    }
-
-    function getEntries() {
-        //this simulates a call to the backend api and receiving as answer an empty array (there are not entries)
-        //for now I will only use the localStorage
-        const loadedEntries = localStorage.getItem(LOGBOOK_ENTRIES_KEY)
-        if (loadedEntries) {
-            return JSON.parse(loadedEntries)
-        } else {
-            return []
+    async function loadEntries() {
+        try {
+            const token = localStorage.getItem(TOKEN_KEY)
+            if (token) {
+                const response = await apiService.getLogbookEntries();
+                setEntries(response.data.entries)
+            } else {
+                alert("The Entries could not be loaded.")
+            }
+        } catch (error) {
+            console.error(error)
         }
     }
 
-    function loadTestEntries() {
-        setEntries(testLogbookEntries)
+
+    async function loadTestEntries() {
+        try {
+            await clearEntries()
+            for (const entry of testLogbookEntries) {
+                const response = await apiService.createLogbookEntry({data: entry})
+                setEntries(response.data.entries)
+            }
+        } catch (e) {
+            alert("Error importing test logbook entries")
+        }
     }
 
-    function isDateInRange (dateToCheck, startDate, endDate) {
+    function isDateInRange(dateToCheck, startDate, endDate) {
         const dateTime = dateToCheck.getTime();
         const startTime = startDate.getTime();
         const endTime = endDate.getTime();
@@ -181,7 +202,7 @@ export function Logbook({ username }) {
 
         if (filterAuthor) {
             filteredEntries = filteredEntries.filter((entry) => {
-                return entry.createdBy.toLowerCase().includes(filterAuthor.toLowerCase())
+                return entry.author.toLowerCase().includes(filterAuthor.toLowerCase())
             })
         }
 
@@ -203,7 +224,7 @@ export function Logbook({ username }) {
                     "location" in entry &&
                     "type" in entry &&
                     "notes" in entry &&
-                    "createdBy" in entry
+                    "author" in entry
 
                 if (hasRequiredFields) {
                     formattedRows.push(
@@ -213,10 +234,10 @@ export function Logbook({ username }) {
                             <td>{entry.location}</td>
                             <td>{entry.type}</td>
                             <td>{entry.notes}</td>
-                            <td>{entry.createdBy}</td>
+                            <td>{entry.author}</td>
                             <td className={"text-center"}>
-                                <Button variant={"outline-danger"} size={"sm"} onClick={() => deleteEntry(entry) }>
-                                <i className="bi bi-trash"></i>
+                                <Button variant={"outline-danger"} size={"sm"} onClick={() => deleteEntry(entry)}>
+                                    <i className="bi bi-trash"></i>
                                 </Button>
                             </td>
                         </tr>
@@ -235,7 +256,6 @@ export function Logbook({ username }) {
         setLocation("")
         setType("")
         setNotes("")
-        setAuthor("")
     }
 
     function clearFilterLogFields() {
@@ -248,7 +268,7 @@ export function Logbook({ username }) {
         setFilterRows(false)
     }
 
-    function addNewLog() {
+    async function addNewLog() {
         const entry = {
             id: uuidv4(),
             date: date,
@@ -256,15 +276,19 @@ export function Logbook({ username }) {
             location: location,
             type: type,
             notes: notes,
-            createdBy: author,
+            author: author,
         }
 
-        entries.push(entry)
-        setEntries(entries)
+        try {
+            const response = await apiService.createLogbookEntry({data: entry})
+            setEntries(response.data.entries)
+            clearAddLogFields()
+        } catch (error) {
+            alert("There was an error adding the new log.")
+        } finally {
+            setShowAddModal(false)
+        }
 
-        clearAddLogFields()
-
-        setShowAddModal(false)
     }
 
     function handlingOpeningModal() {
@@ -272,269 +296,173 @@ export function Logbook({ username }) {
         setShowAddModal(true)
     }
 
-    function deleteEntry(entryToRemove) {
-        setEntries(prevEntries => prevEntries.filter((entry) => entry.id !== entryToRemove.id))
+
+    async function deleteEntry(entryToRemove) {
+        // setEntries(prevEntries => prevEntries.filter((entry) => entry.id !== entryToRemove.id))
+        try {
+            const response = await apiService.removeLogbookEntry({id: entryToRemove.id})
+            setEntries(response.data.entries)
+        } catch (error) {
+            alert("There was an error deleting the log.")
+        }
     }
 
-    function getWeather() {
-        //This will be a call to a third party API
-        return ("48°F - Clear skies")
+    function capitalizeString(str) {
+        return str
+            .split(' ')
+            .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+            .join(' ');
+    }
+
+    /**
+     * This function calls my backend, which also calls a 3rd party API service called OpenWeather.
+     * I decided to have my backend call the api because in order to get a response I had to include my
+     * api id or key in the url, which I thought it was not very safe (anyone could have copied by api key.)
+     * So now my backend contains the api key on a .env file and it is in charge of calling and return a response from
+     * OpenWeather API.
+     */
+    async function getWeather() {
+        try {
+            const response = await apiService.getWeatherFromBackend()
+            const weatherDescription = response.data.weather[0].description
+            const feelsLike = response.data.main.feels_like
+            setWeatherMessge(`${feelsLike}°F - ${capitalizeString(weatherDescription)}`)
+        } catch (error) {
+            alert("Weather could not be loaded.")
+        }
+    }
+
+    function getTime() {
+        const now = new Date();
+        const dateOptions = {
+            weekday: "long",
+            year: "numeric",
+            month: "long",
+            day: "numeric"
+        };
+
+        const timeOptions = {
+            hour: "numeric",
+            minute: "numeric",
+            hour12: true
+        };
+
+        const formattedDate = new Intl.DateTimeFormat("en-US", dateOptions).format(now);
+        const formattedTime = new Intl.DateTimeFormat("en-US", timeOptions).format(now);
+
+        return `${formattedDate} - ${formattedTime}`
+    }
+
+    async function clearEntries() {
+        try {
+            for (const entry of entries) {
+                const response = await apiService.removeLogbookEntry({id: entry.id})
+                setEntries(response.data.entries)
+            }
+        } catch (error) {
+            alert("There was an error deleting the log.")
+        }
     }
 
     return (
-        <main className="container-fluid flex-grow-1 d-flex flex-column flex-wrap align-items-center justify-content-top">
-            <div className="container d-flex flex-column flex-wrap align-items-center justify-content-top">
+        <>
+            {authState === AuthState.Authenticated ? (
+                <main
+                    className="container-fluid flex-grow-1 d-flex flex-column flex-wrap align-items-center justify-content-top">
+                    <div className="container d-flex flex-column flex-wrap align-items-center justify-content-top">
 
-                <ToastContainer
-                    position="top-end"
-                    className={"mt-3 mx-3"}
-                    style={{ zIndex: 9999, position: 'fixed' }}
-                >
-                    <Toast
-                        onClose={() => {
-                            setShowToast(false)
-                        }}
-                        show={showToast}
-                        autohide
-                        delay={3000}
-                    >
-                        <Toast.Header>
-                            <strong className="me-auto">GateKeeper</strong>
-                            <small>Just now</small>
-                        </Toast.Header>
-
-                        { toastName ? (
-                            <Toast.Body>
-                                {toastName} has created a new entry in the Logbook.
-                            </Toast.Body>
-                        ) : (
-                            <Toast.Body>
-                                Someone has created a new entry in the Logbook.
-                            </Toast.Body>
-                        )}
-
-                    </Toast>
-                </ToastContainer>
-
-                <h1>Logbook</h1>
-                <div className="d-flex flex-1 flex-column flex-lg-row align-items-center justify-content-between w-100 my-3">
-                    <h5>Welcome {username}</h5>
-
-                    <h5>Thursday, September 12, 2024 - 11:52 am | { getWeather() }</h5>
-
-                    <button type="button" className="btn btn-primary" onClick={ () => handlingOpeningModal() }>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="m-1 bi bi-plus-circle"
-                             viewBox="0 0 16 16">
-                            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
-                            <path
-                                d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4"/>
-                        </svg>
-                        Add new log
-                    </button>
-                </div>
-            </div>
-
-            <Modal
-                className="fade"
-                show={showAddModal}
-            >
-
-                <Modal.Header>
-                    <h1 className="modal-title fs-5" id="exampleModalLabel">Add a new log</h1>
-                    <button type="button" className="btn-close" onClick={() => setShowAddModal(false)}></button>
-                </Modal.Header>
-
-                <Modal.Body>
-                    <form className="d-flex flex-column gap-3">
-                        <div className="form-group">
-                            <label className="form-label" htmlFor="date">When did this happen? </label>
-                            <input
-                                className="form-control"
-                                type="date"
-                                id="date"
-                                onChange={(e) => setDate(e.target.value)}
-                            ></input>
-                        </div>
-
-                        <div className="form-group">
-                            <label className="form-label" htmlFor="time">At what time? </label>
-                            <input
-                                className="form-control"
-                                type="time"
-                                id="time"
-                                onChange={(e) => setTime(e.target.value)}
-                            ></input>
-                        </div>
-
-                        <div className="form-group">
-                            <label className="form-label" htmlFor="location">Where did it happen? </label>
-                            <select
-                                className="form-select"
-                                name="location"
-                                id="location"
-                                onChange={(e) => setLocation(e.target.value)}
+                        <ToastContainer
+                            position="top-end"
+                            className={"mt-3 mx-3"}
+                            style={{zIndex: 9999, position: 'fixed'}}
+                        >
+                            <Toast
+                                onClose={() => {
+                                    setShowToast(false)
+                                }}
+                                show={showToast}
+                                autohide
+                                delay={3000}
                             >
-                                <option selected>Select an option</option>
-                                <option>Library</option>
-                                <option>Main Door</option>
-                                <option>West Offices</option>
-                                <option>Parking Lot</option>
-                                <option>Cafeteria</option>
-                                <option>Gym</option>
-                                <option>Front Desk</option>
-                            </select>
+                                <Toast.Header>
+                                    <strong className="me-auto">GateKeeper</strong>
+                                    <small>Just now</small>
+                                </Toast.Header>
+
+                                {toastName ? (
+                                    <Toast.Body>
+                                        {toastName} has created a new entry in the Logbook.
+                                    </Toast.Body>
+                                ) : (
+                                    <Toast.Body>
+                                        Someone has created a new entry in the Logbook.
+                                    </Toast.Body>
+                                )}
+
+                            </Toast>
+                        </ToastContainer>
+
+                        <h1>Logbook</h1>
+                        <div
+                            className="d-flex flex-1 flex-column flex-lg-row align-items-center justify-content-between w-100 my-3">
+                            <h5>Welcome {username}</h5>
+
+                            <h5>{ timeMessage } | { weatherMessage }</h5>
+
+                            <button type="button" className="btn btn-primary" onClick={() => handlingOpeningModal()}>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                     className="m-1 bi bi-plus-circle"
+                                     viewBox="0 0 16 16">
+                                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+                                    <path
+                                        d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4"/>
+                                </svg>
+                                Add new log
+                            </button>
                         </div>
-
-                        <div className="form-group">
-                            <label className="form-label" htmlFor="type">Select a type </label>
-                            <select
-                                className="form-select"
-                                name="type"
-                                id="type"
-                                onChange={(e) => setType(e.target.value)}
-                            >
-                                <option selected>Select an option</option>
-                                <option>Guest</option>
-                                <option>Lost/Found</option>
-                                <option>Incident</option>
-                                <option>Damage</option>
-                                <option>Maintenance</option>
-                            </select>
-                        </div>
-
-                        <div className="form-group">
-                            <label className="form-label" htmlFor="description">Describe the event </label>
-                            <textarea
-                                className="form-control"
-                                id="description"
-                                onChange={(e) => setNotes(e.target.value)}
-                            ></textarea>
-                        </div>
-
-                        <div className="form-group">
-                            <label className="form-label" htmlFor="author">Enter the author </label>
-                            <input
-                                className="form-control"
-                                type="text"
-                                id="author"
-                                onChange={(e) => setAuthor(e.target.value)}
-                            />
-                        </div>
-                    </form>
-                </Modal.Body>
-
-                <Modal.Footer>
-                    <button type="button" className="btn btn-secondary" onClick={() => setShowAddModal(false)}>
-                        Close
-                    </button>
-                    <button
-                        type="button"
-                        className="btn btn-primary"
-                        disabled={ !date || !time || !location || !type || !notes || !author  }
-                        onClick={() => addNewLog()}
-                    >
-                        Save log
-                    </button>
-                </Modal.Footer>
-            </Modal>
-
-
-            <div className="rotate-message">
-                <div className="rotate-message card mt-5">
-                    <div className="card-body text-bg-warning p-3">
-                        <div className="d-flex flex-column align-items-center justify-content-center"></div>
-                        <span>Please rotate your phone to see the logs</span>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-arrow-counterclockwise" viewBox="0 0 16 16">
-                            <path d="M8 3a5 5 0 1 1-4.546 2.914.5.5 0 0 0-.908-.417A6 6 0 1 0 8 2z"/>
-                            <path d="M8 4.466V.534a.25.25 0 0 0-.41-.192L5.23 2.308a.25.25 0 0 0 0 .384l2.36 1.966A.25.25 0 0 0 8 4.466"/>
-                        </svg>
                     </div>
-                </div>
-            </div>
 
-            <div className="custom-table justify-content-between align-content-between w-100 gap-3">
-                <button className="btn btn-outline-primary" type="button" data-bs-toggle="collapse" data-bs-target="#filterCollapse"
-                        aria-expanded="false" aria-controls="collapseExample">
-                    Filter log entries
-                </button>
-
-                {/* These buttons below are merely for development and testing purposes. */}
-                <div className={"d-flex gap-2"}>
-                    <Button
-                        variant="outline-secondary"
-                        onClick={() => { loadTestEntries() }}
+                    <Modal
+                        className="fade"
+                        show={showAddModal}
                     >
-                        Test entries
-                    </Button>
 
-                    <Button
-                        variant="outline-danger"
-                        onClick={() => {
-                            setEntries([])
-                            localStorage.setItem(LOGBOOK_ENTRIES_KEY, JSON.stringify([]))
-                        }}
-                    >
-                        Clear entries
-                    </Button>
+                        <Modal.Header>
+                            <h1 className="modal-title fs-5" id="exampleModalLabel">Add a new log</h1>
+                            <button type="button" className="btn-close" onClick={() => setShowAddModal(false)}></button>
+                        </Modal.Header>
 
-                    <Button
-                        variant="outline-secondary"
-                        onClick={() => {
-                            testingWebsocket ? stopWebsocketTesting() : testWebsocket()
-                            setTestingWebsocket(!testingWebsocket)
-                        }}
-                    >
-                        { testingWebsocket ? "Pause websocket" : "Test Websocket" }
-                    </Button>
-                </div>
-
-
-            </div>
-
-            <div className="custom-table flex-row justify-content-between gap-5 w-100">
-                <div className="collapse collapse-horizontal justify-content-left" id="filterCollapse">
-                    <div className="card my-3">
-                        <div className="card-body d-flex flex-column gap-3">
-                            <form>
+                        <Modal.Body>
+                            <form className="d-flex flex-column gap-3">
                                 <div className="form-group">
-                                    <label className="form-label" htmlFor="filter-notes">Notes</label>
-                                    <textarea
+                                    <label className="form-label" htmlFor="date">When did this happen? </label>
+                                    <input
                                         className="form-control"
-                                        value={filterNote}
-                                        id="filter-notes"
-                                        placeholder="Search log notes"
-                                        onChange={(e) => setFilterNote(e.target.value)}
-                                    ></textarea>
+                                        type="date"
+                                        id="date"
+                                        onChange={(e) => setDate(e.target.value)}
+                                    ></input>
                                 </div>
 
-                                <div className="form-group mt-3">
-                                    <label className="form-label" htmlFor="filter-date">Filter by Date: </label>
-                                    <select
-                                        className="form-select"
-                                        name="date"
-                                        id="filter-date"
-                                        value={filterDate}
-                                        onChange={(e) => setFilterDate(e.target.value)}
-                                    >
-                                        <option selected value="">All the time</option>
-                                        <option value="0">Today</option>
-                                        <option value="7">In the last 7 days</option>
-                                        <option value="30">In the last 30 days</option>
-                                        <option value="90">In the last 90 days</option>
-                                        <option value="180">In the last 6 months</option>
-                                    </select>
+                                <div className="form-group">
+                                    <label className="form-label" htmlFor="time">At what time? </label>
+                                    <input
+                                        className="form-control"
+                                        type="time"
+                                        id="time"
+                                        onChange={(e) => setTime(e.target.value)}
+                                    ></input>
                                 </div>
 
-                                <div className="form-group mt-3">
-                                    <label className="form-label" htmlFor="filter-location">Filter by Location: </label>
+                                <div className="form-group">
+                                    <label className="form-label" htmlFor="location">Where did it happen? </label>
                                     <select
                                         className="form-select"
                                         name="location"
-                                        id="filter-location"
-                                        value={filterLocation}
-                                        onChange={(e) => setFilterLocation(e.target.value)}
+                                        id="location"
+                                        onChange={(e) => setLocation(e.target.value)}
                                     >
-                                        <option selected value="">All locations</option>
+                                        <option selected>Select an option</option>
                                         <option>Library</option>
                                         <option>Main Door</option>
                                         <option>West Offices</option>
@@ -545,16 +473,15 @@ export function Logbook({ username }) {
                                     </select>
                                 </div>
 
-                                <div className="form-group mt-3">
-                                    <label className="form-label" htmlFor="filter-type">Filter by Type: </label>
+                                <div className="form-group">
+                                    <label className="form-label" htmlFor="type">Select a type </label>
                                     <select
                                         className="form-select"
                                         name="type"
-                                        id="filter-type"
-                                        value={filterType}
-                                        onChange={(e) => setFilterType(e.target.value)}
+                                        id="type"
+                                        onChange={(e) => setType(e.target.value)}
                                     >
-                                        <option selected value="">All</option>
+                                        <option selected>Select an option</option>
                                         <option>Guest</option>
                                         <option>Lost/Found</option>
                                         <option>Incident</option>
@@ -563,77 +490,253 @@ export function Logbook({ username }) {
                                     </select>
                                 </div>
 
-                                <div className="form-group mt-3">
-                                    <label className="form-label" htmlFor="filter-author">Created by: </label>
-                                    <input
+                                <div className="form-group">
+                                    <label className="form-label" htmlFor="description">Describe the event </label>
+                                    <textarea
                                         className="form-control"
-                                        name="author"
-                                        id="filter-author"
-                                        value={filterAuthor}
-                                        onChange={(e) => setFilterAuthor(e.target.value)}
-                                    ></input>
+                                        id="description"
+                                        onChange={(e) => setNotes(e.target.value)}
+                                    ></textarea>
                                 </div>
 
-
+                                <div className="form-group">
+                                    <label className="form-label" htmlFor="author">Enter the author </label>
+                                    <input
+                                        className="form-control"
+                                        type="text"
+                                        id="author"
+                                        value={author}
+                                        onChange={(e) => setAuthor(e.target.value)}
+                                    />
+                                </div>
                             </form>
+                        </Modal.Body>
 
-                            <OverlayTrigger
-                                placement="bottom"
-                                overlay={
-                                    <Tooltip
-                                        id="tooltip-disabled"
-                                        hidden={filterRows}
-                                    >
-                                        Filters can only be cleared if they have been applied.
-                                    </Tooltip>
-                                }
+                        <Modal.Footer>
+                            <button type="button" className="btn btn-secondary" onClick={() => setShowAddModal(false)}>
+                                Close
+                            </button>
+                            <button
+                                type="button"
+                                className="btn btn-primary"
+                                disabled={!date || !time || !location || !type || !notes || !author}
+                                onClick={() => addNewLog()}
                             >
-                                <span className="d-inline-block">
-                                    <Button
-                                        variant="danger"
-                                        disabled={!filterRows}
-                                        onClick={() => clearFilterLogFields()}
-                                    >
-                                        Clear filters
-                                    </Button>
-                                </span>
-                            </OverlayTrigger>
+                                Save log
+                            </button>
+                        </Modal.Footer>
+                    </Modal>
+
+
+                    <div className="rotate-message">
+                        <div className="rotate-message card mt-5">
+                            <div className="card-body text-bg-warning p-3">
+                                <div className="d-flex flex-column align-items-center justify-content-center"></div>
+                                <span>Please rotate your phone to see the logs</span>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                     className="bi bi-arrow-counterclockwise" viewBox="0 0 16 16">
+                                    <path d="M8 3a5 5 0 1 1-4.546 2.914.5.5 0 0 0-.908-.417A6 6 0 1 0 8 2z"/>
+                                    <path
+                                        d="M8 4.466V.534a.25.25 0 0 0-.41-.192L5.23 2.308a.25.25 0 0 0 0 .384l2.36 1.966A.25.25 0 0 0 8 4.466"/>
+                                </svg>
                             </div>
-                    </div>
-                </div>
-
-                <div className="d-flex flex-column justify-content-left w-100 mt-4 flex-grow-1">
-
-                    <h2>Log entries</h2>
-
-                    <div className={"my-2 text-secondary"}>
-                        <h6>Total entries: { entries.length }</h6>
-                        {   filterRows && (
-                                <h6>Filter results: { filteredRows().length ? filteredRows().length : 0 } </h6>
-                            )
-                        }
+                        </div>
                     </div>
 
-                    <table className="table table-hover">
-                        <thead>
-                        <tr>
-                            <th scope="col">Date</th>
-                            <th scope="col">Time</th>
-                            <th scope="col">Location</th>
-                            <th scope="col">Type</th>
-                            <th scope="col">Notes</th>
-                            <th scope="col">Created by</th>
-                            <th scope="col">Remove</th>
-                        </tr>
-                        </thead>
+                    <div className="custom-table justify-content-between align-content-between w-100 gap-3">
+                        <button className="btn btn-outline-primary" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#filterCollapse"
+                                aria-expanded="false" aria-controls="collapseExample">
+                            Filter log entries
+                        </button>
 
-                        <tbody>
-                        { filterRows ? filteredRows() : unfilteredRows() }
-                        </tbody>
+                        {/* These buttons below are merely for development and testing purposes. */}
+                        <div className={"d-flex gap-2"}>
+                            <Button
+                                variant="outline-secondary"
+                                onClick={async () => {
+                                    await loadTestEntries()
+                                }}
+                            >
+                                Test entries
+                            </Button>
 
-                    </table>
-                </div>
-            </div>
-        </main>
-    );
+                            <Button
+                                variant="outline-danger"
+                                onClick={async () => {
+                                    await clearEntries()
+                                }}
+                            >
+                                Clear entries
+                            </Button>
+
+                            <Button
+                                variant="outline-secondary"
+                                onClick={() => {
+                                    testingWebsocket ? stopWebsocketTesting() : testWebsocket()
+                                    setTestingWebsocket(!testingWebsocket)
+                                }}
+                            >
+                                {testingWebsocket ? "Pause websocket" : "Test Websocket"}
+                            </Button>
+                        </div>
+
+
+                    </div>
+
+                    <div className="custom-table flex-row justify-content-between gap-5 w-100">
+                        <div className="collapse collapse-horizontal justify-content-left" id="filterCollapse">
+                            <div className="card my-3">
+                                <div className="card-body d-flex flex-column gap-3">
+                                    <form>
+                                        <div className="form-group">
+                                            <label className="form-label" htmlFor="filter-notes">Notes</label>
+                                            <textarea
+                                                className="form-control"
+                                                value={filterNote}
+                                                id="filter-notes"
+                                                placeholder="Search log notes"
+                                                onChange={(e) => setFilterNote(e.target.value)}
+                                            ></textarea>
+                                        </div>
+
+                                        <div className="form-group mt-3">
+                                            <label className="form-label" htmlFor="filter-date">Filter by Date: </label>
+                                            <select
+                                                className="form-select"
+                                                name="date"
+                                                id="filter-date"
+                                                value={filterDate}
+                                                onChange={(e) => setFilterDate(e.target.value)}
+                                            >
+                                                <option selected value="">All the time</option>
+                                                <option value="0">Today</option>
+                                                <option value="7">In the last 7 days</option>
+                                                <option value="30">In the last 30 days</option>
+                                                <option value="90">In the last 90 days</option>
+                                                <option value="180">In the last 6 months</option>
+                                            </select>
+                                        </div>
+
+                                        <div className="form-group mt-3">
+                                            <label className="form-label" htmlFor="filter-location">Filter by
+                                                Location: </label>
+                                            <select
+                                                className="form-select"
+                                                name="location"
+                                                id="filter-location"
+                                                value={filterLocation}
+                                                onChange={(e) => setFilterLocation(e.target.value)}
+                                            >
+                                                <option selected value="">All locations</option>
+                                                <option>Library</option>
+                                                <option>Main Door</option>
+                                                <option>West Offices</option>
+                                                <option>Parking Lot</option>
+                                                <option>Cafeteria</option>
+                                                <option>Gym</option>
+                                                <option>Front Desk</option>
+                                            </select>
+                                        </div>
+
+                                        <div className="form-group mt-3">
+                                            <label className="form-label" htmlFor="filter-type">Filter by Type: </label>
+                                            <select
+                                                className="form-select"
+                                                name="type"
+                                                id="filter-type"
+                                                value={filterType}
+                                                onChange={(e) => setFilterType(e.target.value)}
+                                            >
+                                                <option selected value="">All</option>
+                                                <option>Guest</option>
+                                                <option>Lost/Found</option>
+                                                <option>Incident</option>
+                                                <option>Damage</option>
+                                                <option>Maintenance</option>
+                                            </select>
+                                        </div>
+
+                                        <div className="form-group mt-3">
+                                            <label className="form-label" htmlFor="filter-author">Created by: </label>
+                                            <input
+                                                className="form-control"
+                                                name="author"
+                                                id="filter-author"
+                                                value={filterAuthor}
+                                                onChange={(e) => setFilterAuthor(e.target.value)}
+                                            ></input>
+                                        </div>
+
+
+                                    </form>
+
+                                    <OverlayTrigger
+                                        placement="bottom"
+                                        overlay={
+                                            <Tooltip
+                                                id="tooltip-disabled"
+                                                hidden={filterRows}
+                                            >
+                                                Filters can only be cleared if they have been applied.
+                                            </Tooltip>
+                                        }
+                                    >
+                                    <span className="d-inline-block">
+                                        <Button
+                                            variant="danger"
+                                            disabled={!filterRows}
+                                            onClick={() => clearFilterLogFields()}
+                                        >
+                                            Clear filters
+                                        </Button>
+                                    </span>
+                                    </OverlayTrigger>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="d-flex flex-column justify-content-left w-100 mt-4 flex-grow-1">
+
+                            <h2>Log entries</h2>
+
+                            <div className={"my-2 text-secondary"}>
+                                <h6>Total entries: {entries.length}</h6>
+                                {filterRows && (
+                                    <h6>Filter results: {filteredRows().length ? filteredRows().length : 0} </h6>
+                                )
+                                }
+                            </div>
+
+                            <table className="table table-hover">
+                                <thead>
+                                <tr>
+                                    <th scope="col">Date</th>
+                                    <th scope="col">Time</th>
+                                    <th scope="col">Location</th>
+                                    <th scope="col">Type</th>
+                                    <th scope="col">Notes</th>
+                                    <th scope="col">Created by</th>
+                                    <th scope="col">Remove</th>
+                                </tr>
+                                </thead>
+
+                                <tbody>
+                                {filterRows ? filteredRows() : unfilteredRows()}
+                                </tbody>
+
+                            </table>
+                        </div>
+                    </div>
+                </main>
+            ) : (
+                <main
+                    className="container-fluid flex-grow-1 d-flex flex-column flex-wrap align-items-center justify-content-top">
+                    <h2 className={"mt-5"}>You are not authorized to see this page</h2>
+                </main>
+            )
+            }
+        </>
+    )
+        ;
 }

@@ -7,15 +7,34 @@ import { Login } from './login/login';
 import { Logbook } from "./logbook/logbook";
 import { Signup } from "./signup/signup";
 import {AuthState} from "./login/authState";
-import {FIRSTNAME_KEY} from "./constants";
-
+import {FIRSTNAME_KEY, LASTNAME_KEY, TOKEN_KEY} from "./constants";
+import {Dropdown} from "react-bootstrap";
+import {ApiService} from "./ApiService";
+import { useNavigate } from "react-router-dom"
 export default function App() {
 
     const [username, setUsername] = React.useState(localStorage.getItem(FIRSTNAME_KEY) || "");
-    // const [username, setUsername] = React.useState("");
     const currentAuthState = username ? AuthState.Authenticated : AuthState.Unauthenticated
     const [authState, setAuthState] = React.useState(currentAuthState);
 
+    const logout = async () => {
+        try {
+            const apiCaller = new ApiService()
+
+            const token = localStorage.getItem(TOKEN_KEY)
+            const tokenData = { token: token }
+            await apiCaller.logout(tokenData);
+
+            localStorage.removeItem(TOKEN_KEY);
+            localStorage.removeItem(FIRSTNAME_KEY);
+            localStorage.removeItem(LASTNAME_KEY);
+
+            setAuthState(AuthState.Unauthenticated);
+            setUsername("");
+        } catch (error) {
+            console.error(error)
+        }
+    }
     return (
         <BrowserRouter>
             <div className="body bg-light container-fluid d-flex flex-column min-vh-100">
@@ -33,20 +52,43 @@ export default function App() {
                     </div>
 
                     <div className="d-flex justify-content-center text-end">
-                        <NavLink className='btn btn-outline-primary me-2' to='login'>
-                            {authState === AuthState.Authenticated ? "Account" : "Login"}
-                        </NavLink>
 
+                        {/* Login/account button */}
+                        { authState === AuthState.Authenticated ? (
+                            <Dropdown>
+                                <Dropdown.Toggle variant="primary">
+                                    <i className="bi bi-person"></i>
+                                </Dropdown.Toggle>
+
+                                <Dropdown.Menu>
+                                    <Dropdown.Item
+                                        onClick={ logout }
+                                    >
+                                        Logout
+                                    </Dropdown.Item>
+                                </Dropdown.Menu>
+                            </Dropdown>
+                        ) : (
+                            <NavLink className='btn btn-outline-primary me-2' to='login'>
+                                Login
+                            </NavLink>
+                        ) }
+
+                        {/* Sign up button */}
                         { authState !== AuthState.Authenticated && (
                             <NavLink className='btn btn-primary' to='signup'>Sign-up</NavLink>
                         )}
-
                     </div>
                 </header>
 
                 <Routes>
                     <Route path="/" element={<Home authState={ authState } />} />
-                    <Route path="/logbook" element={<Logbook username={username} />} />
+                    <Route path="/logbook" element=
+                        {<Logbook
+                            username={username}
+                            authState={authState}
+                        />
+                    } />
                     <Route path="/login" element=
                         {<Login
                             username={username}
@@ -63,6 +105,7 @@ export default function App() {
                                 setUsername(firstName)
                                 setAuthState(AuthState.Authenticated)
                             }}
+                            authState={authState}
                         />}
                     />
                     <Route path="/*" element={<NotFound />} />
