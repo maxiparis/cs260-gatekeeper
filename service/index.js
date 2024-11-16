@@ -1,12 +1,12 @@
-require('dotenv').config({ path: './service/.env' });
+require('dotenv').config();
 const express = require('express');
 const app = express();
 const uuid = require('uuid');
-const cors = require('cors'); // Import cors
+const cors = require('cors');
 const axios = require('axios');
 
 const apiKey = process.env.OPENWEATHER_API_KEY;
-const baseURL = process.env.BACKEND_API_BASE_URL
+const baseURL = process.env.VITE_BACKEND_API_BASE_URL
 console.log(`apiKey = ${apiKey}`)
 console.log(`baseURL = ${baseURL}`)
 

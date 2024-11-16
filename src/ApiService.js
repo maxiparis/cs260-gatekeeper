@@ -3,10 +3,12 @@ import {TOKEN_KEY} from "./constants";
 
 export class ApiService {
     constructor() {
+        // const backend = import.meta.env.VITE_BACKEND_API_BASE_URL
         this.client = axios.create({
-            baseURL: process.env.BACKEND_API_BASE_URL || 'http://localhost:3000/api',
+            baseURL: import.meta.env.VITE_BACKEND_API_BASE_URL || 'http://localhost:3000/api',
             timeout: 5000
         });
+        // console.log(`backend = ${backend}`);
     }
 
     setAuthToken() {
