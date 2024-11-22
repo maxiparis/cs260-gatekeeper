@@ -4,6 +4,25 @@ const app = express();
 const uuid = require('uuid');
 const cors = require('cors');
 const axios = require('axios');
+const { MongoClient } = require('mongodb');
+
+// Connect to the database cluster
+const url = `mongodb+srv://${process.env.MONGODB_USERNAME}:${process.env.MONGODB_PASSWORD}@${process.env.MONGODB_HOSTNAME}`
+const client = new MongoClient(url);
+const db = client.db('gatekeeper');
+const usersCollection = db.collection('users');
+usersCollection.createIndex({ username: 1 }, { unique: true }) // to make sure the usernames are not repeated
+const entriesCollection = db.collection('entries');
+
+(async function testConnection() {
+  await client.connect();
+  await db.command({ ping: 1 });
+  console.log('✅  Connected to DB!');
+})().catch((ex) => {
+  console.log(`❌Unable to connect to database with ${url} because ${ex.message}`);
+  process.exit(1);
+});
+
 
 const apiKey = process.env.OPENWEATHER_API_KEY;
 const baseURL = process.env.VITE_BACKEND_API_BASE_URL
@@ -13,18 +32,18 @@ console.log(`baseURL = ${baseURL}`)
 // The service port defaults to 3000 or is read from the program arguments
 const port = process.argv.length > 2 ? process.argv[2] : 3000;
 
-let users = {}
-let entries = [
-  {
-    id: "123",
-    date: "2024-11-12",
-    time: "12:20",
-    location: "Library",
-    type: "Patrol",
-    notes: "Completed routine patrol of the library; no incidents noted.",
-    author: "Maximiliano"
-  }
-]
+// let users = {}
+// let entries = [
+//   {
+//     id: "123",
+//     date: "2024-11-12",
+//     time: "12:20",
+//     location: "Library",
+//     type: "Patrol",
+//     notes: "Completed routine patrol of the library; no incidents noted.",
+//     author: "Maximiliano"
+//   }
+// ]
 
 app.use(cors());
 //make sure to parse the body from json
@@ -36,7 +55,6 @@ app.use(`/api`, apiRouter);
 
 // Serve up the static content
 app.use(express.static('dist'));
-
 
 
 // Login
@@ -75,8 +93,8 @@ apiRouter.post('/auth/create', async (req, res) => {
     { valid: req.body.password, message: "Password cannot be an empty string" },
     { valid: req.body.username, message: "Username cannot be an empty string" },
     { valid: req.body.firstName, message: "First name cannot be an empty string" },
-    { valid: req.body.lastName, message: "Last name cannot be an empty string" },
-    { valid: !users[req.body.username], message: "Username already taken" }
+    { valid: req.body.lastName, message: "Last name cannot be an empty string" }
+    // { valid: !users[req.body.username], message: "Username already taken" }
   ]
 
   for (let check of validationChecks) {
@@ -86,7 +104,6 @@ apiRouter.post('/auth/create', async (req, res) => {
     }
   }
 
-  // Check if the username has been registered already
     const newUser = {
       username: req.body.username,
       password: req.body.password,
@@ -94,9 +111,19 @@ apiRouter.post('/auth/create', async (req, res) => {
       lastName: req.body.lastName,
       token: uuid.v4()
     };
-    users[newUser.username] = newUser;
-    console.table(users);
-    res.send( { token: newUser.token } );
+
+    try {
+      await usersCollection.insertOne(newUser);
+      res.send( { token: newUser.token } );
+    } catch (error) {
+      console.log(error)
+      if (error.errorResponse.code === 11000) {
+        let errorMessage = "The username is already taken."
+        return sendResponseWithMessage( { res: res, message: errorMessage })
+      }
+
+      res.status(500).send({ msg: 'The server could not connect with the DB.' });
+    }
 })
 
 
