@@ -132,14 +132,17 @@ apiRouter.post('/auth/create', async (req, res) => {
 // {
 //   "token": String
 // }
-apiRouter.delete('/auth/logout', (req, res) => {
+apiRouter.delete('/auth/logout', async (req, res) => {
   console.log("-- Logout");
-  const user = Object.values(users).find((u) => u.token === req.body.token);
-  if (user) {
-    delete user.token;
+  try {
+    await usersCollection.updateOne(
+        { token: req.body.token },
+        { $set: { token: null } } //TODO: "" or null?
+    )
+    res.status(204).send()
+  } catch (error) {
+    res.status(500).send({ msg: 'The server had a problem.' });
   }
-  res.status(204).send();
-  console.table(users);
 });
 
 
