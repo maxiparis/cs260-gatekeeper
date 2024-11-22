@@ -155,17 +155,21 @@ apiRouter.delete('/auth/logout', async (req, res) => {
 /**
  * GET Entries
  */
-apiRouter.get('/entries', authenticateToken, (req, res) => {
+apiRouter.get('/entries', authenticateToken, async (req, res) => {
   console.log("--- Get Entries")
-  console.table(entries)
-  return res.send( { entries: entries})
+  try {
+    const response = await entriesCollection.find().toArray()
+    return res.send( { entries: response } );
+  } catch (error) {
+    res.status(500).send({ msg: 'The server had a problem.' });
+  }
 })
 
 
 /**
  * CREATE Entries
  */
-apiRouter.post('/entry', authenticateToken, (req, res) => {
+apiRouter.post('/entry', authenticateToken, async (req, res) => {
   console.log("--- Create Entry")
   /**
    *   {
@@ -179,23 +183,23 @@ apiRouter.post('/entry', authenticateToken, (req, res) => {
    */
 
   const validationChecks = [
-    { valid: req.body.id, message: "ID cannot be an empty string" },
-    { valid: req.body.date, message: "Date cannot be an empty string" },
-    { valid: req.body.time, message: "Time cannot be an empty string" },
-    { valid: req.body.location, message: "Location cannot be an empty string" },
-    { valid: req.body.type, message: "Type cannot be an empty string" },
-    { valid: req.body.notes, message: "Notes cannot be an empty string" },
-    { valid: req.body.author, message: "Author cannot be an empty string" }
+    {valid: req.body.id, message: "ID cannot be an empty string"},
+    {valid: req.body.date, message: "Date cannot be an empty string"},
+    {valid: req.body.time, message: "Time cannot be an empty string"},
+    {valid: req.body.location, message: "Location cannot be an empty string"},
+    {valid: req.body.type, message: "Type cannot be an empty string"},
+    {valid: req.body.notes, message: "Notes cannot be an empty string"},
+    {valid: req.body.author, message: "Author cannot be an empty string"}
   ]
 
   for (let check of validationChecks) {
     if (!check.valid) {
-      return sendResponseWithMessage( { res: res, message: check.message })
+      return sendResponseWithMessage({res: res, message: check.message})
     }
   }
 
   const newEntry = {
-    id: req.body.id,
+    _id: req.body.id,
     date: req.body.date,
     time: req.body.time,
     location: req.body.location,
@@ -204,12 +208,19 @@ apiRouter.post('/entry', authenticateToken, (req, res) => {
     author: req.body.author
   }
 
-  entries.push(newEntry)
-  entries.sort((a, b) =>
-      new Date(`${b.date} ${b.time}`) - new Date(`${a.date} ${a.time}`)
-  );
-  console.table(entries)
-  return res.send({ entries: entries })
+  try {
+    await entriesCollection.insertOne(newEntry)
+    const entries = await entriesCollection.find({}).toArray()
+    entries.sort((a, b) =>
+        new Date(`${b.date} ${b.time}`) - new Date(`${a.date} ${a.time}`)
+    );
+    return res.send({entries: entries})
+  } catch (error) {
+    if (error.errorResponse.code === 11000) {
+      return sendResponseWithMessage({res: res, message: "The entry id is duplicated."})
+    }
+    res.status(500).send({msg: 'The server had a problem.'});
+  }
 })
 
 apiRouter.post('/weather', authenticateToken, (req, res) => {
@@ -230,7 +241,7 @@ apiRouter.delete('/entry', authenticateToken, (req, res) => {
     return sendResponseWithMessage( { res: res, message: "No element was removed" })
   }
 
-  entries = updatedEntries
+  let entries = updatedEntries
   res.send( { entries: entries })
   console.table(entries)
 })
@@ -275,7 +286,7 @@ function deleteEntryById(id) {
   return entries.filter(entry => entry.id !== id);
 }
 
-function authenticateToken(req, res, next) {
+async function authenticateToken(req, res, next) {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1];
 
@@ -285,13 +296,17 @@ function authenticateToken(req, res, next) {
   }
 
   // Check if the token exists in a user (simple verification in this example)
-  const user = Object.values(users).find(user => user.token === token);
 
-  if (!user) {
-    console.log("Invalid or expired token")
-    return res.status(403).send({ message: "Invalid or expired token" });
+  try {
+    const found = await usersCollection.find({ token: token }).toArray();
+    if (found.length > 0) {
+      next();
+    } else {
+      console.log("Invalid or expired token")
+      return res.status(403).send({ message: "Invalid or expired token" });
+    }
+
+  } catch (error) {
+    return res.status(500).send({ msg: "An error occurred trying to authenticate token" });
   }
-
-  req.user = user;
-  next();
 }
