@@ -59,22 +59,30 @@ app.use(express.static('dist'));
 
 // Login
 // Expecting object like:
-// {   "password": String,
-//     "username": String
+// {
+//    "password": String,
+//    "username": String
 // }
 apiRouter.post('/auth/login', async (req, res) => {
   console.log("-- Login");
-  const user = users[req.body.username];
-  if (user) {
-    if (req.body.password === user.password) {
-      user.token = uuid.v4();
-      console.table(users)
-      return res.send({ token: user.token, firstName: user.firstName, lastName: user.lastName });
+
+  try {
+    const token = uuid.v4()
+    const updatedUser = await usersCollection.findOneAndUpdate(
+        { username: req.body.username, password: req.body.password },
+        { $set: { token: token} },
+        { returnDocument: "after" }
+    )
+
+    if (updatedUser) {
+      return res.send({ token: updatedUser.token, firstName: updatedUser.firstName, lastName: updatedUser.lastName });
+    } else { // no element that matched that username and password was found
+      console.log("Unauthorized")
+      return res.status(401).send({ msg: 'Unauthorized' });
     }
+  } catch (error) {
+    res.status(500).send({ msg: 'The server had an internal error' });
   }
-  res.status(401).send({ msg: 'Unauthorized' });
-  console.table(users)
-  console.log("Unauthorized")
 });
 
 
@@ -94,7 +102,6 @@ apiRouter.post('/auth/create', async (req, res) => {
     { valid: req.body.username, message: "Username cannot be an empty string" },
     { valid: req.body.firstName, message: "First name cannot be an empty string" },
     { valid: req.body.lastName, message: "Last name cannot be an empty string" }
-    // { valid: !users[req.body.username], message: "Username already taken" }
   ]
 
   for (let check of validationChecks) {
@@ -116,7 +123,6 @@ apiRouter.post('/auth/create', async (req, res) => {
       await usersCollection.insertOne(newUser);
       res.send( { token: newUser.token } );
     } catch (error) {
-      console.log(error)
       if (error.errorResponse.code === 11000) {
         let errorMessage = "The username is already taken."
         return sendResponseWithMessage( { res: res, message: errorMessage })
