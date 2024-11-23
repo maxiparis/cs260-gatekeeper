@@ -5,6 +5,7 @@ const uuid = require('uuid');
 const cors = require('cors');
 const axios = require('axios');
 const { MongoClient } = require('mongodb');
+const bcrypt = require('bcrypt');
 
 // Connect to the database cluster
 const url = `mongodb+srv://${process.env.MONGODB_USERNAME}:${process.env.MONGODB_PASSWORD}@${process.env.MONGODB_HOSTNAME}`
@@ -67,18 +68,27 @@ apiRouter.post('/auth/login', async (req, res) => {
   console.log("-- Login");
 
   try {
-    const token = uuid.v4()
-    const updatedUser = await usersCollection.findOneAndUpdate(
-        { username: req.body.username, password: req.body.password },
-        { $set: { token: token} },
-        { returnDocument: "after" }
-    )
+    const user = await usersCollection.findOne({ username: req.body.username })
+    if (!user) {
+      return res.status(500).send({ msg: "Unauthorized" })
+    }
 
-    if (updatedUser) {
-      return res.send({ token: updatedUser.token, firstName: updatedUser.firstName, lastName: updatedUser.lastName });
-    } else { // no element that matched that username and password was found
-      console.log("Unauthorized")
-      return res.status(401).send({ msg: 'Unauthorized' });
+    if (await verifyPassword(req.body.password, user.password)) {
+      const token = uuid.v4()
+      const updatedUser = await usersCollection.findOneAndUpdate(
+          { username: req.body.username },
+          { $set: { token: token} },
+          { returnDocument: "after" }
+      )
+
+      if (updatedUser) {
+        return res.send({ token: updatedUser.token, firstName: updatedUser.firstName, lastName: updatedUser.lastName });
+      } else { // no element that matched that username and password was found
+        console.log("Unauthorized")
+        return res.status(401).send({ msg: 'Unauthorized' });
+      }
+    } else {
+      sendResponseWithMessage({ res, message: "Unauthorized" })
     }
   } catch (error) {
     res.status(500).send({ msg: 'The server had an internal error' });
@@ -110,10 +120,11 @@ apiRouter.post('/auth/create', async (req, res) => {
       return sendResponseWithMessage( { res: res, message: check.message })
     }
   }
+    const hashedPassword = await hashPassword(req.body.password);
 
     const newUser = {
       username: req.body.username,
-      password: req.body.password,
+      password: hashedPassword,
       firstName: req.body.firstName,
       lastName: req.body.lastName,
       token: uuid.v4()
@@ -313,3 +324,13 @@ async function authenticateToken(req, res, next) {
     return res.status(500).send({ msg: "An error occurred trying to authenticate token" });
   }
 }
+
+async function hashPassword(plainPassword) {
+  const saltRounds = 2;
+  return await bcrypt.hash(plainPassword, saltRounds);
+}
+
+async function verifyPassword(plainPassword, hashedPassword) {
+  return await bcrypt.compare(plainPassword, hashedPassword);
+}
+
