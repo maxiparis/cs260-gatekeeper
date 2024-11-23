@@ -236,7 +236,7 @@ export function Logbook({username, authState}) {
                             <td>{entry.notes}</td>
                             <td>{entry.author}</td>
                             <td className={"text-center"}>
-                                <Button variant={"outline-danger"} size={"sm"} onClick={() => deleteEntry(entry)}>
+                                <Button variant={"outline-danger"} size={"sm"} onClick={() => deleteEntry(entry._id)}>
                                     <i className="bi bi-trash"></i>
                                 </Button>
                             </td>
@@ -297,10 +297,9 @@ export function Logbook({username, authState}) {
     }
 
 
-    async function deleteEntry(entryToRemove) {
-        // setEntries(prevEntries => prevEntries.filter((entry) => entry.id !== entryToRemove.id))
+    async function deleteEntry(id) {
         try {
-            const response = await apiService.removeLogbookEntry({id: entryToRemove.id})
+            const response = await apiService.removeLogbookEntry(id)
             setEntries(response.data.entries)
         } catch (error) {
             alert("There was an error deleting the log.")
@@ -356,7 +355,7 @@ export function Logbook({username, authState}) {
     async function clearEntries() {
         try {
             for (const entry of entries) {
-                const response = await apiService.removeLogbookEntry({id: entry.id})
+                const response = await apiService.removeLogbookEntry(entry._id)
                 setEntries(response.data.entries)
             }
         } catch (error) {

@@ -143,7 +143,7 @@ apiRouter.delete('/auth/logout', async (req, res) => {
   try {
     await usersCollection.updateOne(
         { token: req.body.token },
-        { $set: { token: null } } //TODO: "" or null?
+        { $set: { token: null } }
     )
     res.status(204).send()
   } catch (error) {
@@ -230,20 +230,28 @@ apiRouter.post('/weather', authenticateToken, (req, res) => {
 /**
  * DELETE Entries
  */
-apiRouter.delete('/entry', authenticateToken, (req, res) => {
+apiRouter.delete('/entry', authenticateToken, async (req, res) => {
   console.log("--- Delete Entry")
   if (!req.body.id) {
-    return sendResponseWithMessage( { res: res, message: "ID cannot be empty" })
-  }
-  const updatedEntries = deleteEntryById(req.body.id)
-  if (updatedEntries.length+1 !== entries.length) {
-    console.table(entries)
-    return sendResponseWithMessage( { res: res, message: "No element was removed" })
+    return sendResponseWithMessage({res: res, message: "ID cannot be empty"})
   }
 
-  let entries = updatedEntries
-  res.send( { entries: entries })
-  console.table(entries)
+  try {
+    //delete
+    const deleteResult = await entriesCollection.deleteOne({_id: req.body.id})
+    if (deleteResult.deletedCount === 0) {
+      console.log("No document matched the filter. Nothing was deleted.");
+    }
+
+    //retrieve
+    const entries = await entriesCollection.find({}).toArray()
+
+    //send back response
+    res.send({entries: entries})
+
+  } catch (error) {
+    res.status(500).send({msg: 'The server had a problem.'});
+  }
 })
 
 /**
@@ -282,10 +290,6 @@ function sendResponseWithMessage( { res, message, status = 400 } ) {
   res.status(status).send({ message: message });
 }
 
-function deleteEntryById(id) {
-  return entries.filter(entry => entry.id !== id);
-}
-
 async function authenticateToken(req, res, next) {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1];
@@ -295,8 +299,7 @@ async function authenticateToken(req, res, next) {
     return res.status(401).send({ message: "Access token required" });
   }
 
-  // Check if the token exists in a user (simple verification in this example)
-
+  // Check if the token exists in a user
   try {
     const found = await usersCollection.find({ token: token }).toArray();
     if (found.length > 0) {

@@ -88,7 +88,7 @@ export class ApiService {
         }
     }
 
-    async removeLogbookEntry({ id }) {
+    async removeLogbookEntry(id) {
         try {
             this.setAuthToken();
             const response = await this.client.delete(`/entry`, {
