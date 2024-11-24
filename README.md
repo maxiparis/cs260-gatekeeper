@@ -1,5 +1,5 @@
 # GateKeeper
-[gatekeeper.maxiparis.com](http://gatekeeper.maxiparis.com)
+
 ## Specification Deliverable
 
 ### Elevator pitch
