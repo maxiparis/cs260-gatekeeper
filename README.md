@@ -138,6 +138,17 @@ For this deliverable, I used JavaScript and React so that the application comple
 - 🟠 Extra features:
   - Date in `Logbook` is updated every minute to be able to provide updated information.
   - Before this phase, my `/logbook` and my `/signup` pages were accessible when a user was authenticated even if those buttons were hidden. In this phase I fixed that. If you try to access `/logbook` and you are not authenticated you will be redirected to the `/home` page, same with the `/signup` page 
-  - The `Account` button in the navbar was changed for a account icon, which opens a dropdown if tapped. This allows the user to go directly to logout quickly. 
+  - The `Account` button in the navbar was changed for an icon, which opens a dropdown if tapped. This allows the user to go directly to logout quickly. 
   - When users authenticate successfully from the `Login` or `Signup` pages, they are redirected automatically to the `Logbook`.
   - If you log out while being in the `Logbook`, you will be redirected to the `Home` page`
+
+## DB/Login deliverable
+
+- ✅ **MongoDB Atlas database created** - done!
+- ✅ **Stores data in MongoDB** - done!
+- ✅ **User registration** - Creates a new account in the database.
+- ✅ **Existing user** - My backend compares the credentials provided with the credentials in the DB, and accordingly authenticates a user. 
+- ✅ **Logbook entries** - Stored in my DB.
+- ✅ **Use MongoDB to store credentials** - Stores both user and their votes.
+- ✅ **Encrypted passwords** - done! All passwords are stored encrypted/hashed in my DB.
+- ✅ **Restricted pages** - done! Logbook cannot be accessed unless logged in. If a user logs out while being in the Logbook, they are redirected to the home page. Sign up page is only available if no user is logged in.

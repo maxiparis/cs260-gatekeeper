@@ -4,6 +4,26 @@ const app = express();
 const uuid = require('uuid');
 const cors = require('cors');
 const axios = require('axios');
+const { MongoClient } = require('mongodb');
+const bcrypt = require('bcrypt');
+
+// Connect to the database cluster
+const url = `mongodb+srv://${process.env.MONGODB_USERNAME}:${process.env.MONGODB_PASSWORD}@${process.env.MONGODB_HOSTNAME}`
+const client = new MongoClient(url);
+const db = client.db('gatekeeper');
+const usersCollection = db.collection('users');
+usersCollection.createIndex({ username: 1 }, { unique: true }) // to make sure the usernames are not repeated
+const entriesCollection = db.collection('entries');
+
+(async function testConnection() {
+  await client.connect();
+  await db.command({ ping: 1 });
+  console.log('✅  Connected to DB!');
+})().catch((ex) => {
+  console.log(`❌Unable to connect to database with ${url} because ${ex.message}`);
+  process.exit(1);
+});
+
 
 const apiKey = process.env.OPENWEATHER_API_KEY;
 const baseURL = process.env.VITE_BACKEND_API_BASE_URL
@@ -13,18 +33,18 @@ console.log(`baseURL = ${baseURL}`)
 // The service port defaults to 3000 or is read from the program arguments
 const port = process.argv.length > 2 ? process.argv[2] : 3000;
 
-let users = {}
-let entries = [
-  {
-    id: "123",
-    date: "2024-11-12",
-    time: "12:20",
-    location: "Library",
-    type: "Patrol",
-    notes: "Completed routine patrol of the library; no incidents noted.",
-    author: "Maximiliano"
-  }
-]
+// let users = {}
+// let entries = [
+//   {
+//     id: "123",
+//     date: "2024-11-12",
+//     time: "12:20",
+//     location: "Library",
+//     type: "Patrol",
+//     notes: "Completed routine patrol of the library; no incidents noted.",
+//     author: "Maximiliano"
+//   }
+// ]
 
 app.use(cors());
 //make sure to parse the body from json
@@ -38,25 +58,41 @@ app.use(`/api`, apiRouter);
 app.use(express.static('dist'));
 
 
-
 // Login
 // Expecting object like:
-// {   "password": String,
-//     "username": String
+// {
+//    "password": String,
+//    "username": String
 // }
 apiRouter.post('/auth/login', async (req, res) => {
   console.log("-- Login");
-  const user = users[req.body.username];
-  if (user) {
-    if (req.body.password === user.password) {
-      user.token = uuid.v4();
-      console.table(users)
-      return res.send({ token: user.token, firstName: user.firstName, lastName: user.lastName });
+
+  try {
+    const user = await usersCollection.findOne({ username: req.body.username })
+    if (!user) {
+      return res.status(500).send({ msg: "Unauthorized" })
     }
+
+    if (await verifyPassword(req.body.password, user.password)) {
+      const token = uuid.v4()
+      const updatedUser = await usersCollection.findOneAndUpdate(
+          { username: req.body.username },
+          { $set: { token: token} },
+          { returnDocument: "after" }
+      )
+
+      if (updatedUser) {
+        return res.send({ token: updatedUser.token, firstName: updatedUser.firstName, lastName: updatedUser.lastName });
+      } else { // no element that matched that username and password was found
+        console.log("Unauthorized")
+        return res.status(401).send({ msg: 'Unauthorized' });
+      }
+    } else {
+      sendResponseWithMessage({ res, message: "Unauthorized" })
+    }
+  } catch (error) {
+    res.status(500).send({ msg: 'The server had an internal error' });
   }
-  res.status(401).send({ msg: 'Unauthorized' });
-  console.table(users)
-  console.log("Unauthorized")
 });
 
 
@@ -75,8 +111,7 @@ apiRouter.post('/auth/create', async (req, res) => {
     { valid: req.body.password, message: "Password cannot be an empty string" },
     { valid: req.body.username, message: "Username cannot be an empty string" },
     { valid: req.body.firstName, message: "First name cannot be an empty string" },
-    { valid: req.body.lastName, message: "Last name cannot be an empty string" },
-    { valid: !users[req.body.username], message: "Username already taken" }
+    { valid: req.body.lastName, message: "Last name cannot be an empty string" }
   ]
 
   for (let check of validationChecks) {
@@ -85,18 +120,27 @@ apiRouter.post('/auth/create', async (req, res) => {
       return sendResponseWithMessage( { res: res, message: check.message })
     }
   }
+    const hashedPassword = await hashPassword(req.body.password);
 
-  // Check if the username has been registered already
     const newUser = {
       username: req.body.username,
-      password: req.body.password,
+      password: hashedPassword,
       firstName: req.body.firstName,
       lastName: req.body.lastName,
       token: uuid.v4()
     };
-    users[newUser.username] = newUser;
-    console.table(users);
-    res.send( { token: newUser.token } );
+
+    try {
+      await usersCollection.insertOne(newUser);
+      res.send( { token: newUser.token } );
+    } catch (error) {
+      if (error.errorResponse.code === 11000) {
+        let errorMessage = "The username is already taken."
+        return sendResponseWithMessage( { res: res, message: errorMessage })
+      }
+
+      res.status(500).send({ msg: 'The server could not connect with the DB.' });
+    }
 })
 
 
@@ -105,31 +149,38 @@ apiRouter.post('/auth/create', async (req, res) => {
 // {
 //   "token": String
 // }
-apiRouter.delete('/auth/logout', (req, res) => {
+apiRouter.delete('/auth/logout', async (req, res) => {
   console.log("-- Logout");
-  const user = Object.values(users).find((u) => u.token === req.body.token);
-  if (user) {
-    delete user.token;
+  try {
+    await usersCollection.updateOne(
+        { token: req.body.token },
+        { $set: { token: null } }
+    )
+    res.status(204).send()
+  } catch (error) {
+    res.status(500).send({ msg: 'The server had a problem.' });
   }
-  res.status(204).send();
-  console.table(users);
 });
 
 
 /**
  * GET Entries
  */
-apiRouter.get('/entries', authenticateToken, (req, res) => {
+apiRouter.get('/entries', authenticateToken, async (req, res) => {
   console.log("--- Get Entries")
-  console.table(entries)
-  return res.send( { entries: entries})
+  try {
+    const response = await entriesCollection.find().toArray()
+    return res.send( { entries: response } );
+  } catch (error) {
+    res.status(500).send({ msg: 'The server had a problem.' });
+  }
 })
 
 
 /**
  * CREATE Entries
  */
-apiRouter.post('/entry', authenticateToken, (req, res) => {
+apiRouter.post('/entry', authenticateToken, async (req, res) => {
   console.log("--- Create Entry")
   /**
    *   {
@@ -143,23 +194,23 @@ apiRouter.post('/entry', authenticateToken, (req, res) => {
    */
 
   const validationChecks = [
-    { valid: req.body.id, message: "ID cannot be an empty string" },
-    { valid: req.body.date, message: "Date cannot be an empty string" },
-    { valid: req.body.time, message: "Time cannot be an empty string" },
-    { valid: req.body.location, message: "Location cannot be an empty string" },
-    { valid: req.body.type, message: "Type cannot be an empty string" },
-    { valid: req.body.notes, message: "Notes cannot be an empty string" },
-    { valid: req.body.author, message: "Author cannot be an empty string" }
+    {valid: req.body.id, message: "ID cannot be an empty string"},
+    {valid: req.body.date, message: "Date cannot be an empty string"},
+    {valid: req.body.time, message: "Time cannot be an empty string"},
+    {valid: req.body.location, message: "Location cannot be an empty string"},
+    {valid: req.body.type, message: "Type cannot be an empty string"},
+    {valid: req.body.notes, message: "Notes cannot be an empty string"},
+    {valid: req.body.author, message: "Author cannot be an empty string"}
   ]
 
   for (let check of validationChecks) {
     if (!check.valid) {
-      return sendResponseWithMessage( { res: res, message: check.message })
+      return sendResponseWithMessage({res: res, message: check.message})
     }
   }
 
   const newEntry = {
-    id: req.body.id,
+    _id: req.body.id,
     date: req.body.date,
     time: req.body.time,
     location: req.body.location,
@@ -168,12 +219,19 @@ apiRouter.post('/entry', authenticateToken, (req, res) => {
     author: req.body.author
   }
 
-  entries.push(newEntry)
-  entries.sort((a, b) =>
-      new Date(`${b.date} ${b.time}`) - new Date(`${a.date} ${a.time}`)
-  );
-  console.table(entries)
-  return res.send({ entries: entries })
+  try {
+    await entriesCollection.insertOne(newEntry)
+    const entries = await entriesCollection.find({}).toArray()
+    entries.sort((a, b) =>
+        new Date(`${b.date} ${b.time}`) - new Date(`${a.date} ${a.time}`)
+    );
+    return res.send({entries: entries})
+  } catch (error) {
+    if (error.errorResponse.code === 11000) {
+      return sendResponseWithMessage({res: res, message: "The entry id is duplicated."})
+    }
+    res.status(500).send({msg: 'The server had a problem.'});
+  }
 })
 
 apiRouter.post('/weather', authenticateToken, (req, res) => {
@@ -183,20 +241,28 @@ apiRouter.post('/weather', authenticateToken, (req, res) => {
 /**
  * DELETE Entries
  */
-apiRouter.delete('/entry', authenticateToken, (req, res) => {
+apiRouter.delete('/entry', authenticateToken, async (req, res) => {
   console.log("--- Delete Entry")
   if (!req.body.id) {
-    return sendResponseWithMessage( { res: res, message: "ID cannot be empty" })
-  }
-  const updatedEntries = deleteEntryById(req.body.id)
-  if (updatedEntries.length+1 !== entries.length) {
-    console.table(entries)
-    return sendResponseWithMessage( { res: res, message: "No element was removed" })
+    return sendResponseWithMessage({res: res, message: "ID cannot be empty"})
   }
 
-  entries = updatedEntries
-  res.send( { entries: entries })
-  console.table(entries)
+  try {
+    //delete
+    const deleteResult = await entriesCollection.deleteOne({_id: req.body.id})
+    if (deleteResult.deletedCount === 0) {
+      console.log("No document matched the filter. Nothing was deleted.");
+    }
+
+    //retrieve
+    const entries = await entriesCollection.find({}).toArray()
+
+    //send back response
+    res.send({entries: entries})
+
+  } catch (error) {
+    res.status(500).send({msg: 'The server had a problem.'});
+  }
 })
 
 /**
@@ -235,11 +301,7 @@ function sendResponseWithMessage( { res, message, status = 400 } ) {
   res.status(status).send({ message: message });
 }
 
-function deleteEntryById(id) {
-  return entries.filter(entry => entry.id !== id);
-}
-
-function authenticateToken(req, res, next) {
+async function authenticateToken(req, res, next) {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1];
 
@@ -248,14 +310,27 @@ function authenticateToken(req, res, next) {
     return res.status(401).send({ message: "Access token required" });
   }
 
-  // Check if the token exists in a user (simple verification in this example)
-  const user = Object.values(users).find(user => user.token === token);
+  // Check if the token exists in a user
+  try {
+    const found = await usersCollection.find({ token: token }).toArray();
+    if (found.length > 0) {
+      next();
+    } else {
+      console.log("Invalid or expired token")
+      return res.status(403).send({ message: "Invalid or expired token" });
+    }
 
-  if (!user) {
-    console.log("Invalid or expired token")
-    return res.status(403).send({ message: "Invalid or expired token" });
+  } catch (error) {
+    return res.status(500).send({ msg: "An error occurred trying to authenticate token" });
   }
-
-  req.user = user;
-  next();
 }
+
+async function hashPassword(plainPassword) {
+  const saltRounds = 2;
+  return await bcrypt.hash(plainPassword, saltRounds);
+}
+
+async function verifyPassword(plainPassword, hashedPassword) {
+  return await bcrypt.compare(plainPassword, hashedPassword);
+}
+
