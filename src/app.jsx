@@ -10,7 +10,6 @@ import {AuthState} from "./login/authState";
 import {FIRSTNAME_KEY, LASTNAME_KEY, TOKEN_KEY} from "./constants";
 import {Dropdown} from "react-bootstrap";
 import {ApiService} from "./ApiService";
-import { useNavigate } from "react-router-dom"
 export default function App() {
 
     const [username, setUsername] = React.useState(localStorage.getItem(FIRSTNAME_KEY) || "");

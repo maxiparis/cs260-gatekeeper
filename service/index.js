@@ -6,6 +6,7 @@ const cors = require('cors');
 const axios = require('axios');
 const { MongoClient } = require('mongodb');
 const bcrypt = require('bcrypt');
+const {peerProxy} = require("./peerProxy");
 
 // Connect to the database cluster
 const url = `mongodb+srv://${process.env.MONGODB_USERNAME}:${process.env.MONGODB_PASSWORD}@${process.env.MONGODB_HOSTNAME}`
@@ -293,9 +294,12 @@ app.use((_req, res) => {
   res.sendFile('index.html', { root: 'dist' });
 });
 
-app.listen(port, () => {
+const httpService = app.listen(port, () => {
   console.log(`Listening on port ${port} - http://localhost:${port}`);
 });
+
+//Websocket
+peerProxy(httpService)
 
 function sendResponseWithMessage( { res, message, status = 400 } ) {
   res.status(status).send({ message: message });
