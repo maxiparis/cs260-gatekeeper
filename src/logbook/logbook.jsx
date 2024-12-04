@@ -3,7 +3,7 @@ import {FIRSTNAME_KEY, LASTNAME_KEY, testLogbookEntries, TOKEN_KEY} from "../con
 import {Button, Modal, OverlayTrigger, Toast, ToastContainer, Tooltip} from "react-bootstrap";
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import {v4 as uuidv4} from 'uuid';
-import {logbookNotifier} from "./logbookNotifier";
+import {LogbookEvent, logbookNotifier} from "./logbookNotifier";
 import {ApiService} from "../ApiService";
 import {AuthState} from "../login/authState";
 import {useNavigate} from "react-router-dom";
@@ -282,7 +282,9 @@ export function Logbook({username, authState}) {
         try {
             const response = await apiService.createLogbookEntry({data: entry})
             setEntries(response.data.entries)
+            logbookNotifier.broadcastEvent(entry.author, LogbookEvent.Add)
             clearAddLogFields()
+
         } catch (error) {
             alert("There was an error adding the new log.")
         } finally {
