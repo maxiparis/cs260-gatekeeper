@@ -1,5 +1,4 @@
 import {v4 as uuidv4} from "uuid";
-import {LOGBOOK_ENTRIES_KEY} from "../constants";
 import {ApiService} from "../ApiService";
 
 const LogbookEvent = {

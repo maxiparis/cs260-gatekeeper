@@ -557,35 +557,35 @@ export function Logbook({username, authState}) {
                         </button>
 
                         {/* These buttons below are merely for development and testing purposes. */}
-                        <div className={"d-flex gap-2"}>
-                            <Button
-                                variant="outline-secondary"
-                                onClick={async () => {
-                                    await loadTestEntries()
-                                }}
-                            >
-                                Test entries
-                            </Button>
+                        {/*<div className={"d-flex gap-2"}>*/}
+                        {/*    <Button*/}
+                        {/*        variant="outline-secondary"*/}
+                        {/*        onClick={async () => {*/}
+                        {/*            await loadTestEntries()*/}
+                        {/*        }}*/}
+                        {/*    >*/}
+                        {/*        Test entries*/}
+                        {/*    </Button>*/}
 
-                            <Button
-                                variant="outline-danger"
-                                onClick={async () => {
-                                    await clearEntries()
-                                }}
-                            >
-                                Clear entries
-                            </Button>
+                        {/*    <Button*/}
+                        {/*        variant="outline-danger"*/}
+                        {/*        onClick={async () => {*/}
+                        {/*            await clearEntries()*/}
+                        {/*        }}*/}
+                        {/*    >*/}
+                        {/*        Clear entries*/}
+                        {/*    </Button>*/}
 
-                            <Button
-                                variant="outline-secondary"
-                                onClick={() => {
-                                    testingWebsocket ? stopWebsocketTesting() : testWebsocket()
-                                    setTestingWebsocket(!testingWebsocket)
-                                }}
-                            >
-                                {testingWebsocket ? "Pause websocket" : "Test Websocket"}
-                            </Button>
-                        </div>
+                        {/*    <Button*/}
+                        {/*        variant="outline-secondary"*/}
+                        {/*        onClick={() => {*/}
+                        {/*            testingWebsocket ? stopWebsocketTesting() : testWebsocket()*/}
+                        {/*            setTestingWebsocket(!testingWebsocket)*/}
+                        {/*        }}*/}
+                        {/*    >*/}
+                        {/*        {testingWebsocket ? "Pause websocket" : "Test Websocket"}*/}
+                        {/*    </Button>*/}
+                        {/*</div>*/}
 
 
                     </div>
