@@ -4,7 +4,7 @@ import {ApiService} from "../ApiService";
 
 const LogbookEvent = {
     Add: 'add',
-    Remove: 'remove',
+    Delete: 'delete',
 };
 
 class EventMessage {

@@ -34,6 +34,7 @@ export function Logbook({username, authState}) {
 
     const [showToast, setShowToast] = React.useState(false);
     const [toastName, setToastName] = React.useState("");
+    const [toastAction, setToastAction] = React.useState("");
     const [testingWebsocket, setTestingWebsocket] = React.useState(false);
 
     const [weatherMessage, setWeatherMessge] = React.useState("");
@@ -111,9 +112,11 @@ export function Logbook({username, authState}) {
     // When we get notified of an event we will re load all the entries.
     async function handleNotification(event) {
         await loadEntries()
-        if (event.from) {
-            // if there's no name we won't trigger the notification
+
+        if (event.from && event.type) {
+            // if there's no name/type we won't trigger the notification
             setToastName(event.from)
+            setToastAction(event.type === "add" ? "created" : "deleted")
             setShowToast(true)
         }
     }
@@ -303,6 +306,8 @@ export function Logbook({username, authState}) {
         try {
             const response = await apiService.removeLogbookEntry(id)
             setEntries(response.data.entries)
+
+            logbookNotifier.broadcastEvent(`${localStorage.getItem(FIRSTNAME_KEY)} ${localStorage.getItem(LASTNAME_KEY)}`, LogbookEvent.Delete)
         } catch (error) {
             alert("There was an error deleting the log.")
         }
@@ -392,11 +397,11 @@ export function Logbook({username, authState}) {
 
                                 {toastName ? (
                                     <Toast.Body>
-                                        {toastName} has created a new entry in the Logbook.
+                                        {toastName} has {toastAction} an entry in the Logbook.
                                     </Toast.Body>
                                 ) : (
                                     <Toast.Body>
-                                        Someone has created a new entry in the Logbook.
+                                        Someone modified the Logbook.
                                     </Toast.Body>
                                 )}
 
