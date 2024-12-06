@@ -15,6 +15,10 @@ export function Logbook({username, authState}) {
 
     const [entries, setEntries] = React.useState([]);
     const [showAddModal, setShowAddModal] = React.useState(false);
+
+    const [showDeleteConfirmation, setShowDeleteConfirmation] = React.useState(false);
+    const [idToDelete, setIdToDelete] = React.useState(null);
+
     const [filterRows, setFilterRows] = React.useState(false);
 
     //Fields for new entry modal
@@ -239,7 +243,7 @@ export function Logbook({username, authState}) {
                             <td>{entry.notes}</td>
                             <td>{entry.author}</td>
                             <td className={"text-center"}>
-                                <Button variant={"outline-danger"} size={"sm"} onClick={() => deleteEntry(entry._id)}>
+                                <Button variant={"outline-danger"} size={"sm"} onClick={() => handleOpeningDeleteConfirmation(entry._id)}>
                                     <i className="bi bi-trash"></i>
                                 </Button>
                             </td>
@@ -296,9 +300,26 @@ export function Logbook({username, authState}) {
 
     }
 
-    function handlingOpeningModal() {
+    //add new entry
+    function handlingOpeningNewEntry() {
         clearAddLogFields()
         setShowAddModal(true)
+    }
+
+    //delete entry
+    function handleOpeningDeleteConfirmation(id) {
+        setShowDeleteConfirmation(true)
+        setIdToDelete(id)
+    }
+
+    function handleConfirmDelete() {
+        deleteEntry(idToDelete)
+        handleCloseDeleteConfirmation()
+    }
+
+    function handleCloseDeleteConfirmation() {
+        setShowDeleteConfirmation(false)
+        setIdToDelete(null)
     }
 
 
@@ -415,7 +436,7 @@ export function Logbook({username, authState}) {
 
                             <h5>{ timeMessage } | { weatherMessage }</h5>
 
-                            <button type="button" className="btn btn-primary" onClick={() => handlingOpeningModal()}>
+                            <button type="button" className="btn btn-primary" onClick={() => handlingOpeningNewEntry()}>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                      className="m-1 bi bi-plus-circle"
                                      viewBox="0 0 16 16">
@@ -428,6 +449,8 @@ export function Logbook({username, authState}) {
                         </div>
                     </div>
 
+
+                    {/*Add new log modal*/}
                     <Modal
                         className="fade"
                         show={showAddModal}
@@ -530,6 +553,22 @@ export function Logbook({username, authState}) {
                             >
                                 Save log
                             </button>
+                        </Modal.Footer>
+                    </Modal>
+
+                    {/* Confirm delete dialog */}
+                    <Modal show={showDeleteConfirmation} onHide={ () => handleCloseDeleteConfirmation() }>
+                        <Modal.Header closeButton>
+                            <Modal.Title>Confirm deletion</Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body>Are you sure you want to delete this log? This action cannot be undone. </Modal.Body>
+                        <Modal.Footer>
+                            <Button variant="secondary" onClick={() => handleCloseDeleteConfirmation()}>
+                                Close
+                            </Button>
+                            <Button variant="danger" onClick={() => handleConfirmDelete() }>
+                                Delete entry
+                            </Button>
                         </Modal.Footer>
                     </Modal>
 
