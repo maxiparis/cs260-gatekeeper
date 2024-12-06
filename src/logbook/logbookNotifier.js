@@ -1,10 +1,9 @@
 import {v4 as uuidv4} from "uuid";
-import {LOGBOOK_ENTRIES_KEY} from "../constants";
 import {ApiService} from "../ApiService";
 
 const LogbookEvent = {
     Add: 'add',
-    Remove: 'remove',
+    Delete: 'delete',
 };
 
 class EventMessage {
@@ -85,10 +84,34 @@ class LogbookNotifier {
 
     timer = ""
 
-    // constructor() {
-    //     // Simulate WebSocket
-    //     this.startTimer()
-    // }
+    constructor() {
+        let port = window.location.port;
+        const protocol = window.location.protocol === 'http:' ? 'ws' : 'wss';
+        this.socket = new WebSocket(`${protocol}://${window.location.hostname}:${port}/ws`);
+
+        //Open
+        this.socket.onopen = (event) => {
+            // this.receiveEvent(new EventMessage('Simon', GameEvent.System, { msg: 'connected' }));
+            console.log("🟠 Connected to WebSocket")
+        };
+
+        //Close
+        this.socket.onclose = (event) => {
+            // this.receiveEvent(new EventMessage('Simon', GameEvent.System, { msg: 'disconnected' }));
+            console.log("🟠 Disconnected from WebSocket")
+        };
+
+        //OnMessage
+        this.socket.onmessage = async (msg) => {
+            try {
+                console.log(`🟠 Got a message through WebSocket: ${msg}`)
+                const event = JSON.parse(await msg.data.text());
+                this.receiveEvent(event);
+            } catch {
+                console.error("There was an issue reading the websocket message.")
+            }
+        };
+    }
 
     getRandomFrom(array) {
         const randomIndex = Math.floor(Math.random() * array.length);
@@ -137,7 +160,7 @@ class LogbookNotifier {
     broadcastEvent(from, type) {
         //this simulates sending a message
         const event = new EventMessage(from, type);
-        this.receiveEvent(event);
+        this.socket.send(JSON.stringify(event));
     }
 
     addHandler(handler) {

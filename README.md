@@ -152,3 +152,15 @@ For this deliverable, I used JavaScript and React so that the application comple
 - ✅ **Use MongoDB to store credentials** - Stores both user and their votes.
 - ✅ **Encrypted passwords** - done! All passwords are stored encrypted/hashed in my DB.
 - ✅ **Restricted pages** - done! Logbook cannot be accessed unless logged in. If a user logs out while being in the Logbook, they are redirected to the home page. Sign up page is only available if no user is logged in.
+
+
+## WebSocket deliverable
+
+For this deliverable I used webSocket to update the Logbook in realtime, and notify other users of the changes.
+
+- ✅ **Backend listens for WebSocket connection** - done!
+- ✅ **Frontend makes WebSocket connection** - done!
+- ✅ **Data sent over WebSocket connection** - done!
+- ✅ **WebSocket data displayed** - When a user deletes or adds a new entry, all other users that are connected receive a cool notification and their Logbook is updated automatically.
+- 🟠 Extra features:
+  - The entry deletion feature now opens a confirmation dialog to inform users that deleting a log entry is a permanent action and cannot be undone.

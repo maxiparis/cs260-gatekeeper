@@ -3,7 +3,7 @@ import {FIRSTNAME_KEY, LASTNAME_KEY, testLogbookEntries, TOKEN_KEY} from "../con
 import {Button, Modal, OverlayTrigger, Toast, ToastContainer, Tooltip} from "react-bootstrap";
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import {v4 as uuidv4} from 'uuid';
-import {logbookNotifier} from "./logbookNotifier";
+import {LogbookEvent, logbookNotifier} from "./logbookNotifier";
 import {ApiService} from "../ApiService";
 import {AuthState} from "../login/authState";
 import {useNavigate} from "react-router-dom";
@@ -15,6 +15,10 @@ export function Logbook({username, authState}) {
 
     const [entries, setEntries] = React.useState([]);
     const [showAddModal, setShowAddModal] = React.useState(false);
+
+    const [showDeleteConfirmation, setShowDeleteConfirmation] = React.useState(false);
+    const [idToDelete, setIdToDelete] = React.useState(null);
+
     const [filterRows, setFilterRows] = React.useState(false);
 
     //Fields for new entry modal
@@ -34,6 +38,7 @@ export function Logbook({username, authState}) {
 
     const [showToast, setShowToast] = React.useState(false);
     const [toastName, setToastName] = React.useState("");
+    const [toastAction, setToastAction] = React.useState("");
     const [testingWebsocket, setTestingWebsocket] = React.useState(false);
 
     const [weatherMessage, setWeatherMessge] = React.useState("");
@@ -111,9 +116,11 @@ export function Logbook({username, authState}) {
     // When we get notified of an event we will re load all the entries.
     async function handleNotification(event) {
         await loadEntries()
-        if (event.from) {
-            // if there's no name we won't trigger the notification
+
+        if (event.from && event.type) {
+            // if there's no name/type we won't trigger the notification
             setToastName(event.from)
+            setToastAction(event.type === "add" ? "created" : "deleted")
             setShowToast(true)
         }
     }
@@ -236,7 +243,7 @@ export function Logbook({username, authState}) {
                             <td>{entry.notes}</td>
                             <td>{entry.author}</td>
                             <td className={"text-center"}>
-                                <Button variant={"outline-danger"} size={"sm"} onClick={() => deleteEntry(entry._id)}>
+                                <Button variant={"outline-danger"} size={"sm"} onClick={() => handleOpeningDeleteConfirmation(entry._id)}>
                                     <i className="bi bi-trash"></i>
                                 </Button>
                             </td>
@@ -282,7 +289,9 @@ export function Logbook({username, authState}) {
         try {
             const response = await apiService.createLogbookEntry({data: entry})
             setEntries(response.data.entries)
+            logbookNotifier.broadcastEvent(entry.author, LogbookEvent.Add)
             clearAddLogFields()
+
         } catch (error) {
             alert("There was an error adding the new log.")
         } finally {
@@ -291,9 +300,26 @@ export function Logbook({username, authState}) {
 
     }
 
-    function handlingOpeningModal() {
+    //add new entry
+    function handlingOpeningNewEntry() {
         clearAddLogFields()
         setShowAddModal(true)
+    }
+
+    //delete entry
+    function handleOpeningDeleteConfirmation(id) {
+        setShowDeleteConfirmation(true)
+        setIdToDelete(id)
+    }
+
+    function handleConfirmDelete() {
+        deleteEntry(idToDelete)
+        handleCloseDeleteConfirmation()
+    }
+
+    function handleCloseDeleteConfirmation() {
+        setShowDeleteConfirmation(false)
+        setIdToDelete(null)
     }
 
 
@@ -301,6 +327,8 @@ export function Logbook({username, authState}) {
         try {
             const response = await apiService.removeLogbookEntry(id)
             setEntries(response.data.entries)
+
+            logbookNotifier.broadcastEvent(`${localStorage.getItem(FIRSTNAME_KEY)} ${localStorage.getItem(LASTNAME_KEY)}`, LogbookEvent.Delete)
         } catch (error) {
             alert("There was an error deleting the log.")
         }
@@ -390,11 +418,11 @@ export function Logbook({username, authState}) {
 
                                 {toastName ? (
                                     <Toast.Body>
-                                        {toastName} has created a new entry in the Logbook.
+                                        {toastName} has {toastAction} an entry in the Logbook.
                                     </Toast.Body>
                                 ) : (
                                     <Toast.Body>
-                                        Someone has created a new entry in the Logbook.
+                                        Someone modified the Logbook.
                                     </Toast.Body>
                                 )}
 
@@ -408,7 +436,7 @@ export function Logbook({username, authState}) {
 
                             <h5>{ timeMessage } | { weatherMessage }</h5>
 
-                            <button type="button" className="btn btn-primary" onClick={() => handlingOpeningModal()}>
+                            <button type="button" className="btn btn-primary" onClick={() => handlingOpeningNewEntry()}>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                      className="m-1 bi bi-plus-circle"
                                      viewBox="0 0 16 16">
@@ -421,6 +449,8 @@ export function Logbook({username, authState}) {
                         </div>
                     </div>
 
+
+                    {/*Add new log modal*/}
                     <Modal
                         className="fade"
                         show={showAddModal}
@@ -526,6 +556,22 @@ export function Logbook({username, authState}) {
                         </Modal.Footer>
                     </Modal>
 
+                    {/* Confirm delete dialog */}
+                    <Modal show={showDeleteConfirmation} onHide={ () => handleCloseDeleteConfirmation() }>
+                        <Modal.Header closeButton>
+                            <Modal.Title>Confirm deletion</Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body>Are you sure you want to delete this log? This action cannot be undone. </Modal.Body>
+                        <Modal.Footer>
+                            <Button variant="secondary" onClick={() => handleCloseDeleteConfirmation()}>
+                                Close
+                            </Button>
+                            <Button variant="danger" onClick={() => handleConfirmDelete() }>
+                                Delete entry
+                            </Button>
+                        </Modal.Footer>
+                    </Modal>
+
 
                     <div className="rotate-message">
                         <div className="rotate-message card mt-5">
@@ -550,35 +596,35 @@ export function Logbook({username, authState}) {
                         </button>
 
                         {/* These buttons below are merely for development and testing purposes. */}
-                        <div className={"d-flex gap-2"}>
-                            <Button
-                                variant="outline-secondary"
-                                onClick={async () => {
-                                    await loadTestEntries()
-                                }}
-                            >
-                                Test entries
-                            </Button>
+                        {/*<div className={"d-flex gap-2"}>*/}
+                        {/*    <Button*/}
+                        {/*        variant="outline-secondary"*/}
+                        {/*        onClick={async () => {*/}
+                        {/*            await loadTestEntries()*/}
+                        {/*        }}*/}
+                        {/*    >*/}
+                        {/*        Test entries*/}
+                        {/*    </Button>*/}
 
-                            <Button
-                                variant="outline-danger"
-                                onClick={async () => {
-                                    await clearEntries()
-                                }}
-                            >
-                                Clear entries
-                            </Button>
+                        {/*    <Button*/}
+                        {/*        variant="outline-danger"*/}
+                        {/*        onClick={async () => {*/}
+                        {/*            await clearEntries()*/}
+                        {/*        }}*/}
+                        {/*    >*/}
+                        {/*        Clear entries*/}
+                        {/*    </Button>*/}
 
-                            <Button
-                                variant="outline-secondary"
-                                onClick={() => {
-                                    testingWebsocket ? stopWebsocketTesting() : testWebsocket()
-                                    setTestingWebsocket(!testingWebsocket)
-                                }}
-                            >
-                                {testingWebsocket ? "Pause websocket" : "Test Websocket"}
-                            </Button>
-                        </div>
+                        {/*    <Button*/}
+                        {/*        variant="outline-secondary"*/}
+                        {/*        onClick={() => {*/}
+                        {/*            testingWebsocket ? stopWebsocketTesting() : testWebsocket()*/}
+                        {/*            setTestingWebsocket(!testingWebsocket)*/}
+                        {/*        }}*/}
+                        {/*    >*/}
+                        {/*        {testingWebsocket ? "Pause websocket" : "Test Websocket"}*/}
+                        {/*    </Button>*/}
+                        {/*</div>*/}
 
 
                     </div>
